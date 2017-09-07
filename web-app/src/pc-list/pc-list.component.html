@@ -1,0 +1,11 @@
+<!--Display a list of all characters for this user-->
+<ul *ngIf="myCharacters" class="characterList">
+    <li *ngFor="let character of myCharacters | sort:'id'"
+        (click)="onSelect(character)"
+        [class.selected] = "character === currentPC">
+        <span class="badge">{{character.id}}</span>  {{character.name}}
+    </li>
+</ul>
+
+<!--Display preview of selected-->
+<pc-detail [pc]="currentPC"></pc-detail>

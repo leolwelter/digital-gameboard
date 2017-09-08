@@ -1,8 +1,7 @@
-<h3>{{ title }}, {{ user }}!</h3>
-<div class=""grid grid-pad>
-    <div *ngFor="let pChar of myCharacters" class="col-1-4">
+<div class="btn-group">
+    <button class="btn btn-default" *ngFor="let pChar of myCharacters" [routerLink]="['/myPCs', pChar.id]">
         <div class="module playerCharacter">
             <h4>{{ pChar.name }}</h4>
         </div>
-    </div>
+    </button>
 </div>

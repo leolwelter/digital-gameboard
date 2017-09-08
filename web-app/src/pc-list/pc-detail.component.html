@@ -1,8 +1,11 @@
-<div *ngIf="pc">
+<div class="col-xs-10 col-xs-offset-1" *ngIf="pc">
     <h2>{{pc.name}} details:</h2>
-    <div><label>id: </label>{{pc.id}}</div>
+    <div>
+        <label>id: </label>{{pc.id}}
+    </div>
     <div>
         <label>name: </label>
         <input [(ngModel)]="pc.name" placeholder="name"/>
     </div>
+    <button (click)="goBack()">Back</button>
 </div>

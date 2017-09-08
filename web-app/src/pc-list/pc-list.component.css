@@ -14,8 +14,11 @@
     left: 0;
     background-color: #EEE;
     margin: .5em;
-    padding: .3em 0;
-    height: 1.6em;
+    padding-top: .3em;
+    padding-right: 0;
+    padding-left: 0;
+    padding-bottom: .3em;
+    height: 2em;
     border-radius: 4px;
 }
 .characterList li.selected:hover {
@@ -35,13 +38,16 @@
     display: inline-block;
     font-size: small;
     color: white;
-    padding: 0.8em 0.7em 0 0.7em;
+    padding-top: 0.8em;
+    padding-right: 0.7em;
+    padding-left: 0.7em;
+    padding-bottom: 0.7em;
     background-color: #607D8B;
     line-height: 1em;
     position: relative;
     left: -1px;
     top: -4px;
-    height: 1.8em;
+    height: 2.1em;
     margin-right: .8em;
     border-radius: 4px 0 0 4px;
 }
@@ -52,7 +58,7 @@
     left: 0;
     background-color: #607D8B;
     margin: .5em;
-    padding: .3em 0;
+    padding: .6em 0;
     height: 3.2em;
     border-radius: 4px;
 }

@@ -1,6 +1,19 @@
-<h1>{{ title }}</h1>
-<nav>
-    <a routerLink="/myPCs">Character List</a>
-    <a routerLink="/dashboard">Dashboard</a>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand"><img src="../favicon.ico"></a>
+            <ul class="nav navbar-nav nav-tabs">
+                <li ><a routerLink="/dashboard">Dashboard</a></li>
+                <li ><a routerLink="/myPCs">Character List</a></li>
+            </ul>
+            <!--Displays logged in user -->
+            <p class="navbar-text">Signed in as:
+                <a routerLink="/profile" class="navbar-link navbar-right">{{ user }}</a>
+            </p>
+        </div>
+    </div><!-- /.container-fluid -->
 </nav>
+
+<h2>{{ title }}</h2>
+
 <router-outlet></router-outlet>

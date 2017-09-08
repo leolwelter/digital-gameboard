@@ -4,11 +4,12 @@ import { FormsModule} from '@angular/forms';
 import {RouterModule} from '@angular/router';
 
 import { PCListComponent } from '../pc-list/pc-list.component';
-import { PcDetailComponent} from '../pc-list/pc-detail.component';
+import { PCDetailComponent } from '../pc-list/pc-detail.component';
 import { ArraySortPipe } from '../_pipes/order-by.pipe';
 import {AppComponent} from './app.component';
 import {CreatureService} from '../_services/creature.service';
 import {DashboardComponent} from '../dashboard/dashboard.component';
+import {AppRoutingModule} from './app-routing.module';
 
 @NgModule({
   declarations: [
@@ -16,27 +17,14 @@ import {DashboardComponent} from '../dashboard/dashboard.component';
     AppComponent,
     DashboardComponent,
     PCListComponent,
-    PcDetailComponent,
+    PCDetailComponent,
     // PIPES
     ArraySortPipe
   ],
   imports: [
     BrowserModule,
     FormsModule,
-    RouterModule.forRoot([
-        {
-          path: 'myPCs',
-          component: PCListComponent
-        },
-        {
-          path: 'dashboard',
-          component: DashboardComponent
-        },
-        {
-          path: '**',
-          redirectTo: '/dashboard',
-        }
-    ])
+    AppRoutingModule
   ],
   providers: [
       CreatureService

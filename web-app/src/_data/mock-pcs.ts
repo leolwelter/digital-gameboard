@@ -1,4 +1,4 @@
-import { PC} from '../pc-list/PC';
+import { PC} from '../app/pc-detail/PC';
 
 // Temporary hardcoded heroes
 export const mockCharacters: PC[] = [

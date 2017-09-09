@@ -5,7 +5,7 @@ import { Location } from '@angular/common';
 import 'rxjs/add/operator/switchMap';
 
 import { PC } from './PC';
-import {CreatureService} from '../_services/creature.service';
+import {CreatureService} from '../../_services/creature.service';
 
 
 @Component({

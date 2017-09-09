@@ -3,12 +3,12 @@ import { NgModule } from '@angular/core';
 import { FormsModule} from '@angular/forms';
 import {RouterModule} from '@angular/router';
 
-import { PCListComponent } from '../pc-list/pc-list.component';
-import { PCDetailComponent } from '../pc-list/pc-detail.component';
+import { PCListComponent } from './pc-list/pc-list.component';
+import { PCDetailComponent } from './pc-detail/pc-detail.component';
 import { ArraySortPipe } from '../_pipes/order-by.pipe';
 import {AppComponent} from './app.component';
 import {CreatureService} from '../_services/creature.service';
-import {DashboardComponent} from '../dashboard/dashboard.component';
+import {DashboardComponent} from './dashboard/dashboard.component';
 import {AppRoutingModule} from './app-routing.module';
 
 @NgModule({

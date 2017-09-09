@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
-import { CreatureService } from '../_services/creature.service';
-import { PC } from '../pc-list/PC';
+import { CreatureService } from '../../_services/creature.service';
+import { PC } from '../pc-detail/PC';
 
 @Component({
     selector: 'dashboard',

@@ -1,6 +1,8 @@
 // Angular assets
 import { Component } from '@angular/core';
 import { OnInit} from '@angular/core';
+import { Router } from '@angular/router';
+
 // Authored assets
 import { PC } from '../pc-detail/PC';
 import { CreatureService } from '../../_services/creature.service';
@@ -11,11 +13,17 @@ import { CreatureService } from '../../_services/creature.service';
     styleUrls: ['./pc-list.component.css'],
 })
 export class PCListComponent implements OnInit {
-    constructor(private CreatureService: CreatureService) {}
+    constructor(
+        private CreatureService: CreatureService,
+        private router: Router
+    ) {}
     currentPC: PC;
     myCharacters: PC[];
     onSelect(character: PC): void {
         this.currentPC = character;
+    }
+    ngOnInit(): void {
+        this.getPCs();
     }
     getPCs(): void {
         this.CreatureService.getPCs()
@@ -23,7 +31,7 @@ export class PCListComponent implements OnInit {
             this.myCharacters = PCs
         );
     }
-    ngOnInit(): void {
-        this.getPCs();
+    gotoDetail(): void {
+        this.router.navigate(['/myPCs', this.currentPC.id]);
     }
 }

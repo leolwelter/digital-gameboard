@@ -8,4 +8,9 @@
 </ul>
 
 <!--Display preview of selected-->
-<pc-detail [pc]="currentPC"></pc-detail>
+<div *ngIf="currentPC">
+    <h2>
+        {{ currentPC.name | uppercase }} selected
+    </h2>
+    <button class="btn btn-info" (click)="gotoDetail()">View Details</button>
+</div>

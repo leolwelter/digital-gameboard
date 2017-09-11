@@ -1,8 +1,9 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule} from '@angular/forms';
-import {RouterModule} from '@angular/router';
+import {HttpModule} from '@angular/http';
 
+// Authored Assets
 import { PCListComponent } from './pc-list/pc-list.component';
 import { PCDetailComponent } from './pc-detail/pc-detail.component';
 import { ArraySortPipe } from '../_pipes/order-by.pipe';
@@ -24,7 +25,8 @@ import {AppRoutingModule} from './app-routing.module';
   imports: [
     BrowserModule,
     FormsModule,
-    AppRoutingModule
+    AppRoutingModule,
+    HttpModule,
   ],
   providers: [
       CreatureService

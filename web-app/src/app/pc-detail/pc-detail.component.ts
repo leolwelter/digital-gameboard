@@ -11,6 +11,7 @@ import {CreatureService} from '../../_services/creature.service';
 @Component({
     selector: 'pc-detail',
     templateUrl: './pc-detail.component.html',
+    styleUrls: ['./pc-detail.component.css']
 })
 export class PCDetailComponent implements OnInit {
     constructor(

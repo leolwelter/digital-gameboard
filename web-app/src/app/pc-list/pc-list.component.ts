@@ -3,9 +3,12 @@ import { Component } from '@angular/core';
 import { OnInit} from '@angular/core';
 import { Router } from '@angular/router';
 
+// AngularFire assets
+import {FirebaseListObservable} from 'angularfire2/database';
+
 // Authored assets
 import { PC } from '../pc-detail/PC';
-import { CreatureService } from '../../_services/creature.service';
+import { CreatureService } from '../_services/creature.service';
 
 @Component({
     selector: 'pc-list',
@@ -15,10 +18,12 @@ import { CreatureService } from '../../_services/creature.service';
 export class PCListComponent implements OnInit {
     constructor(
         private CreatureService: CreatureService,
-        private router: Router
-    ) {}
+        private router: Router,
+    ) { }
+
     currentPC: PC;
     myCharacters: PC[];
+
     onSelect(character: PC): void {
         this.currentPC = character;
     }

@@ -2,15 +2,21 @@ import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 
-import { PC } from '../app/pc-detail/PC';
+import { PC } from '../pc-detail/PC';
 
+// MOCK DATA
+import {mockCharacters} from '../_data/mock-pcs';
+import {AngularFireDatabase, FirebaseListObservable} from 'angularfire2/database';
 
 @Injectable() // for dependency injection
 export class CreatureService {
-    constructor(private http: Http) { }
+    constructor(
+        private http: Http,
+        private db: AngularFireDatabase
+    ) { }
 
     getPCs(): Promise<PC[]> {
-        // TODO Implement FirebaseData service
+        return Promise.resolve(mockCharacters); // TODO Implement FirebaseData service
     }
 
 

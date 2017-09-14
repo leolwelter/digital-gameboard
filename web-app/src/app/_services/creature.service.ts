@@ -16,7 +16,7 @@ export class CreatureService {
     ) { }
 
     getPCs(): Promise<PC[]> {
-        return Promise.resolve(mockCharacters); // TODO Implement FirebaseData service
+        return Promise.resolve(mockCharacters);
     }
 
 

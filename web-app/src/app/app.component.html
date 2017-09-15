@@ -8,7 +8,7 @@
             </ul>
             <!--Displays logged in user -->
             <p class="navbar-text">Signed in as:
-                <a routerLink="/profile" class="navbar-link navbar-right">{{ user }}</a>
+                <a routerLink="/profile" class="navbar-link navbar-right">{{ (user | async)?.uid }}</a>
             </p>
         </div>
     </div><!-- /.container-fluid -->

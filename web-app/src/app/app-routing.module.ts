@@ -1,12 +1,13 @@
 // Angular routing modules
 import { NgModule } from '@angular/core';
-import {Router, RouterModule} from '@angular/router';
+import { Router, RouterModule} from '@angular/router';
 import { Routes } from '@angular/router';
 
 // Authored components
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { PCDetailComponent } from './pc-detail/pc-detail.component';
 import { PCListComponent } from './pc-list/pc-list.component';
+import { LoginComponent } from './login/login.component';
 
 // Define all routes for the application
 const routes: Routes = [
@@ -21,6 +22,10 @@ const routes: Routes = [
     {
         path: 'myPCs/:id',
         component: PCDetailComponent
+    },
+    {
+        path: 'login',
+        component: LoginComponent
     },
     {
         path: '**',

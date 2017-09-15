@@ -39,3 +39,6 @@ yarn-error.log
 # System Files
 .DS_Store
 Thumbs.db
+
+# API Information
+/src/environments/*

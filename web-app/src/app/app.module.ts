@@ -13,6 +13,7 @@ import {CreatureService} from './_services/creature.service';
 import {DashboardComponent} from './dashboard/dashboard.component';
 import {AppRoutingModule} from './app-routing.module';
 import { environment } from '../environments/environment';
+import { LoginComponent } from './login/login.component';
 
 // AngularFire
 import { AngularFireModule } from 'angularfire2';
@@ -26,6 +27,7 @@ import { AngularFireDatabaseModule } from 'angularfire2/database';
     DashboardComponent,
     PCListComponent,
     PCDetailComponent,
+    LoginComponent,
     // PIPES
     ArraySortPipe
   ],

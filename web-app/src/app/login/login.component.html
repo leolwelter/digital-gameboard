@@ -1,0 +1,10 @@
+<h1>TEST</h1>
+<div> {{ (user | async)?.uid }} </div>
+<div>
+    <input class="col-xs-3" type="text" placeholder="email" [(ngModel)]="email"/>
+    <input class="col-xs-3" type="text" placeholder="password" [(ngModel)]="password"/>
+    <button class="btn btn-default" (click)="login()">Login</button>
+</div>
+<div>
+    <button class="btn btn-default" (click)="logout()">Logout</button>
+</div>

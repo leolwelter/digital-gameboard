@@ -17,7 +17,16 @@ export class LoginComponent {
     }
 
     login() {
-        this.afAuth.auth.signInWithEmailAndPassword(this.email, this.password);
+        this.afAuth.auth.signInWithEmailAndPassword(this.email, this.password)
+            .then(pr => {
+                    console.log('Success');
+                    this.email = '';
+                    this.password = '';
+                }
+            )
+            .catch(err =>
+                console.log(err.message)
+            );
     }
 
     logout() {

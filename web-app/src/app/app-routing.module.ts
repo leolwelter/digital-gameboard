@@ -34,6 +34,7 @@ const routes: Routes = [
 ];
 
 // update Angular RouterModule metadata to include our routes
+// then ship it off to be imported by AppModule
 @NgModule({
     imports: [ RouterModule.forRoot(routes) ],
     exports: [ RouterModule ]

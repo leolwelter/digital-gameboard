@@ -19,7 +19,7 @@ export class LoginComponent {
     login() {
         this.afAuth.auth.signInWithEmailAndPassword(this.email, this.password)
             .then(pr => {
-                    console.log('Success');
+                    console.log('Success:');
                     this.email = '';
                     this.password = '';
                 }

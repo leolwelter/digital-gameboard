@@ -7,7 +7,7 @@
                 <li ><a routerLink="/myPCs" routerLinkActive="active">Character List</a></li>
             </ul>
             <!--Displays logged in user -->
-            <p class="navbar-text">Signed in as:
+            <p *ngIf="(user | async)" class="navbar-text">Signed in as:
                 <a class="navbar-link navbar-right">{{ (user | async)?.uid }}</a>
                 <a class="btn btn-default" (click)="logout()"> Logout </a>
             </p>

@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule} from '@angular/forms';
 import {HttpModule} from '@angular/http';
+import { MdSnackBar } from '@angular/material';
 
 // Authored Assets
 import { PCListComponent } from './pc-list/pc-list.component';
@@ -39,7 +40,7 @@ import { AngularFireDatabaseModule } from 'angularfire2/database';
     HttpModule,
     AngularFireModule.initializeApp(environment.firebase, 'dt-web-app'),
     AngularFireDatabaseModule,
-    AngularFireAuthModule
+    AngularFireAuthModule,
   ],
   providers: [
       CreatureService,

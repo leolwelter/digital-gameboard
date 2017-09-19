@@ -48,3 +48,8 @@ import { AngularFireDatabaseModule } from 'angularfire2/database';
 export class AppModule { }
 
 
+/* TODO: Change module structure:
+   Root Module
+   |_System Reference
+   |_U
+ */

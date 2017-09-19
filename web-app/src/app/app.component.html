@@ -9,7 +9,7 @@
             <!--Displays logged in user -->
             <p class="navbar-text">Signed in as:
                 <a class="navbar-link navbar-right">{{ (user | async)?.uid }}</a>
-                <a class="btn btn-default" routerLink="/login"> Logout </a>
+                <a class="btn btn-default" (click)="logout()"> Logout </a>
             </p>
         </div>
     </div><!-- /.container-fluid -->

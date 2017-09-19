@@ -14,6 +14,7 @@ import {DashboardComponent} from './dashboard/dashboard.component';
 import {AppRoutingModule} from './app-routing.module';
 import { environment } from '../environments/environment';
 import { LoginComponent } from './login/login.component';
+import {AuthGuard} from './_services/auth-guard.service';
 
 // AngularFire
 import { AngularFireModule } from 'angularfire2';
@@ -41,15 +42,9 @@ import { AngularFireDatabaseModule } from 'angularfire2/database';
     AngularFireAuthModule
   ],
   providers: [
-      CreatureService
+      CreatureService,
+      AuthGuard,
   ],
   bootstrap: [ AppComponent ]
 })
 export class AppModule { }
-
-
-/* TODO: Change module structure:
-   Root Module
-   |_System Reference
-   |_U
- */

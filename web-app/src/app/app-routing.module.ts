@@ -8,20 +8,24 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { PCDetailComponent } from './pc-detail/pc-detail.component';
 import { PCListComponent } from './pc-list/pc-list.component';
 import { LoginComponent } from './login/login.component';
+import { AuthGuard } from './_services/auth-guard.service';
 
 // Define all routes for the application
 const routes: Routes = [
     {
         path: 'myPCs',
-        component: PCListComponent
+        component: PCListComponent,
+        canActivate: [AuthGuard]
     },
     {
         path: 'dashboard',
-        component: DashboardComponent
+        component: DashboardComponent,
+        canActivate: [AuthGuard]
     },
     {
         path: 'myPCs/:id',
-        component: PCDetailComponent
+        component: PCDetailComponent,
+        canActivate: [AuthGuard]
     },
     {
         path: 'login',
@@ -29,7 +33,7 @@ const routes: Routes = [
     },
     {
         path: '**',
-        redirectTo: '/dashboard',
+        redirectTo: '/login',
     }
 ];
 

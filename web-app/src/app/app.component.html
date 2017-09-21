@@ -1,4 +1,4 @@
-<nav *ngIf="user" class="navbar navbar-default">
+<nav *ngIf="(user | async)" class="navbar navbar-default">
     <div class="container-fluid">
         <div class="navbar-header">
             <a class="navbar-brand"><img src="../favicon.ico"></a>

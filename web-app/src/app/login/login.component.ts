@@ -1,4 +1,5 @@
 import {Component} from '@angular/core';
+import {MdSnackBar} from '@angular/material';
 import {Observable} from 'rxjs/Observable';
 import {AngularFireAuth} from 'angularfire2/auth';
 import * as firebase from 'firebase/app';
@@ -12,11 +13,20 @@ export class LoginComponent {
     email: string;
     password: string;
 
-    constructor(public afAuth: AngularFireAuth) {
+    constructor(
+        private afAuth: AngularFireAuth,
+        public snackBar: MdSnackBar
+    ) {
         this.user = afAuth.authState;
     }
 
     login() {
+        if (this.afAuth.auth.currentUser !== null) {
+            this.snackBar.open("Already Logged In!", "", {
+                duration: 2000
+            });
+            return;
+        }
         this.afAuth.auth.signInWithEmailAndPassword(this.email, this.password)
             .then(pr => {
                     console.log('Success');

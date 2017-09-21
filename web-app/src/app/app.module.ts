@@ -1,21 +1,22 @@
 // Angular
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule} from '@angular/forms';
-import {HttpModule} from '@angular/http';
-import { MdSnackBar } from '@angular/material';
+import { FormsModule } from '@angular/forms';
+import { HttpModule } from '@angular/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MdSnackBarModule } from '@angular/material';
 
 // Authored Assets
 import { PCListComponent } from './pc-list/pc-list.component';
 import { PCDetailComponent } from './pc-detail/pc-detail.component';
 import { ArraySortPipe } from './_pipes/order-by.pipe';
-import {AppComponent} from './app.component';
-import {CreatureService} from './_services/creature.service';
-import {DashboardComponent} from './dashboard/dashboard.component';
-import {AppRoutingModule} from './app-routing.module';
+import { AppComponent } from './app.component';
+import { CreatureService } from './_services/creature.service';
+import { DashboardComponent} from './dashboard/dashboard.component';
+import { AppRoutingModule} from './app-routing.module';
 import { environment } from '../environments/environment';
 import { LoginComponent } from './login/login.component';
-import {AuthGuard} from './_services/auth-guard.service';
+import { AuthGuard } from './_services/auth-guard.service';
 
 // AngularFire
 import { AngularFireModule } from 'angularfire2';
@@ -35,12 +36,14 @@ import { AngularFireDatabaseModule } from 'angularfire2/database';
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     FormsModule,
     AppRoutingModule,
     HttpModule,
     AngularFireModule.initializeApp(environment.firebase, 'dt-web-app'),
     AngularFireDatabaseModule,
     AngularFireAuthModule,
+    MdSnackBarModule,
   ],
   providers: [
       CreatureService,

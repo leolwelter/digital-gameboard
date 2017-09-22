@@ -1,21 +1,18 @@
-<div class="col-xs-10 col-xs-offset-1" *ngIf="pc">
-    <h2>{{pc.name}}:</h2>
+<div class="col-xs-10 col-xs-offset-1" *ngIf="pc | async">
+    <h2>{{ (pc | async)?.name }}:</h2>
 
     <div>
-        <label>id: </label>{{pc.id}}
+        <label>name: </label>{{ (pc | async)?.name }}
     </div>
     <div>
-        <label>race: </label>{{pc.race}}
+        <label>race: </label>{{ (pc | async)?.race }}
     </div>
     <div>
-        <label>class: </label>{{pc.class1}}
+        <label>class: </label>{{ (pc | async)?.class }}
     </div>
     <div>
-        <label>level: </label>{{pc.level}}
+        <label>level: </label>{{ (pc | async)?.level }}
     </div>
-    <div>
-        <label>name: </label>
-        <input [(ngModel)]="pc.name" placeholder="name"/>
-    </div>
+
     <button (click)="goBack()">Back</button>
 </div>

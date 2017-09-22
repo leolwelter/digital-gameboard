@@ -1,14 +1,17 @@
 <!--Display a list of all characters for this user-->
-<ul *ngIf="myCharacters" class="characterList">
-    <li *ngFor="let character of myCharacters | async"
-        (click)="onSelect(character)"
-        [class.selected] = "character === currentPC">
-        <span class="badge">{{ character.class }}</span>  {{character.name}}
-    </li>
-</ul>
+<div class="col-xs-4">
+    <ul *ngIf="myCharacters" class="characterList">
+        <li *ngFor="let character of myCharacters | async"
+            (click)="onSelect(character)"
+            [class.selected] = "character === currentPC">
+            <span class="badge">{{ character.class }}</span>  {{character.name}}
+        </li>
+    </ul>
+</div>
+
 
 <!--Display preview of selected-->
-<div *ngIf="currentPC">
+<div class="col-xs-8" *ngIf="currentPC">
     <h2>
         {{ currentPC.name | uppercase }} selected
     </h2>

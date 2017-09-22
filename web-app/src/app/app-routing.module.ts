@@ -23,7 +23,7 @@ const routes: Routes = [
         canActivate: [AuthGuard]
     },
     {
-        path: 'myPCs/:id',
+        path: 'myPCs/:name',
         component: PCDetailComponent,
         canActivate: [AuthGuard]
     },

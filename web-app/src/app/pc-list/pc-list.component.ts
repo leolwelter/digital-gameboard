@@ -38,6 +38,6 @@ export class PCListComponent implements OnInit {
         this.myCharacters = this.characterService.getPCs(uid);
     }
     gotoDetail(): void {
-        this.router.navigate(['/myPCs', this.currentPC.id]);
+        this.router.navigate(['/myPCs', this.currentPC.name]);
     }
 }

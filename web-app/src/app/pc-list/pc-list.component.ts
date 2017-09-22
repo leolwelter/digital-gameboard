@@ -5,10 +5,12 @@ import { Router } from '@angular/router';
 
 // AngularFire assets
 import {FirebaseListObservable} from 'angularfire2/database';
+import {AngularFireAuth} from 'angularfire2/auth';
+import {FirebaseObjectObservable} from 'angularfire2/database';
 
 // Authored assets
 import { PC } from '../pc-detail/PC';
-import { CreatureService } from '../_services/creature.service';
+import { CharacterService } from '../_services/character.service';
 
 @Component({
     selector: 'pc-list',
@@ -17,12 +19,13 @@ import { CreatureService } from '../_services/creature.service';
 })
 export class PCListComponent implements OnInit {
     constructor(
-        private CreatureService: CreatureService,
+        private characterService: CharacterService,
         private router: Router,
+        private afAuth: AngularFireAuth
     ) { }
 
     currentPC: PC;
-    myCharacters: PC[];
+    myCharacters: FirebaseListObservable<any>;
 
     onSelect(character: PC): void {
         this.currentPC = character;
@@ -31,10 +34,8 @@ export class PCListComponent implements OnInit {
         this.getPCs();
     }
     getPCs(): void {
-        this.CreatureService.getPCs()
-        .then(PCs =>
-            this.myCharacters = PCs
-        );
+        const uid = this.afAuth.auth.currentUser.uid;
+        this.myCharacters = this.characterService.getPCs(uid);
     }
     gotoDetail(): void {
         this.router.navigate(['/myPCs', this.currentPC.id]);

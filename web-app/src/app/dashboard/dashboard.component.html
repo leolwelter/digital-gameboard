@@ -1,7 +1,9 @@
-<div class="btn-group">
-    <button class="btn btn-default" *ngFor="let pChar of myCharacters" [routerLink]="['/myPCs', pChar.id]">
-        <div class="module playerCharacter">
-            <h4>{{ pChar.name }}</h4>
-        </div>
-    </button>
+<div class="col-xs-6 col-xs-offset-3">
+    <div class="btn-group">
+        <button class="btn btn-default" *ngFor="let pChar of myCharacters" [routerLink]="['/myPCs', pChar.id]">
+            <div class="module playerCharacter">
+                <h4>{{ pChar.name }}</h4>
+            </div>
+        </button>
+    </div>
 </div>

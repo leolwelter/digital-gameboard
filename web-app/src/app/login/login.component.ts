@@ -22,7 +22,7 @@ export class LoginComponent {
 
     login() {
         if (this.afAuth.auth.currentUser !== null) {
-            this.snackBar.open("Already Logged In!", "", {
+            this.snackBar.open('Already Logged In!', '', {
                 duration: 2000
             });
             return;

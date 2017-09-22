@@ -11,7 +11,7 @@ import { PCListComponent } from './pc-list/pc-list.component';
 import { PCDetailComponent } from './pc-detail/pc-detail.component';
 import { ArraySortPipe } from './_pipes/order-by.pipe';
 import { AppComponent } from './app.component';
-import { CreatureService } from './_services/creature.service';
+import { CharacterService } from './_services/character.service';
 import { DashboardComponent} from './dashboard/dashboard.component';
 import { AppRoutingModule} from './app-routing.module';
 import { environment } from '../environments/environment';
@@ -46,7 +46,7 @@ import { AngularFireDatabaseModule } from 'angularfire2/database';
     MdSnackBarModule,
   ],
   providers: [
-      CreatureService,
+      CharacterService,
       AuthGuard,
   ],
   bootstrap: [ AppComponent ]

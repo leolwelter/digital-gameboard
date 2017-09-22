@@ -1,9 +1,9 @@
 <!--Display a list of all characters for this user-->
 <ul *ngIf="myCharacters" class="characterList">
-    <li *ngFor="let character of myCharacters | sort:'id'"
+    <li *ngFor="let character of myCharacters | async"
         (click)="onSelect(character)"
         [class.selected] = "character === currentPC">
-        <span class="badge">{{character.id}}</span>  {{character.name}}
+        <span class="badge">{{ character.class }}</span>  {{character.name}}
     </li>
 </ul>
 

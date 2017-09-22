@@ -1,21 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 
-import { CreatureService } from '../_services/creature.service';
+import { CharacterService } from '../_services/character.service';
 import { PC } from '../pc-detail/PC';
+import {FirebaseListObservable} from "angularfire2/database";
 
 @Component({
     selector: 'dashboard',
     templateUrl: './dashboard.component.html',
 })
 export class DashboardComponent implements OnInit {
-    constructor(private creatureService: CreatureService) { }
+    constructor(private characterService: CharacterService) { }
 
-    myCharacters: PC[] = [];
+    myCharacters: FirebaseListObservable<any>;
 
     ngOnInit(): void {
-        this.creatureService.getPCs()
-            .then(myPCs =>
-                this.myCharacters = myPCs.slice(0, 4)
-            );
+        console.log('Getting characters');
+        this.myCharacters = this.characterService.getPCs();
     }
 }

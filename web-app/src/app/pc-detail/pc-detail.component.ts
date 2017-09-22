@@ -5,7 +5,8 @@ import { Location } from '@angular/common';
 import 'rxjs/add/operator/switchMap';
 
 import { PC } from './PC';
-import {CreatureService} from '../_services/creature.service';
+import {CharacterService} from '../_services/character.service';
+import {AngularFireAuth} from 'angularfire2/auth';
 
 
 @Component({
@@ -15,15 +16,14 @@ import {CreatureService} from '../_services/creature.service';
 })
 export class PCDetailComponent implements OnInit {
     constructor(
-        private creatureService: CreatureService,
+        private characterService: CharacterService,
+        private afAuth: AngularFireAuth,
         private route: ActivatedRoute,
         private location: Location
     ) {}
     @Input() pc: PC; // input from pc list view
     ngOnInit(): void {
-        this.route.paramMap
-            .switchMap((params: ParamMap) => this.creatureService.getPC(+params.get('id')))
-            .subscribe(pc => this.pc = pc);
+
     }
     goBack(): void {
         this.location.back();

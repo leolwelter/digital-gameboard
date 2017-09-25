@@ -3,6 +3,7 @@ import {MdSnackBar} from '@angular/material';
 import {Observable} from 'rxjs/Observable';
 import {AngularFireAuth} from 'angularfire2/auth';
 import * as firebase from 'firebase/app';
+import {Router} from '@angular/router';
 
 @Component({
     selector: 'login',
@@ -12,9 +13,9 @@ export class LoginComponent {
     user: Observable<firebase.User>;
     email: string;
     password: string;
-
     constructor(
         private afAuth: AngularFireAuth,
+        private router: Router,
         public snackBar: MdSnackBar
     ) {
         this.user = afAuth.authState;
@@ -32,6 +33,7 @@ export class LoginComponent {
                     console.log('Success');
                     this.email = '';
                     this.password = '';
+                    this.router.navigate(['/dashboard']);
                 }
             )
             .catch(err =>
@@ -41,5 +43,9 @@ export class LoginComponent {
 
     logout() {
         this.afAuth.auth.signOut();
+    }
+
+    toRegister() {
+        this.router.navigate(['/register']);
     }
 }

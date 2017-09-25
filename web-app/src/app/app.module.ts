@@ -17,6 +17,7 @@ import { AppRoutingModule} from './app-routing.module';
 import { environment } from '../environments/environment';
 import { LoginComponent } from './login/login.component';
 import { AuthGuard } from './_services/auth-guard.service';
+import { RegisterComponent } from './login/register.component';
 
 // AngularFire
 import { AngularFireModule } from 'angularfire2';
@@ -31,6 +32,7 @@ import { AngularFireDatabaseModule } from 'angularfire2/database';
     PCListComponent,
     PCDetailComponent,
     LoginComponent,
+    RegisterComponent,
     // PIPES
     ArraySortPipe
   ],

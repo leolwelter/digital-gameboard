@@ -4,7 +4,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MdSnackBarModule } from '@angular/material';
+import { MdDialogModule, MdSnackBarModule } from '@angular/material';
 
 // Authored Assets
 import { PCListComponent } from './pc-list/pc-list.component';
@@ -18,7 +18,7 @@ import { environment } from '../environments/environment';
 import { LoginComponent } from './login/login.component';
 import { AuthGuard } from './_services/auth-guard.service';
 import { RegisterComponent } from './login/register.component';
-
+import { NewPcComponent } from './pc-list/new-pc/new-pc.component';
 // AngularFire
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireAuthModule } from 'angularfire2/auth';
@@ -33,8 +33,12 @@ import { AngularFireDatabaseModule } from 'angularfire2/database';
     PCDetailComponent,
     LoginComponent,
     RegisterComponent,
+    NewPcComponent,
     // PIPES
     ArraySortPipe
+  ],
+  entryComponents: [
+    NewPcComponent,
   ],
   imports: [
     BrowserModule,
@@ -46,6 +50,7 @@ import { AngularFireDatabaseModule } from 'angularfire2/database';
     AngularFireDatabaseModule,
     AngularFireAuthModule,
     MdSnackBarModule,
+    MdDialogModule,
   ],
   providers: [
       CharacterService,

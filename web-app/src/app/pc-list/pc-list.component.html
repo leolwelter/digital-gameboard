@@ -11,9 +11,17 @@
 
 
 <!--Display preview of selected-->
-<div class="col-xs-8" *ngIf="currentPC">
-    <h2>
-        {{ currentPC.name | uppercase }} selected
-    </h2>
-    <button class="btn btn-info" (click)="gotoDetail()">View Details</button>
+<div class="col-xs-8">
+    <div *ngIf="currentPC">
+        <h2>
+            {{ currentPC.name | uppercase }} selected
+        </h2>
+        <button class="btn btn-info" (click)="gotoDetail()">View Details</button>
+    </div>
+</div>
+
+
+<!--For adding new characters -->
+<div class="col-xs-12">
+    <button class="btn btn-sm btn-success" (click)="createCharacter()">New</button>
 </div>

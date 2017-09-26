@@ -9,7 +9,7 @@ import { PCDetailComponent } from './pc-detail/pc-detail.component';
 import { PCListComponent } from './pc-list/pc-list.component';
 import { LoginComponent } from './login/login.component';
 import { AuthGuard } from './_services/auth-guard.service';
-import {RegisterComponent} from './login/register.component';
+import { RegisterComponent } from './login/register.component';
 
 // Define all routes for the application
 const routes: Routes = [

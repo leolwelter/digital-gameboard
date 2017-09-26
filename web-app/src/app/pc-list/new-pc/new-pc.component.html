@@ -1,0 +1,15 @@
+<form class="col-xs-12">
+    <h3>New Adventurer</h3>
+    <div>
+        <label for="inputName">Name</label>
+        <input
+                id="inputName"
+                name="name"
+                [(ngModel)]="name"
+                type="text"
+                placeholder="Tim"
+        >
+        <button class="btn btn-success" (click)="createCharacter()">+</button>
+    </div>
+
+</form>

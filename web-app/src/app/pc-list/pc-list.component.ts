@@ -2,15 +2,17 @@
 import { Component } from '@angular/core';
 import { OnInit} from '@angular/core';
 import { Router } from '@angular/router';
+import { MdDialog, MdDialogRef, MD_DIALOG_DATA } from '@angular/material';
 
 // AngularFire assets
 import {FirebaseListObservable} from 'angularfire2/database';
 import {AngularFireAuth} from 'angularfire2/auth';
-import {FirebaseObjectObservable} from 'angularfire2/database';
+import { FirebaseObjectObservable } from 'angularfire2/database';
 
 // Authored assets
 import { PC } from '../pc-detail/PC';
 import { CharacterService } from '../_services/character.service';
+import {NewPcComponent} from './new-pc/new-pc.component';
 
 @Component({
     selector: 'pc-list',
@@ -21,7 +23,8 @@ export class PCListComponent implements OnInit {
     constructor(
         private characterService: CharacterService,
         private router: Router,
-        private afAuth: AngularFireAuth
+        private afAuth: AngularFireAuth,
+        private dialog: MdDialog
     ) { }
 
     currentPC: PC;
@@ -31,7 +34,9 @@ export class PCListComponent implements OnInit {
         this.currentPC = character;
     }
     ngOnInit(): void {
-        this.getPCs();
+        if (!this.myCharacters) {
+            this.getPCs();
+        }
     }
     getPCs(): void {
         const uid = this.afAuth.auth.currentUser.uid;
@@ -39,5 +44,13 @@ export class PCListComponent implements OnInit {
     }
     gotoDetail(): void {
         this.router.navigate(['/myPCs', this.currentPC.name]);
+    }
+    createCharacter(): void {
+        // Open dialog for name
+        const dRef = this.dialog.open(NewPcComponent, { width: '37rem'});
+        // navigate to new character sheet
+        dRef.afterClosed().subscribe(name => {
+            this.router.navigate(['/myPCs', name]);
+        });
     }
 }

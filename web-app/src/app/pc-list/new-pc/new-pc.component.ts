@@ -22,6 +22,7 @@ export class NewPcComponent {
         this.dialogRef.close();
     }
 
+
     createCharacter() {
         const user = this.afAuth.auth.currentUser.uid;
         this.characterService.createPC(user, this.name)

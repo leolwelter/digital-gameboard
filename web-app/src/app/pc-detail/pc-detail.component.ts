@@ -5,7 +5,6 @@ import { Location } from '@angular/common';
 import 'rxjs/add/operator/switchMap';
 
 // Authored
-import { PC } from './PC';
 import {CharacterService} from '../_services/character.service';
 
 // AngularFire2

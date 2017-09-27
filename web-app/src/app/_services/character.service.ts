@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/toPromise';
 
 import {AngularFireDatabase, FirebaseListObservable, FirebaseObjectObservable} from 'angularfire2/database';
-import {AngularFireAuth} from "angularfire2/auth";
+import {AngularFireAuth} from 'angularfire2/auth';
 
 @Injectable() // for dependency injection
 export class CharacterService {
@@ -25,5 +25,10 @@ export class CharacterService {
     createPC(user: string, name: string) {
         const path = '/users/' + user + '/characters/' + name;
         return this.db.object(path).update({'name': name});
+    }
+
+    deletePC(user: string, name: string) {
+        const path = '/users/' + user + '/characters/' + name;
+        return this.db.object(path).remove();
     }
 }

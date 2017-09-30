@@ -1,10 +1,6 @@
 export class PC {
-    // Application Metadata
-    id: number;
-
-    // Standard
     name: string;
-    class1: string;
+    pcClass: string;
     level: number;
     race: string;
 }

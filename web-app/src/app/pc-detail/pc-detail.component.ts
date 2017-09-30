@@ -10,6 +10,7 @@ import {CharacterService} from '../_services/character.service';
 // AngularFire2
 import {AngularFireAuth} from 'angularfire2/auth';
 import {FirebaseObjectObservable} from 'angularfire2/database';
+import {PC} from './PC';
 
 
 @Component({
@@ -24,16 +25,29 @@ export class PCDetailComponent implements OnInit {
         private route: ActivatedRoute,
         private location: Location
     ) {}
-    pcName: string;
-    pc: FirebaseObjectObservable<any>;
+
+    pc: PC;
+    character: FirebaseObjectObservable<any>;
 
     ngOnInit(): void {
+        this.pc = new PC();
         this.route.paramMap.subscribe(params => {
-            this.pcName = params.get('name');
+            this.pc.name = params.get('name');
         });
         const uid = this.afAuth.auth.currentUser.uid;
-        console.log('getting character: ' + this.pcName);
-        this.pc = this.characterService.getPC(uid, this.pcName);
+        this.character = this.characterService.getPC(uid, this.pc.name);
+        this.setFormProperties();
+    }
+
+    savePC(): void {
+        const uid = this.afAuth.auth.currentUser.uid;
+        this.characterService.updatePC(uid, this.pc);
+    }
+
+    setFormProperties(): void {
+        for (const prop of Object.getOwnPropertyNames(this.character)) {
+            console.log(prop);
+        }
     }
 
     goBack(): void {

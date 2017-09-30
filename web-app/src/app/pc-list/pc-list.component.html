@@ -4,7 +4,7 @@
         <li *ngFor="let character of myCharacters | async"
             (click)="onSelect(character)"
             [class.selected] = "character === currentPC">
-            <span class="badge">{{ character.class }}</span>  {{character.name}}
+            <span class="badge">{{ character.class }} ({{ character.level}})</span>  {{character.name}}
         </li>
     </ul>
 </div>
@@ -23,6 +23,6 @@
 
 
 <!--For adding new characters -->
-<div class="col-xs-12">
+<div class="col-xs-12 newButton">
     <button class="btn btn-sm btn-success" (click)="createCharacter()">New</button>
 </div>

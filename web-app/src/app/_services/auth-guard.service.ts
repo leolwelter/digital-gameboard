@@ -17,7 +17,6 @@ export class AuthGuard implements CanActivate {
     }
 
     canActivate() {
-        console.log('Attempt to access user services');
         if (this.afAuth.auth.currentUser === null) {
             this.router.navigate(['']);
             return false;

@@ -18,7 +18,6 @@ export class DashboardComponent implements OnInit {
     myCharacters: FirebaseListObservable<any>;
 
     ngOnInit(): void {
-        console.log('Getting characters');
         const uid = this.afAuth.auth.currentUser.uid;
         this.myCharacters = this.characterService.getPCs(uid);
     }

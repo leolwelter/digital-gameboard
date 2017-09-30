@@ -4,7 +4,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MdDialogModule, MdSnackBarModule } from '@angular/material';
+import {MdCardModule, MdDialogModule, MdExpansionModule, MdSnackBarModule} from '@angular/material';
 
 // Authored Assets
 import { PCListComponent } from './pc-list/pc-list.component';
@@ -37,7 +37,7 @@ import {DeletePcComponent} from './pc-list/delete-pc/delete-pc.component';
     NewPcComponent,
     DeletePcComponent,
     // PIPES
-    ArraySortPipe
+    ArraySortPipe,
   ],
   entryComponents: [
     NewPcComponent,
@@ -54,6 +54,8 @@ import {DeletePcComponent} from './pc-list/delete-pc/delete-pc.component';
     AngularFireAuthModule,
     MdSnackBarModule,
     MdDialogModule,
+    MdExpansionModule,
+    MdCardModule,
   ],
   providers: [
       CharacterService,

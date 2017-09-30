@@ -8,6 +8,10 @@
     padding: 0;
     width: 15em;
 }
+.newButton {
+    margin: 0 0 2em 0;
+    padding-left: 2em;
+}
 .characterList li {
     cursor: pointer;
     position: relative;

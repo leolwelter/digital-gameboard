@@ -1,18 +1,66 @@
-<div class="col-xs-10 col-xs-offset-1" *ngIf="pc | async">
-    <h2>{{ (pc | async)?.name }}:</h2>
+<div class="col-xs-10 col-xs-offset-1" *ngIf="character | async">
 
-    <div>
-        <label>name: </label>{{ (pc | async)?.name }}
-    </div>
-    <div>
-        <label>race: </label>{{ (pc | async)?.race }}
-    </div>
-    <div>
-        <label>class: </label>{{ (pc | async)?.class }}
-    </div>
-    <div>
-        <label>level: </label>{{ (pc | async)?.level }}
-    </div>
+    <!--name-->
+    <md-card class="col-xs-4">
+        <md-card-title>
+            {{ (character | async).name }}
+        </md-card-title>
+        <md-card-subtitle>
+            Name
+        </md-card-subtitle>
+    </md-card>
 
-    <button (click)="goBack()">Back</button>
+    <div class="col-xs-8">
+        <!--class-->
+        <md-expansion-panel>
+            <md-expansion-panel-header>
+                <md-panel-title>
+                    Class
+                </md-panel-title>
+                <md-panel-description>
+                    {{ (character | async).class }}
+                </md-panel-description>
+            </md-expansion-panel-header>
+
+            <md-form-field>
+                <input mdInput [(ngModel)]="pcClass">
+            </md-form-field>
+        </md-expansion-panel>
+
+        <!--level-->
+        <md-expansion-panel>
+            <md-expansion-panel-header>
+                <md-panel-title>
+                    Level
+                </md-panel-title>
+                <md-panel-description>
+                    {{ (character | async).level }}
+                </md-panel-description>
+            </md-expansion-panel-header>
+
+            <md-form-field>
+                <input type="number" mdInput min="1" max="20" [(ngModel)]="pc.level">
+            </md-form-field>
+            <md-action-row>
+                <button class="btn btn-success" (click)="savePC()">Save</button>
+            </md-action-row>
+        </md-expansion-panel>
+
+        <!--race-->
+        <md-expansion-panel>
+            <md-expansion-panel-header>
+                <md-panel-title>
+                    Race
+                </md-panel-title>
+                <md-panel-description>
+                    {{ (character | async).race }}
+                </md-panel-description>
+            </md-expansion-panel-header>
+
+            <md-form-field>
+                <input mdInput [(ngModel)]="pcRace">
+            </md-form-field>
+        </md-expansion-panel>
+    </div>
 </div>
+

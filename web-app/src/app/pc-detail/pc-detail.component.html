@@ -11,56 +11,22 @@
     </md-card>
 
     <div class="col-xs-8">
-        <!--class-->
-        <md-expansion-panel>
-            <md-expansion-panel-header>
-                <md-panel-title>
-                    Class
-                </md-panel-title>
-                <md-panel-description>
-                    {{ (character | async).class }}
-                </md-panel-description>
-            </md-expansion-panel-header>
-
-            <md-form-field>
-                <input mdInput [(ngModel)]="pcClass">
-            </md-form-field>
-        </md-expansion-panel>
-
-        <!--level-->
-        <md-expansion-panel>
-            <md-expansion-panel-header>
-                <md-panel-title>
-                    Level
-                </md-panel-title>
-                <md-panel-description>
-                    {{ (character | async).level }}
-                </md-panel-description>
-            </md-expansion-panel-header>
-
-            <md-form-field>
-                <input type="number" mdInput min="1" max="20" [(ngModel)]="pc.level">
-            </md-form-field>
-            <md-action-row>
-                <button class="btn btn-success" (click)="savePC()">Save</button>
-            </md-action-row>
-        </md-expansion-panel>
-
-        <!--race-->
-        <md-expansion-panel>
-            <md-expansion-panel-header>
-                <md-panel-title>
-                    Race
-                </md-panel-title>
-                <md-panel-description>
-                    {{ (character | async).race }}
-                </md-panel-description>
-            </md-expansion-panel-header>
-
-            <md-form-field>
-                <input mdInput [(ngModel)]="pcRace">
-            </md-form-field>
-        </md-expansion-panel>
+        <form class="characterSheet">
+            <table cellspacing="0">
+                <tr>
+                <td>
+                    <md-form-field>
+                        <input mdInput placeholder="Character Name">
+                    </md-form-field>
+                </td>
+                <td>
+                    <md-form-field>
+                        <input mdInput placeholder="Player">
+                    </md-form-field>
+                </td>
+                </tr>
+            </table>
+        </form>
     </div>
 </div>
 

@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/toPromise';
+import 'rxjs/Observable';
 
 import {AngularFireDatabase, FirebaseListObservable, FirebaseObjectObservable} from 'angularfire2/database';
 import {AngularFireAuth} from 'angularfire2/auth';
-import {PC} from "../pc-detail/PC";
+import {PC} from '../pc-detail/PC';
 
 @Injectable() // for dependency injection
 export class CharacterService {
     constructor(private db: AngularFireDatabase,
-                private afAuth: AngularFireAuth,) {
+                private afAuth: AngularFireAuth, ) {
     }
 
 

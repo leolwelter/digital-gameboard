@@ -26,6 +26,10 @@ export class PCDetailComponent implements OnInit {
         private location: Location
     ) {}
 
+    classes: string[] = [
+      'Barbarian', 'Bard', 'Cleric', 'Druid', 'Fighter', 'Monk',
+        'Paladin', 'Ranger', 'Rogue', 'Sorcerer', 'Warlock', 'Wizard'
+    ];
     pc: PC;
     character: FirebaseObjectObservable<any>;
 
@@ -36,18 +40,11 @@ export class PCDetailComponent implements OnInit {
         });
         const uid = this.afAuth.auth.currentUser.uid;
         this.character = this.characterService.getPC(uid, this.pc.name);
-        this.setFormProperties();
     }
 
     savePC(): void {
         const uid = this.afAuth.auth.currentUser.uid;
         this.characterService.updatePC(uid, this.pc);
-    }
-
-    setFormProperties(): void {
-        for (const prop of Object.getOwnPropertyNames(this.character)) {
-            console.log(prop);
-        }
     }
 
     goBack(): void {

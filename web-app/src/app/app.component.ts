@@ -1,23 +1,26 @@
 import { Component } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { AngularFireAuth } from 'angularfire2/auth';
-import * as firebase from 'firebase/app';
 import {Router} from '@angular/router';
-
+import {AngularFireAuth} from 'angularfire2/auth';
+import {Observable} from 'rxjs/Observable';
+import * as firebase from 'firebase/app';
 
 @Component({
-    selector: 'web-app',
-    templateUrl: './app.component.html'
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
-    user: Observable<firebase.User>;
+  constructor(
+    public router: Router,
+    public afAuth: AngularFireAuth,
+  ) {
+    this.user = afAuth.authState;
+  }
+  user: Observable<firebase.User>;
 
-    constructor(public afAuth: AngularFireAuth, public router: Router) {
-        this.user = afAuth.authState;
-    }
-
-    logout() {
-        this.afAuth.auth.signOut();
-        this.router.navigate(['/login']);
-    }
+  logout(): void {
+    this.afAuth.auth.signOut();
+    this.router.navigate(['/login']);
+    console.log('successfully logged out');
+  }
 }

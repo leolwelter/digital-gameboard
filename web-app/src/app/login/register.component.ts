@@ -1,8 +1,8 @@
 import {Component} from '@angular/core';
 import {MdSnackBar} from '@angular/material';
-import {Observable} from 'rxjs/Observable';
 import {AngularFireAuth} from 'angularfire2/auth';
 import * as firebase from 'firebase/app';
+import {Observable} from 'rxjs/Observable';
 import {Router} from '@angular/router';
 
 @Component({
@@ -14,7 +14,7 @@ export class RegisterComponent {
         private router: Router,
         private afAuth: AngularFireAuth,
         private snackbar: MdSnackBar,
-    ){}
+    ){ }
 
     email: string;
     password: string;
@@ -25,18 +25,17 @@ export class RegisterComponent {
     }
 
     registerUser() {
-        console.log('signing up');
-        if (this.password !== this.passwordConfirm) {
-            this.snackbar.open('PASSWORDS DO NOT MATCH', '', { duration: 2000 });
-        } else {
-            this.afAuth.auth.createUserWithEmailAndPassword(this.email, this.password)
-                .then( () => {
-                    this.router.navigate(['/dashboard']);
-                })
-                .catch( () => {
-                    this.snackbar.open('Email already in use', '', { duration: 2000 });
-                });
-        }
+      if (this.password !== this.passwordConfirm) {
+        this.snackbar.open('PASSWORDS DO NOT MATCH', '', { duration: 2000 });
+      } else {
+        this.afAuth.auth.createUserWithEmailAndPassword(this.email, this.password)
+          .then( () => {
+            this.router.navigate(['/dashboard']);
+          })
+          .catch( () => {
+            this.snackbar.open('Something went wrong :(', '', { duration: 2000 });
+          });
+      }
     }
 
 

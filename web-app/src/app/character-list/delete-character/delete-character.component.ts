@@ -3,11 +3,11 @@ import {MD_DIALOG_DATA, MdDialog, MdDialogRef} from '@angular/material';
 
 @Component({
     selector: 'delete-pc',
-    templateUrl: 'delete-pc.component.html',
+    templateUrl: 'delete-character.component.html',
 })
-export class DeletePcComponent {
+export class DeleteCharacterComponent {
     constructor(
-        public dialogRef: MdDialogRef<DeletePcComponent>,
+        public dialogRef: MdDialogRef<DeleteCharacterComponent>,
         @Inject(MD_DIALOG_DATA) public data: any
     ) {}
     name: string;

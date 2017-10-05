@@ -1,17 +1,17 @@
-<div class="col-xs-6 col-xs-offset-3">
-    <form>
-        <h3>Login Check (d20 + Password)</h3>
+<div class="col-xs-8 col-xs-offset-2 col-md-4 col-md-offset-4">
+  <form>
+    <h3>Login Check (d20 + Password)</h3>
 
-        <div class="form-group">
-            <label  for="inputEmail">Email address</label>
-            <input name="email" [(ngModel)]="email" type="email" class="form-control" id="inputEmail" placeholder="Email">
-        </div>
-        <div class="form-group">
-            <label for="inputPassword">Password</label>
-            <input name="password" [(ngModel)]="password" type="password" class="form-control" id="inputPassword"
-                   placeholder="Password">
-        </div>
-        <button class="btn btn-default" (click)="login()">Login</button>
-        <a class="btn btn-default" (click)="toRegister()">Register</a>
-    </form>
+    <div class="form-group">
+      <label  for="inputEmail">Email address</label>
+      <input name="email" [(ngModel)]="email" type="email" class="form-control" id="inputEmail" placeholder="Email">
+    </div>
+    <div class="form-group">
+      <label for="inputPassword">Password</label>
+      <input name="password" [(ngModel)]="password" type="password" class="form-control" id="inputPassword"
+             placeholder="Password">
+    </div>
+    <button class="btn btn-default" (click)="login()">Login</button>
+    <a class="btn btn-default" (click)="toRegister()">Register</a>
+  </form>
 </div>

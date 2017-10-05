@@ -1,19 +1,33 @@
-<nav *ngIf="(user | async)" class="navbar navbar-default">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand"><img src="../favicon.ico"></a>
-            <ul class="nav navbar-nav nav-tabs">
-                <li ><a routerLink="/dashboard" routerLinkActive="active">Dashboard</a></li>
-                <li ><a routerLink="/myPCs" routerLinkActive="active">Character List</a></li>
-            </ul>
-            <!--Displays logged in user -->
-            <div *ngIf="(user | async)" class="navbar-text">Signed in as:
-                <a class="navbar-link">{{ (user | async)?.uid }}</a>
-                <a class="navbar-link navbar-right btn btn-sm btn-default" (click)="logout()"> Logout </a>
-            </div>
-        </div>
-    </div><!-- /.container-fluid -->
-</nav>
+<md-sidenav-container>
+  <!--navigation-->
+  <md-toolbar color="primary">
+    <img class="icon" src="../favicon.ico">
+    <span class="spacer">
+      DnD With Friends
+      <button md-icon-button routerLink="/dashboard"><md-icon>home</md-icon></button>
+
+      <!--menu-->
+      <button md-button [mdMenuTriggerFor]="userMenu">Menu</button>
+      <md-menu #userMenu="mdMenu" [overlapTrigger]="false">
+        <button md-menu-item routerLink="/myCharacters">Characters</button>
+        <button md-menu-item routerLink="/myMonsters">Monsters</button>
+        <button md-menu-item routerLink="/myMaps">Maps</button>
+        <button md-menu-item routerLink="/myItems">Items</button>
+      </md-menu>
+
+      <!--user display-->
+      <md-basic-chip *ngIf="(user | async)">User: {{(user | async)?.email }}</md-basic-chip>
+    </span>
+    <button md-icon-button [mdMenuTriggerFor]="helpMenu">
+      <md-icon>more_vert</md-icon>
+    </button>
+    <md-menu #helpMenu="mdMenu" [overlapTrigger]="false">
+      <button md-menu-item (click)="logout()"> Logout </button>
+      <button md-menu-item> Help </button>
+    </md-menu>
+  </md-toolbar>
 
 
-<router-outlet></router-outlet>
+  <!--component outlet from router-->
+  <router-outlet></router-outlet>
+</md-sidenav-container>

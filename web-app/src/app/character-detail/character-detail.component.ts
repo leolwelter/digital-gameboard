@@ -8,20 +8,16 @@ import 'rxjs/add/operator/switchMap';
 import {CharacterService} from '../_services/character.service';
 
 // AngularFire2
-import {AngularFireAuth} from 'angularfire2/auth';
-import {FirebaseObjectObservable} from 'angularfire2/database';
-import {PC} from './PC';
+import {PC} from './Character';
 
 
 @Component({
-    selector: 'pc-detail',
-    templateUrl: './pc-detail.component.html',
-    styleUrls: ['./pc-detail.component.css']
+    selector: 'character-detail',
+    templateUrl: './character-detail.component.html',
 })
-export class PCDetailComponent implements OnInit {
+export class CharacterDetailComponent implements OnInit {
     constructor(
         private characterService: CharacterService,
-        private afAuth: AngularFireAuth,
         private route: ActivatedRoute,
         private location: Location
     ) {}
@@ -31,20 +27,15 @@ export class PCDetailComponent implements OnInit {
         'Paladin', 'Ranger', 'Rogue', 'Sorcerer', 'Warlock', 'Wizard'
     ];
     pc: PC;
-    character: FirebaseObjectObservable<any>;
 
     ngOnInit(): void {
         this.pc = new PC();
         this.route.paramMap.subscribe(params => {
             this.pc.name = params.get('name');
         });
-        const uid = this.afAuth.auth.currentUser.uid;
-        this.character = this.characterService.getPC(uid, this.pc.name);
     }
 
     savePC(): void {
-        const uid = this.afAuth.auth.currentUser.uid;
-        this.characterService.updatePC(uid, this.pc);
     }
 
     goBack(): void {

@@ -1,40 +1,46 @@
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/toPromise';
-import 'rxjs/Observable';
+import {Observable} from 'rxjs/Observable';
 
-import {AngularFireDatabase, FirebaseListObservable, FirebaseObjectObservable} from 'angularfire2/database';
+
+import {PC} from '../character-detail/Character';
+import {AngularFireDatabase} from 'angularfire2/database';
 import {AngularFireAuth} from 'angularfire2/auth';
-import {PC} from '../pc-detail/PC';
 
 @Injectable() // for dependency injection
 export class CharacterService {
-    constructor(private db: AngularFireDatabase,
-                private afAuth: AngularFireAuth, ) {
+    constructor(
+      private db: AngularFireDatabase,
+      private afAuth: AngularFireAuth,
+    ) {}
+
+    getPCs(): Observable<any[]> {
+      const uid = this.afAuth.auth.currentUser.uid;
+      const path = 'users/' + uid + '/characters/';
+      return this.db.list(path).valueChanges();
     }
 
-
-    getPCs(user: string): FirebaseListObservable<any> {
-        const pcsPath = '/users/' + user + '/characters';
-        return this.db.list(pcsPath);
+    getPC(name: string): Observable<any> {
+      const uid = this.afAuth.auth.currentUser.uid;
+      const path = 'users/' + uid + '/characters/' + name;
+      return this.db.object(path).valueChanges();
     }
 
-    getPC(user: string, name: string): FirebaseObjectObservable<any> {
-        const pcPath = '/users/' + user + '/characters/' + name;
-        return this.db.object(pcPath);
+    createPC(pc: PC) {
+      const uid = this.afAuth.auth.currentUser.uid;
+      const path = 'users/' + uid + '/characters/' + pc.name;
+      return this.db.object(path).set(pc);
     }
 
-    createPC(user: string, name: string) {
-        const path = '/users/' + user + '/characters/' + name;
-        return this.db.object(path).update({'name': name});
+    deletePC(name: string) {
+      const uid = this.afAuth.auth.currentUser.uid;
+      const path = 'users/' + uid + '/characters/' + name;
+      return this.db.object(path).remove();
     }
 
-    deletePC(user: string, name: string) {
-        const path = '/users/' + user + '/characters/' + name;
-        return this.db.object(path).remove();
-    }
-
-    updatePC(user: string, pc: PC) {
-        const path = '/users/' + user + '/characters/' + pc.name;
-        return this.db.object(path).update(pc);
+    updatePC(pc: PC) {
+      const uid = this.afAuth.auth.currentUser.uid;
+      const path = 'users/' + uid + '/characters/' + pc.name;
+      return this.db.object(path).update(pc);
     }
 }

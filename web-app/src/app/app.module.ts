@@ -1,71 +1,65 @@
 // Angular
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {
-    MdCardModule, MdDialogModule, MdExpansionModule, MdInputModule, MdSelectModule,
-    MdSnackBarModule
-} from '@angular/material';
+import {AppComponent} from './app.component';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {FormsModule} from '@angular/forms';
+import { RouterModule, Routes } from '@angular/router';
+import {HttpModule} from '@angular/http';
 
-// Authored Assets
-import { PCListComponent } from './pc-list/pc-list.component';
-import { PCDetailComponent } from './pc-detail/pc-detail.component';
-import { ArraySortPipe } from './_pipes/order-by.pipe';
-import { AppComponent } from './app.component';
-import { CharacterService } from './_services/character.service';
-import { DashboardComponent} from './dashboard/dashboard.component';
-import { AppRoutingModule} from './app-routing.module';
-import { environment } from '../environments/environment';
-import { LoginComponent } from './login/login.component';
-import { AuthGuard } from './_services/auth-guard.service';
-import { RegisterComponent } from './login/register.component';
-import { NewPcComponent } from './pc-list/new-pc/new-pc.component';
-// AngularFire
-import { AngularFireModule } from 'angularfire2';
-import { AngularFireAuthModule } from 'angularfire2/auth';
-import { AngularFireDatabaseModule } from 'angularfire2/database';
-import { DeletePcComponent } from './pc-list/delete-pc/delete-pc.component';
+// Angularfire2
+import {AngularFireModule} from 'angularfire2';
+import {AngularFireAuthModule} from 'angularfire2/auth';
+import {AngularFireDatabaseModule} from 'angularfire2/database';
+
+// Authored
+import {CustomMaterialModule} from './custom-material.module';
+import {LoginComponent} from './login/login.component';
+import {AppRoutingModule} from './app-routing.module';
+import {RegisterComponent} from './login/register.component';
+import {DashboardComponent} from './dashboard/dashboard.component';
+import {ArraySortPipe} from './_pipes/order-by.pipe';
+import {CharacterDetailComponent} from './character-detail/character-detail.component';
+import {DeleteCharacterComponent} from './character-list/delete-character/delete-character.component';
+import {NewCharacterComponent} from './character-list/new-character/new-pc.component';
+import {CharacterListComponent} from './character-list/character-list.component';
+import {CharacterService} from './_services/character.service';
+import {AuthGuard} from './_services/auth-guard.service';
+import {environment} from '../environments/environment';
 
 @NgModule({
-  declarations: [
-    // Components
-    AppComponent,
-    DashboardComponent,
-    PCListComponent,
-    PCDetailComponent,
-    LoginComponent,
-    RegisterComponent,
-    NewPcComponent,
-    DeletePcComponent,
-    // PIPES
-    ArraySortPipe,
-  ],
-  entryComponents: [
-    NewPcComponent,
-    DeletePcComponent,
-  ],
   imports: [
     BrowserModule,
-    BrowserAnimationsModule,
     FormsModule,
-    AppRoutingModule,
+    CustomMaterialModule,
+    BrowserAnimationsModule,
     HttpModule,
-    AngularFireModule.initializeApp(environment.firebase, 'dt-web-app'),
-    AngularFireDatabaseModule,
+    AppRoutingModule,
+    AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
-    MdSnackBarModule,
-    MdDialogModule,
-    MdExpansionModule,
-    MdCardModule,
-    MdInputModule,
-    MdSelectModule,
+    AngularFireDatabaseModule,
+  ],
+  declarations: [
+    // Components
+    CharacterDetailComponent,
+    DeleteCharacterComponent,
+    NewCharacterComponent,
+    CharacterListComponent,
+    DashboardComponent,
+    LoginComponent,
+    RegisterComponent,
+    AppComponent,
+    // Pipes
+    ArraySortPipe,
   ],
   providers: [
-      CharacterService,
-      AuthGuard,
+    CharacterService,
+    AuthGuard,
   ],
-  bootstrap: [ AppComponent ]
+  entryComponents: [
+    NewCharacterComponent,
+    DeleteCharacterComponent,
+  ],
+  bootstrap: [AppComponent],
 })
 export class AppModule { }

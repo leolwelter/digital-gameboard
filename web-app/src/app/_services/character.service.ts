@@ -18,7 +18,7 @@ export class CharacterService {
       const uid = this.afAuth.auth.currentUser.uid;
       const path = 'users/' + uid + '/characters/';
       if (limit) {
-        return this.db.list(path,ref => ref.limitToFirst(limit).orderByChild('name')).valueChanges();
+        return this.db.list(path, ref => ref.limitToFirst(limit).orderByChild('name')).valueChanges();
       } else {
         return this.db.list(path).valueChanges();
       }

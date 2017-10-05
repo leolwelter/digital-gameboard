@@ -4,10 +4,10 @@
     <img class="icon" src="../favicon.ico">
     <span class="spacer">
       DnD With Friends
-      <button md-icon-button routerLink="/dashboard"><md-icon>home</md-icon></button>
+      <button md-icon-button [disabled]="!(user | async)" routerLink="/dashboard"><md-icon>home</md-icon></button>
 
       <!--menu-->
-      <button md-button [mdMenuTriggerFor]="userMenu">Menu</button>
+      <button md-button [disabled]="!(user | async)" [mdMenuTriggerFor]="userMenu">Menu</button>
       <md-menu #userMenu="mdMenu" [overlapTrigger]="false">
         <button md-menu-item routerLink="/myCharacters">Characters</button>
         <button md-menu-item routerLink="/myMonsters">Monsters</button>
@@ -18,7 +18,7 @@
       <!--user display-->
       <md-basic-chip *ngIf="(user | async)">User: {{(user | async)?.email }}</md-basic-chip>
     </span>
-    <button md-icon-button [mdMenuTriggerFor]="helpMenu">
+    <button md-icon-button [disabled]="!(user | async)" [mdMenuTriggerFor]="helpMenu">
       <md-icon>more_vert</md-icon>
     </button>
     <md-menu #helpMenu="mdMenu" [overlapTrigger]="false">

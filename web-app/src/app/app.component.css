@@ -5,3 +5,8 @@
 .spacer {
   flex: 1 1 auto;
 }
+
+md-sidenav-container {
+  height: 100vh;
+  width: auto;
+}

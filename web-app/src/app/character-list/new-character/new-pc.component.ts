@@ -1,6 +1,7 @@
 import {Component, Inject} from '@angular/core';
 import {MD_DIALOG_DATA, MdDialog, MdDialogRef} from '@angular/material';
 import { CharacterService } from '../../_services/character.service';
+import {PC} from '../../character-detail/Character';
 
 @Component({
     selector: 'new-pc',
@@ -15,10 +16,19 @@ export class NewCharacterComponent {
     name: string;
 
     onNoClick(): void {
-        this.dialogRef.close();
+        this.dialogRef.close(false);
     }
 
 
     createCharacter() {
+      const pc = new PC();
+      pc.name = this.name;
+      this.characterService.createPC(pc)
+        .then(pr => {
+          this.dialogRef.close(pc.name);
+        })
+        .catch(err => {
+          this.dialogRef.close(false);
+        });
     }
 }

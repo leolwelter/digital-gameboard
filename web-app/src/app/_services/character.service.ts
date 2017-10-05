@@ -14,10 +14,14 @@ export class CharacterService {
       private afAuth: AngularFireAuth,
     ) {}
 
-    getPCs(): Observable<any[]> {
+    getPCs(limit?: number): Observable<any[]> {
       const uid = this.afAuth.auth.currentUser.uid;
       const path = 'users/' + uid + '/characters/';
-      return this.db.list(path).valueChanges();
+      if (limit) {
+        return this.db.list(path,ref => ref.limitToFirst(limit).orderByChild('name')).valueChanges();
+      } else {
+        return this.db.list(path).valueChanges();
+      }
     }
 
     getPC(name: string): Observable<any> {
@@ -43,4 +47,5 @@ export class CharacterService {
       const path = 'users/' + uid + '/characters/' + pc.name;
       return this.db.object(path).update(pc);
     }
+
 }

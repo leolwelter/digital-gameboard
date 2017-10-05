@@ -33,9 +33,10 @@ export class CharacterListComponent implements OnInit {
         }
     }
     getPCs(): void {
+      this.myCharacters = this.characterService.getPCs();
     }
     gotoDetail(): void {
-        this.router.navigate(['/myPCs', this.currentPC.name]);
+        this.router.navigate(['/myCharacters', this.currentPC.name]);
     }
     createCharacter(): void {
         // Open dialog for name
@@ -43,7 +44,7 @@ export class CharacterListComponent implements OnInit {
         // navigate to new character sheet
         dRef.afterClosed().subscribe(name => {
             if (name !== '') {
-                this.router.navigate(['/myPCs', name]);
+                this.router.navigate(['/myCharacters', name]);
             }
         });
     }

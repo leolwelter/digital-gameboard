@@ -1,3 +1,8 @@
 <div class="col-xs-6 col-xs-offset-3">
-  <!--TODO: Display user data-->
+  <!--character data -->
+  <md-grid-list cols="2" class="charGrid">
+    <md-grid-tile *ngFor="let character of (characters | async)">
+      <button md-raised-button class="charPanel" color="primary">{{ character.name }}</button>
+    </md-grid-tile>
+  </md-grid-list>
 </div>

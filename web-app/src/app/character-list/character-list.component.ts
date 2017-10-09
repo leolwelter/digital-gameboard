@@ -13,6 +13,7 @@ import { DeleteCharacterComponent } from './delete-character/delete-character.co
 @Component({
     selector: 'pc-list',
     templateUrl: './character-list.component.html',
+    styleUrls: ['./character-list.component.css'],
 })
 export class CharacterListComponent implements OnInit {
     constructor(
@@ -25,7 +26,11 @@ export class CharacterListComponent implements OnInit {
     myCharacters: any;
 
     onSelect(character: PC): void {
+      if (this.currentPC !== character) {
         this.currentPC = character;
+      } else {
+        this.currentPC = null;
+      }
     }
     ngOnInit(): void {
         if (!this.myCharacters) {

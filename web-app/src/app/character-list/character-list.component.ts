@@ -48,7 +48,7 @@ export class CharacterListComponent implements OnInit {
         const dRef = this.dialog.open(NewCharacterComponent, { width: '37rem'});
         // navigate to new character sheet
         dRef.afterClosed().subscribe(name => {
-            if (name !== '') {
+            if (name && name !== '') {
                 this.router.navigate(['/myCharacters', name]);
             }
         });

@@ -9,6 +9,8 @@ import {CharacterService} from '../_services/character.service';
 
 // AngularFire2
 import {PC} from './Character';
+import {AngularFireObject} from 'angularfire2/database';
+import {Observable} from 'rxjs/Observable';
 
 
 @Component({
@@ -26,12 +28,12 @@ export class CharacterDetailComponent implements OnInit {
       'Barbarian', 'Bard', 'Cleric', 'Druid', 'Fighter', 'Monk',
         'Paladin', 'Ranger', 'Rogue', 'Sorcerer', 'Warlock', 'Wizard'
     ];
-    pc: PC;
+    pc: Observable<any>;
 
     ngOnInit(): void {
-        this.pc = new PC();
         this.route.paramMap.subscribe(params => {
-            this.pc.name = params.get('name');
+            const name = params.get('name');
+            this.pc = this.characterService.getPC(name);
         });
     }
 

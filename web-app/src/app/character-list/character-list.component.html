@@ -9,8 +9,8 @@
           <md-panel-description> {{ character.class }} </md-panel-description>
         </md-expansion-panel-header>
         <md-action-row>
-          <button md-raised-button color="primary" (click)="gotoDetail()"> Details </button>
-          <button md-raised-button color="warn" (click)="deleteCharacter()"> Delete </button>
+          <button class="actionButton" md-raised-button color="primary" (click)="gotoDetail()"> Details </button>
+          <button class="actionButton" md-raised-button color="warn" (click)="deleteCharacter()"> Delete </button>
         </md-action-row>
       </md-expansion-panel>
     </md-accordion>
@@ -30,5 +30,7 @@
 
 <!--For adding new characters -->
 <div class="col-xs-12 newButton">
-    <button class="btn btn-sm btn-success" (click)="createCharacter()">New</button>
+    <button class="actionButton" md-fab color="accent" (click)="createCharacter()">
+      <md-icon>add</md-icon>
+    </button>
 </div>

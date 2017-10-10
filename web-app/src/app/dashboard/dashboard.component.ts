@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 
 import { CharacterService } from '../_services/character.service';
 import { PC } from '../character-detail/Character';
-import {AngularFireList} from "angularfire2/database";
-import {Observable} from "rxjs/Observable";
+import {AngularFireList} from 'angularfire2/database';
+import {Observable} from 'rxjs/Observable';
+import {Router} from '@angular/router';
 
 @Component({
     selector: 'dashboard',
@@ -13,9 +14,14 @@ import {Observable} from "rxjs/Observable";
 export class DashboardComponent implements OnInit {
     constructor(
         private characterService: CharacterService,
+        private router: Router
     ) { }
     characters: Observable<any[]>;
     ngOnInit(): void {
       this.characters = this.characterService.getPCs(4);
+    }
+
+    toDetail(name) {
+      this.router.navigate(['/myCharacters/', name]);
     }
 }

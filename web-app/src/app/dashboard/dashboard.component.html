@@ -2,7 +2,9 @@
   <!--character data -->
   <md-grid-list cols="2" class="charGrid">
     <md-grid-tile *ngFor="let character of (characters | async)">
-      <button md-raised-button class="charPanel" color="primary">{{ character.name }}</button>
+      <button md-raised-button (click)="toDetail(character.name)" class="charPanel" color="primary">
+        {{ character.name }}
+      </button>
     </md-grid-tile>
   </md-grid-list>
 </div>

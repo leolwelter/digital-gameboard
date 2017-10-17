@@ -5,7 +5,7 @@ import {
   MdMenuModule, MdOptionModule, MdPaginatorModule, MdProgressBarModule, MdProgressSpinnerModule, MdSidenavModule,
   MdSliderModule,
   MdSlideToggleModule,
-  MdSnackBarModule,
+  MdSnackBarModule, MdTabsModule,
   MdToolbarModule
 } from '@angular/material';
 import {NgModule} from '@angular/core';
@@ -32,6 +32,7 @@ import {NgModule} from '@angular/core';
     MdSnackBarModule,
     MdSidenavModule,
     MdProgressSpinnerModule,
+    MdTabsModule,
   ],
   exports: [
     MdButtonModule,
@@ -54,6 +55,7 @@ import {NgModule} from '@angular/core';
     MdSnackBarModule,
     MdSidenavModule,
     MdProgressSpinnerModule,
+    MdTabsModule,
   ],
 })
 export class CustomMaterialModule { }

@@ -24,20 +24,27 @@ export class CharacterDetailComponent implements OnInit {
         private location: Location
     ) {}
 
-    pc: Observable<any>;
-    pcIsLoaded: Boolean;
+    pc: Character;
+    pcRef: AngularFireObject<Character>;
+    pcData: Observable<Character>;
 
     ngOnInit(): void {
         this.route.paramMap.subscribe(params => {
             const name = params.get('name');
-            this.pc = this.characterService.getPcObservable(name);
-            if (this.pc !== null) {
-              this.pcIsLoaded = false;
-            }
+            this.pcRef = this.characterService.getPcRef(name);
+            this.pcData = this.pcRef.valueChanges();
+            this.pcData.subscribe(character => {
+              this.initPC(character);
+            });
         });
     }
 
+    initPC(charData: Character): void {
+      this.pc = new Character(charData);
+    }
+
     savePC(): void {
+      this.pcRef.update(this.pc);
     }
 
     goBack(): void {

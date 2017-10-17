@@ -1,10 +1,16 @@
 import { Spell } from '../_types/Spell';
 import {Action} from '../_types/Action';
+import {CharacterClass} from '../_types/CharacterClass';
 
 export class Character {
+    constructor(charData?: Partial<Character>) {
+      Object.assign(this, charData);
+      console.log(this);
+    }
+
     // General
     name: string;
-    classOne?: string;
+    classOne?: CharacterClass;
     classOneLevel?: number;
     background?: string;
     player: string;

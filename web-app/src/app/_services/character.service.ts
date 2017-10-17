@@ -1,11 +1,14 @@
+// Core
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/toPromise';
 import {Observable} from 'rxjs/Observable';
 
-
-import {Character} from '../character-detail/Character';
+// AngularFire2
 import {AngularFireDatabase, AngularFireList, AngularFireObject} from 'angularfire2/database';
 import {AngularFireAuth} from 'angularfire2/auth';
+
+// Authored
+import {Character} from '../character-detail/Character';
 
 @Injectable() // for dependency injection
 export class CharacterService {
@@ -30,7 +33,7 @@ export class CharacterService {
       return this.db.object(path).valueChanges();
     }
 
-    getPcRefList(limit?: number): AngularFireList<any[]> {
+    getPcRefList(limit?: number): AngularFireList<Character[]> {
       const uid = this.afAuth.auth.currentUser.uid;
       const path = 'users/' + uid + '/characters/';
       if (limit) {
@@ -40,7 +43,7 @@ export class CharacterService {
       }
     }
 
-    getPcRef(name: string): AngularFireObject<any> {
+    getPcRef(name: string): AngularFireObject<Character> {
       const uid = this.afAuth.auth.currentUser.uid;
       const path = 'users/' + uid + '/characters/' + name;
       return this.db.object(path);

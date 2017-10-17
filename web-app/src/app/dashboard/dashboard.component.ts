@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { CharacterService } from '../_services/character.service';
-import { PC } from '../character-detail/Character';
+import { Character } from '../character-detail/Character';
 import {AngularFireList} from 'angularfire2/database';
 import {Observable} from 'rxjs/Observable';
 import {Router} from '@angular/router';
@@ -18,7 +18,7 @@ export class DashboardComponent implements OnInit {
     ) { }
     characters: Observable<any[]>;
     ngOnInit(): void {
-      this.characters = this.characterService.getPCs(4);
+      this.characters = this.characterService.getPcObservableList(4);
     }
 
     toDetail(name) {

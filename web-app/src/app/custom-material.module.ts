@@ -2,7 +2,8 @@ import {
   MdButtonModule, MdCardModule, MdCheckboxModule, MdChipsModule, MdDialogModule, MdExpansionModule, MdGridListModule,
   MdIconModule,
   MdInputModule,
-  MdMenuModule, MdOptionModule, MdPaginatorModule, MdProgressBarModule, MdSidenavModule, MdSliderModule,
+  MdMenuModule, MdOptionModule, MdPaginatorModule, MdProgressBarModule, MdProgressSpinnerModule, MdSidenavModule,
+  MdSliderModule,
   MdSlideToggleModule,
   MdSnackBarModule,
   MdToolbarModule
@@ -29,7 +30,8 @@ import {NgModule} from '@angular/core';
     MdSliderModule,
     MdSlideToggleModule,
     MdSnackBarModule,
-    MdSidenavModule
+    MdSidenavModule,
+    MdProgressSpinnerModule,
   ],
   exports: [
     MdButtonModule,
@@ -50,7 +52,8 @@ import {NgModule} from '@angular/core';
     MdSliderModule,
     MdSlideToggleModule,
     MdSnackBarModule,
-    MdSidenavModule
+    MdSidenavModule,
+    MdProgressSpinnerModule,
   ],
 })
 export class CustomMaterialModule { }

@@ -3,8 +3,8 @@ import 'rxjs/add/operator/toPromise';
 import {Observable} from 'rxjs/Observable';
 
 
-import {PC} from '../character-detail/Character';
-import {AngularFireDatabase} from 'angularfire2/database';
+import {Character} from '../character-detail/Character';
+import {AngularFireDatabase, AngularFireList, AngularFireObject} from 'angularfire2/database';
 import {AngularFireAuth} from 'angularfire2/auth';
 
 @Injectable() // for dependency injection
@@ -14,7 +14,7 @@ export class CharacterService {
       private afAuth: AngularFireAuth,
     ) {}
 
-    getPCs(limit?: number): Observable<any[]> {
+    getPcObservableList(limit?: number): Observable<any[]> {
       const uid = this.afAuth.auth.currentUser.uid;
       const path = 'users/' + uid + '/characters/';
       if (limit) {
@@ -24,13 +24,29 @@ export class CharacterService {
       }
     }
 
-    getPC(name: string): Observable<any> {
+    getPcObservable(name: string): Observable<any> {
       const uid = this.afAuth.auth.currentUser.uid;
       const path = 'users/' + uid + '/characters/' + name;
       return this.db.object(path).valueChanges();
     }
 
-    createPC(pc: PC) {
+    getPcRefList(limit?: number): AngularFireList<any[]> {
+      const uid = this.afAuth.auth.currentUser.uid;
+      const path = 'users/' + uid + '/characters/';
+      if (limit) {
+        return this.db.list(path, ref => ref.limitToFirst(limit).orderByChild('name'));
+      } else {
+        return this.db.list(path);
+      }
+    }
+
+    getPcRef(name: string): AngularFireObject<any> {
+      const uid = this.afAuth.auth.currentUser.uid;
+      const path = 'users/' + uid + '/characters/' + name;
+      return this.db.object(path);
+    }
+
+    createPC(pc: Character) {
       const uid = this.afAuth.auth.currentUser.uid;
       const path = 'users/' + uid + '/characters/' + pc.name;
       return this.db.object(path).set(pc);
@@ -42,7 +58,7 @@ export class CharacterService {
       return this.db.object(path).remove();
     }
 
-    updatePC(pc: PC) {
+    updatePC(pc: Character) {
       const uid = this.afAuth.auth.currentUser.uid;
       const path = 'users/' + uid + '/characters/' + pc.name;
       return this.db.object(path).update(pc);

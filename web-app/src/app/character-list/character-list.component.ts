@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { MdDialog, MdDialogRef, MD_DIALOG_DATA } from '@angular/material';
 
 // Authored assets
-import { PC } from '../character-detail/Character';
+import { Character } from '../character-detail/Character';
 import { CharacterService } from '../_services/character.service';
 import { NewCharacterComponent } from './new-character/new-pc.component';
 import { DeleteCharacterComponent } from './delete-character/delete-character.component';
@@ -22,10 +22,10 @@ export class CharacterListComponent implements OnInit {
         private dialog: MdDialog
     ) { }
 
-    currentPC: PC;
+    currentPC: Character;
     myCharacters: any;
 
-    onSelect(character: PC): void {
+    onSelect(character: Character): void {
       if (this.currentPC !== character) {
         this.currentPC = character;
       } else {
@@ -38,7 +38,7 @@ export class CharacterListComponent implements OnInit {
         }
     }
     getPCs(): void {
-      this.myCharacters = this.characterService.getPCs();
+      this.myCharacters = this.characterService.getPcObservableList();
     }
     gotoDetail(): void {
         this.router.navigate(['/myCharacters', this.currentPC.name]);

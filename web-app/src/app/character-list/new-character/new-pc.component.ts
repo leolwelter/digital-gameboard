@@ -1,7 +1,7 @@
 import {Component, Inject} from '@angular/core';
 import {MD_DIALOG_DATA, MdDialog, MdDialogRef} from '@angular/material';
 import { CharacterService } from '../../_services/character.service';
-import {PC} from '../../character-detail/Character';
+import {Character} from '../../character-detail/Character';
 
 @Component({
     selector: 'new-pc',
@@ -21,7 +21,7 @@ export class NewCharacterComponent {
 
 
     createCharacter() {
-      const pc = new PC();
+      const pc = new Character();
       pc.name = this.name;
       this.characterService.createPC(pc)
         .then(pr => {

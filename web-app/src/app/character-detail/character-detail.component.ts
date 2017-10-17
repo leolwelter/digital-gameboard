@@ -6,9 +6,9 @@ import 'rxjs/add/operator/switchMap';
 
 // Authored
 import {CharacterService} from '../_services/character.service';
+import {Character} from './Character';
 
 // AngularFire2
-import {PC} from './Character';
 import {AngularFireObject} from 'angularfire2/database';
 import {Observable} from 'rxjs/Observable';
 
@@ -24,16 +24,16 @@ export class CharacterDetailComponent implements OnInit {
         private location: Location
     ) {}
 
-    classes: string[] = [
-      'Barbarian', 'Bard', 'Cleric', 'Druid', 'Fighter', 'Monk',
-        'Paladin', 'Ranger', 'Rogue', 'Sorcerer', 'Warlock', 'Wizard'
-    ];
     pc: Observable<any>;
+    pcIsLoaded: Boolean;
 
     ngOnInit(): void {
         this.route.paramMap.subscribe(params => {
             const name = params.get('name');
-            this.pc = this.characterService.getPC(name);
+            this.pc = this.characterService.getPcObservable(name);
+            if (this.pc !== null) {
+              this.pcIsLoaded = false;
+            }
         });
     }
 

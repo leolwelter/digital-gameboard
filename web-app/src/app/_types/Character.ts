@@ -1,6 +1,6 @@
-import { Spell } from '../_types/Spell';
-import {Action} from '../_types/Action';
-import {CharacterClass} from '../_types/CharacterClass';
+import { Spell } from './Spell';
+import {Action} from './Action';
+import {classes} from './CharacterClass';
 
 export class Character {
     constructor(charData?: Partial<Character>) {
@@ -10,7 +10,7 @@ export class Character {
 
     // General
     name: string;
-    classOne?: CharacterClass;
+    classOne?: string;
     classOneLevel?: number;
     background?: string;
     player: string;

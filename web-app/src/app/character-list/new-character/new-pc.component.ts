@@ -1,7 +1,7 @@
 import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material';
 import { CharacterService } from '../../_services/character.service';
-import {Character} from '../../character-detail/Character';
+import {Character} from '../../_types/Character';
 
 @Component({
     selector: 'new-pc',

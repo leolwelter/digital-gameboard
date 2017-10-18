@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { CharacterService } from '../_services/character.service';
-import { Character } from '../character-detail/Character';
+import { Character } from '../_types/Character';
 import {AngularFireList} from 'angularfire2/database';
 import {Observable} from 'rxjs/Observable';
 import {Router} from '@angular/router';

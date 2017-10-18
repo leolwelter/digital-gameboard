@@ -1,6 +1,26 @@
-export class CharacterClass {
-  classes: string[] = [
-    'Barbarian', 'Bard', 'Cleric', 'Druid', 'Fighter', 'Monk',
-    'Paladin', 'Ranger', 'Rogue', 'Sorcerer', 'Warlock', 'Wizard'
-  ];
-}
+export const classes = [
+  {selector: 'Barbarian',
+    val: 'Barbarian' },
+  {selector: 'Bard',
+    val: 'Bard' },
+  {selector: 'Cleric',
+    val: 'Cleric' },
+  {selector: 'Druid',
+    val: 'Druid' },
+  {selector: 'Fighter',
+    val: 'Fighter' },
+  {selector: 'Monk',
+    val: 'Monk' },
+  {selector: 'Paladin',
+    val: 'Paladin' },
+  {selector: 'Ranger',
+    val: 'Ranger' },
+  {selector: 'Rogue',
+    val: 'Rogue' },
+  {selector: 'Sorcerer',
+    val: 'Sorcerer' },
+  {selector: 'Warlock',
+    val: 'Warlock' },
+  {selector: 'Wizard',
+    val: 'Wizard' },
+];

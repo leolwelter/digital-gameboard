@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 // Authored assets
-import { Character } from '../character-detail/Character';
+import { Character } from '../_types/Character';
 import { CharacterService } from '../_services/character.service';
 import { NewCharacterComponent } from './new-character/new-pc.component';
 import { DeleteCharacterComponent } from './delete-character/delete-character.component';

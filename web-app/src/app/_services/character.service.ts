@@ -8,7 +8,7 @@ import {AngularFireDatabase, AngularFireList, AngularFireObject} from 'angularfi
 import {AngularFireAuth} from 'angularfire2/auth';
 
 // Authored
-import {Character} from '../character-detail/Character';
+import {Character} from '../_types/Character';
 
 @Injectable() // for dependency injection
 export class CharacterService {

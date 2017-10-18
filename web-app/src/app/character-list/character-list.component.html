@@ -1,20 +1,20 @@
 <!--Display a list of all characters for this user-->
 <div class="col-xs-6">
-  <md-nav-list>
+  <mat-nav-list>
     <!--display each character-->
-    <md-accordion>
-      <md-expansion-panel *ngFor="let character of myCharacters | async">
-        <md-expansion-panel-header (click)="onSelect(character)">
-          <md-panel-title> {{ character.name }} </md-panel-title>
-          <md-panel-description> {{ character.class }} </md-panel-description>
-        </md-expansion-panel-header>
-        <md-action-row>
-          <button class="actionButton" md-raised-button color="primary" (click)="gotoDetail()"> Details </button>
-          <button class="actionButton" md-raised-button color="warn" (click)="deleteCharacter()"> Delete </button>
-        </md-action-row>
-      </md-expansion-panel>
-    </md-accordion>
-  </md-nav-list>
+    <mat-accordion>
+      <mat-expansion-panel *ngFor="let character of myCharacters | async">
+        <mat-expansion-panel-header (click)="onSelect(character)">
+          <mat-panel-title> {{ character.name }} </mat-panel-title>
+          <mat-panel-description> {{ character.class }} </mat-panel-description>
+        </mat-expansion-panel-header>
+        <mat-action-row>
+          <button class="actionButton" mat-raised-button color="primary" (click)="gotoDetail()"> Details </button>
+          <button class="actionButton" mat-raised-button color="warn" (click)="deleteCharacter()"> Delete </button>
+        </mat-action-row>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </mat-nav-list>
 </div>
 
 
@@ -30,7 +30,7 @@
 
 <!--For adding new characters -->
 <div class="col-xs-12 newButton">
-    <button class="actionButton" md-fab color="accent" (click)="createCharacter()">
-      <md-icon>add</md-icon>
+    <button class="actionButton" mat-fab color="accent" (click)="createCharacter()">
+      <mat-icon>add</mat-icon>
     </button>
 </div>

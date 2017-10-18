@@ -1,5 +1,5 @@
 import {Component, Inject} from '@angular/core';
-import {MD_DIALOG_DATA, MdDialog, MdDialogRef} from '@angular/material';
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material';
 import { CharacterService } from '../../_services/character.service';
 import {Character} from '../../character-detail/Character';
 
@@ -10,8 +10,8 @@ import {Character} from '../../character-detail/Character';
 export class NewCharacterComponent {
     constructor(
         private characterService: CharacterService,
-        public dialogRef: MdDialogRef<NewCharacterComponent>,
-        @Inject(MD_DIALOG_DATA) public data: any
+        public dialogRef: MatDialogRef<NewCharacterComponent>,
+        @Inject(MAT_DIALOG_DATA) public data: any
     ) {}
     name: string;
 

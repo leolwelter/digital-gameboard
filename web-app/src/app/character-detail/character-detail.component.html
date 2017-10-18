@@ -1,28 +1,28 @@
-<md-tab-group *ngIf="pcData | async">
-  <md-tab label="Overview">
+<mat-tab-group *ngIf="pcData | async">
+  <mat-tab label="Overview">
     <form class="col-xs-10 col-xs-offset-1">
       <!--character overview banner -->
-      <md-form-field class="col-xs-6">
-        <input mdInput placeholder="name" name="name" type="text" [(ngModel)]="pc.name" >
-        <input mdInput placeholder="class" name="pcClass" type="text" [(ngModel)]="pc.classOne">
-        <input mdInput placeholder="level" name="level" type="number" [(ngModel)]="pc.classOneLevel" >
+      <mat-form-field class="col-xs-6">
+        <input matInput placeholder="name" name="name" type="text" [(ngModel)]="pc.name" >
+        <input matInput placeholder="class" name="pcClass" type="text" [(ngModel)]="pc.classOne">
+        <input matInput placeholder="level" name="level" type="number" [(ngModel)]="pc.classOneLevel" >
 
-      </md-form-field>
+      </mat-form-field>
 
     </form>
-  </md-tab>
+  </mat-tab>
 
-  <md-tab label="Personality">
+  <mat-tab label="Personality">
     Page 2
-  </md-tab>
+  </mat-tab>
 
-  <md-tab label="Spells">
+  <mat-tab label="Spells">
     Page 3
-  </md-tab>
+  </mat-tab>
 
   <!--progress spinner -->
-  <md-spinner color="accent" *ngIf="!pcData"></md-spinner>
-</md-tab-group>
+  <mat-spinner color="accent" *ngIf="!pcData"></mat-spinner>
+</mat-tab-group>
 
 
 

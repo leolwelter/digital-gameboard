@@ -2,7 +2,7 @@
 import { Component } from '@angular/core';
 import { OnInit} from '@angular/core';
 import { Router } from '@angular/router';
-import { MdDialog, MdDialogRef, MD_DIALOG_DATA } from '@angular/material';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 // Authored assets
 import { Character } from '../character-detail/Character';
@@ -19,7 +19,7 @@ export class CharacterListComponent implements OnInit {
     constructor(
         private characterService: CharacterService,
         private router: Router,
-        private dialog: MdDialog
+        private dialog: MatDialog
     ) { }
 
     currentPC: Character;

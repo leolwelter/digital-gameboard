@@ -1,33 +1,33 @@
-<md-sidenav-container>
+<mat-sidenav-container>
   <!--navigation-->
-  <md-toolbar color="primary">
+  <mat-toolbar color="primary">
     <img class="icon" src="../favicon.ico">
     <span class="spacer">
       DnD With Friends
-      <button md-icon-button [disabled]="!(user | async)" routerLink="/dashboard"><md-icon>home</md-icon></button>
+      <button mat-icon-button [disabled]="!(user | async)" routerLink="/dashboard"><mat-icon>home</mat-icon></button>
 
       <!--menu-->
-      <button md-button [disabled]="!(user | async)" [mdMenuTriggerFor]="userMenu">Menu</button>
-      <md-menu #userMenu="mdMenu" [overlapTrigger]="false">
-        <button md-menu-item routerLink="/myCharacters">Characters</button>
-        <button md-menu-item routerLink="/myMonsters">Monsters</button>
-        <button md-menu-item routerLink="/myMaps">Maps</button>
-        <button md-menu-item routerLink="/myItems">Items</button>
-      </md-menu>
+      <button mat-button [disabled]="!(user | async)" [matMenuTriggerFor]="userMenu">Menu</button>
+      <mat-menu #userMenu="matMenu" [overlapTrigger]="false">
+        <button mat-menu-item routerLink="/myCharacters">Characters</button>
+        <button mat-menu-item routerLink="/myMonsters">Monsters</button>
+        <button mat-menu-item routerLink="/myMaps">Maps</button>
+        <button mat-menu-item routerLink="/myItems">Items</button>
+      </mat-menu>
 
       <!--user display-->
-      <md-basic-chip *ngIf="(user | async)">User: {{(user | async)?.email }}</md-basic-chip>
+      <mat-basic-chip *ngIf="(user | async)">User: {{(user | async)?.email }}</mat-basic-chip>
     </span>
-    <button md-icon-button [disabled]="!(user | async)" [mdMenuTriggerFor]="helpMenu">
-      <md-icon>more_vert</md-icon>
+    <button mat-icon-button [disabled]="!(user | async)" [matMenuTriggerFor]="helpMenu">
+      <mat-icon>more_vert</mat-icon>
     </button>
-    <md-menu #helpMenu="mdMenu" [overlapTrigger]="false">
-      <button md-menu-item (click)="logout()"> Logout </button>
-      <button md-menu-item> Help </button>
-    </md-menu>
-  </md-toolbar>
+    <mat-menu #helpMenu="matMenu" [overlapTrigger]="false">
+      <button mat-menu-item (click)="logout()"> Logout </button>
+      <button mat-menu-item> Help </button>
+    </mat-menu>
+  </mat-toolbar>
 
 
   <!--component outlet from router-->
   <router-outlet></router-outlet>
-</md-sidenav-container>
+</mat-sidenav-container>

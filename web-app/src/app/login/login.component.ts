@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {MdSnackBar} from '@angular/material';
+import {MatSnackBar} from '@angular/material';
 import {Observable} from 'rxjs/Observable';
 import {Router} from '@angular/router';
 import * as firebase from 'firebase/app';
@@ -13,7 +13,7 @@ export class LoginComponent {
     constructor(
         public router: Router,
         public afAuth: AngularFireAuth,
-        public snackBar: MdSnackBar
+        public snackBar: MatSnackBar
     ) {
         this.user = afAuth.authState;
     }

@@ -1,5 +1,5 @@
 import {Component, Inject} from '@angular/core';
-import {MD_DIALOG_DATA, MdDialog, MdDialogRef} from '@angular/material';
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material';
 import {CharacterService} from '../../_services/character.service';
 
 @Component({
@@ -9,8 +9,8 @@ import {CharacterService} from '../../_services/character.service';
 export class DeleteCharacterComponent {
     constructor(
         public characterService: CharacterService,
-        public dialogRef: MdDialogRef<DeleteCharacterComponent>,
-        @Inject(MD_DIALOG_DATA) public data: any
+        public dialogRef: MatDialogRef<DeleteCharacterComponent>,
+        @Inject(MAT_DIALOG_DATA) public data: any
     ) {}
     name: string;
     nameCheck: boolean;

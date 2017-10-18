@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {MdSnackBar} from '@angular/material';
+import {MatSnackBar} from '@angular/material';
 import {AngularFireAuth} from 'angularfire2/auth';
 import * as firebase from 'firebase/app';
 import {Observable} from 'rxjs/Observable';
@@ -13,7 +13,7 @@ export class RegisterComponent {
     constructor(
         private router: Router,
         private afAuth: AngularFireAuth,
-        private snackbar: MdSnackBar,
+        private snackbar: MatSnackBar,
     ){ }
 
     email: string;

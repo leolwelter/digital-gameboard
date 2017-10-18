@@ -1,12 +1,13 @@
 <md-tab-group *ngIf="pcData | async">
   <md-tab label="Overview">
-    <form>
+    <form class="col-xs-10 col-xs-offset-1">
       <!--character overview banner -->
-      <md-form-field>
-        <input mdInput name="name" type="text" [(ngModel)]="pc.name" />
-      </md-form-field>
+      <md-form-field class="col-xs-6">
+        <input mdInput placeholder="name" name="name" type="text" [(ngModel)]="pc.name" >
+        <input mdInput placeholder="class" name="pcClass" type="text" [(ngModel)]="pc.classOne">
+        <input mdInput placeholder="level" name="level" type="number" [(ngModel)]="pc.classOneLevel" >
 
-      <!--ability scores -->
+      </md-form-field>
 
     </form>
   </md-tab>
@@ -22,45 +23,6 @@
   <!--progress spinner -->
   <md-spinner color="accent" *ngIf="!pcData"></md-spinner>
 </md-tab-group>
-
-
-  <!--<form class="example-form">-->
-    <!--<md-form-field class="example-full-width">-->
-      <!--<input mdInput placeholder="Company (disabled)" disabled value="Google">-->
-    <!--</md-form-field>-->
-
-    <!--<table class="example-full-width" cellspacing="0"><tr>-->
-      <!--<td><md-form-field class="example-full-width">-->
-        <!--<input mdInput placeholder="First name">-->
-      <!--</md-form-field></td>-->
-      <!--<td><md-form-field class="example-full-width">-->
-        <!--<input mdInput placeholder="Long Last Name That Will Be Truncated">-->
-      <!--</md-form-field></td>-->
-    <!--</tr></table>-->
-
-    <!--<p>-->
-      <!--<md-form-field class="example-full-width">-->
-        <!--<textarea mdInput placeholder="Address">1600 Amphitheatre Pkwy</textarea>-->
-      <!--</md-form-field>-->
-      <!--<md-form-field class="example-full-width">-->
-        <!--<textarea mdInput placeholder="Address 2"></textarea>-->
-      <!--</md-form-field>-->
-    <!--</p>-->
-
-    <!--<table class="example-full-width" cellspacing="0"><tr>-->
-      <!--<td><md-form-field class="example-full-width">-->
-        <!--<input mdInput placeholder="City">-->
-      <!--</md-form-field></td>-->
-      <!--<td><md-form-field class="example-full-width">-->
-        <!--<input mdInput placeholder="State">-->
-      <!--</md-form-field></td>-->
-      <!--<td><md-form-field class="example-full-width">-->
-        <!--<input mdInput #postalCode maxlength="5" placeholder="Postal Code" value="94043">-->
-        <!--<md-hint align="end">{{postalCode.value.length}} / 5</md-hint>-->
-      <!--</md-form-field></td>-->
-    <!--</tr></table>-->
-  <!--</form>-->
-
 
 
 

@@ -19,6 +19,7 @@ import {MatSnackBar} from '@angular/material';
 @Component({
     selector: 'character-detail',
     templateUrl: './character-detail.component.html',
+    styleUrls: ['./character-detail.component.css'],
 })
 export class CharacterDetailComponent implements OnInit {
     constructor(

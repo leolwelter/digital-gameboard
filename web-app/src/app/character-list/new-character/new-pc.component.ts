@@ -21,8 +21,7 @@ export class NewCharacterComponent {
 
 
     createCharacter() {
-      const pc = new Character();
-      pc.name = this.name;
+      const pc = new Character({ 'name': this.name});
       this.characterService.createPC(pc)
         .then(pr => {
           this.dialogRef.close(pc.name);

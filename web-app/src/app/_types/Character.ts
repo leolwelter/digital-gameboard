@@ -4,6 +4,18 @@ import {classes} from './CharacterClass';
 
 export class Character {
     constructor(charData?: Partial<Character>) {
+      if (!charData.abilities) {
+        charData.abilities = [0, 0, 0, 0, 0, 0];
+      }
+      if (!charData.saveProficiencies) {
+        charData.saveProficiencies = [false, false, false, false, false, false];
+      }
+      if (!charData.saves) {
+        charData.saves = [0, 0, 0, 0, 0, 0];
+      }
+      if (!charData.absMods) {
+        charData.absMods = [0, 0, 0, 0, 0, 0];
+      }
       Object.assign(this, charData);
       console.log(this);
     }

@@ -1,9 +1,9 @@
 <mat-tab-group *ngIf="pcData | async">
   <mat-tab label="Overview">
-    <form class="col-xs-12">
+    <mat-card class="col-xs-12">
       <!--character overview banner -->
       <!--row 1-->
-      <div class="row col-xs-12">
+      <mat-card class="col-xs-12">
         <mat-form-field class="col-xs-4">
           <input matInput placeholder="name" name="name" type="text" [(ngModel)]="pc.name" >
         </mat-form-field>
@@ -12,14 +12,13 @@
             <mat-option *ngFor="let pcClass of pcClasses" [value]="pcClass.selector">{{ pcClass.val }}</mat-option>
           </mat-select>
         </mat-form-field>
-        <mat-form-field class="col-xs-4" matInput placeholder="level" name="level">
-          <input matInput type="number" name="level" [(ngModel)]="pc.classOneLevel" min=0 max=20 step=1>
+        <mat-form-field class="col-xs-4">
+          <input matInput placeholder="level" type="number" name="level" [(ngModel)]="pc.classOneLevel" min=0 max=20 step=1>
         </mat-form-field>
-
-      </div>
+      </mat-card>
 
       <!--row 2-->
-      <div class="row col-xs-12">
+      <mat-card class="col-xs-12">
         <mat-form-field class="col-xs-3">
           <input matInput placeholder="background" name="background" type="text" [(ngModel)]="pc.background" >
         </mat-form-field>
@@ -32,15 +31,122 @@
         <mat-form-field class="col-xs-3">
           <input matInput placeholder="xp" name="xp" type="number" [(ngModel)]="pc.xp" min=0>
         </mat-form-field>
-      </div>
+      </mat-card>
+
+      <!--row 3-->
+      <mat-card class="col-xs-12">
+        <!--ability expansion header-->
+        <mat-expansion-panel class="col-xs-4">
+          <mat-expansion-panel-header>
+            <mat-panel-title>Ability Scores</mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <div class="col-xs-12">
+            <mat-form-field class="col-xs-6">
+              <input matInput placeholder="STR" name="STR" type="number" [(ngModel)]="pc.abilities[0]" min=0>
+            </mat-form-field>
+            <div class="col-xs-6">
+              <button mat-mini-fab color="accent">{{pc.absMods[0]}}</button>
+            </div>
+          </div>
+
+          <div class="col-xs-12">
+            <mat-form-field class="col-xs-6">
+              <input matInput placeholder="DEX" name="DEX" type="number" [(ngModel)]="pc.abilities[1]" min=0>
+            </mat-form-field>
+            <div class="col-xs-6">
+              <button mat-mini-fab color="accent">{{pc.absMods[1]}}</button>
+            </div>
+          </div>
+
+          <div class="col-xs-12">
+            <mat-form-field class="col-xs-6">
+              <input matInput placeholder="CON" name="CON" type="number" [(ngModel)]="pc.abilities[2]" min=0>
+            </mat-form-field>
+            <div class="col-xs-6">
+              <button mat-mini-fab color="accent">{{pc.absMods[2]}}</button>
+            </div>
+          </div>
+
+          <div class="col-xs-12">
+            <mat-form-field class="col-xs-6">
+              <input matInput placeholder="WIS" name="WIS" type="number" [(ngModel)]="pc.abilities[3]" min=0>
+            </mat-form-field>
+            <div class="col-xs-6">
+              <button mat-mini-fab color="accent">{{pc.absMods[3]}}</button>
+            </div>
+          </div>
+
+          <div class="col-xs-12">
+            <mat-form-field class="col-xs-6">
+              <input matInput placeholder="INT" name="INT" type="number" [(ngModel)]="pc.abilities[4]" min=0>
+            </mat-form-field>
+            <div class="col-xs-6">
+              <button mat-mini-fab color="accent">{{pc.absMods[4]}}</button>
+            </div>
+          </div>
+
+          <div class="col-xs-12">
+            <mat-form-field class="col-xs-6">
+              <input matInput placeholder="CHR" name="CHR" type="number" [(ngModel)]="pc.abilities[5]" min=0>
+            </mat-form-field>
+            <div class="col-xs-6">
+              <button mat-mini-fab color="accent">{{pc.absMods[5]}}</button>
+            </div>
+          </div>
+
+        </mat-expansion-panel>
+        <!--saves expansion header -->
+        <mat-expansion-panel class="col-xs-6">
+          <mat-expansion-panel-header>
+            <mat-panel-title>Saves</mat-panel-title>
+          </mat-expansion-panel-header>
+          <div>
+            <mat-checkbox name="strSaveProf" [(ngModel)]="pc.saveProficiencies[0]"></mat-checkbox>
+            <mat-form-field>
+              <input matInput placeholder="STR" name="STRsave" type="number" [(ngModel)]="pc.saves[0]"/>
+            </mat-form-field>
+          </div>
+          <div>
+            <mat-checkbox name="dexSaveProf" [(ngModel)]="pc.saveProficiencies[1]"></mat-checkbox>
+            <mat-form-field>
+              <input matInput placeholder="DEX" name="DEXsave" type="number" [(ngModel)]="pc.saves[1]"/>
+            </mat-form-field>
+          </div>
+          <div>
+            <mat-checkbox name="conSaveProf" [(ngModel)]="pc.saveProficiencies[2]"></mat-checkbox>
+            <mat-form-field>
+              <input matInput placeholder="CON" name="CONsave" type="number" [(ngModel)]="pc.saves[2]"/>
+            </mat-form-field>
+          </div>
+          <div>
+            <mat-checkbox name="wisSaveProf" [(ngModel)]="pc.saveProficiencies[3]"></mat-checkbox>
+            <mat-form-field>
+              <input matInput placeholder="WIS" name="WISsave" type="number" [(ngModel)]="pc.saves[3]"/>
+            </mat-form-field>
+          </div>
+          <div>
+            <mat-checkbox name="intSaveProf" [(ngModel)]="pc.saveProficiencies[4]"></mat-checkbox>
+            <mat-form-field>
+              <input matInput placeholder="INT" name="INTsave" type="number" [(ngModel)]="pc.saves[4]"/>
+            </mat-form-field>
+          </div>
+          <div>
+            <mat-checkbox name="chrSaveProf" [(ngModel)]="pc.saveProficiencies[5]"></mat-checkbox>
+            <mat-form-field>
+              <input matInput placeholder="CHR" name="CHRsave" type="number" [(ngModel)]="pc.saves[5]"/>
+            </mat-form-field>
+          </div>
+        </mat-expansion-panel>
+      </mat-card>
 
       <!--update button-->
-      <div class="col-xs-12">
+      <mat-card-actions class="col-xs-12">
         <button mat-raised-button color="accent" (click)="savePC()">
           Save Changes
         </button>
-      </div>
-    </form>
+      </mat-card-actions>
+    </mat-card>
   </mat-tab>
 
   <!--tab 2-->

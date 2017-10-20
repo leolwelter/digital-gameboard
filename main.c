@@ -41,14 +41,67 @@
 
 /* USER CODE BEGIN Includes */
 
+#define ON 15
+#define HALF 7
+#define OFF 0
+
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
 
+RNG_HandleTypeDef hrng;
+
 TIM_HandleTypeDef htim1;
+TIM_HandleTypeDef htim3;
+TIM_HandleTypeDef htim6;
+
+UART_HandleTypeDef huart5;
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
+
+uint8_t NUM_LEDS = 100;
+
+uint8_t zero = 0;							//makes the pwm go to zero
+uint8_t done = 0;							//1 if pwm is done
+
+uint16_t buttonMatrix[10] = {0};			//input buttons
+uint16_t lastButtons[10] = {0};				//debounced buttons
+uint8_t button_flag = 0;
+
+//uint32_t ZRGB;
+
+uint32_t colors [100];					//keeps track of led colors
+uint8_t buttonPressed = 100;			//maybe get rid of this
+//uint8_t refreshLEDS = 0;				//was used to enable leds and disable the rest
+
+typedef struct Entities{
+	uint8_t posX;
+	uint8_t posY;
+	uint8_t Speed;
+	uint8_t color;
+
+}Entity;
+
+typedef struct Maps{
+	uint8_t mapSizeX;					//the size of the map x
+	uint8_t mapSizeY;					//the size of the map y
+	uint8_t map[256][256];			//initialize map to all zeros, {rrggbbmm} [x][y]
+	uint8_t	movement[256][256];		//movement array initialized to zeros
+	//uint16_t mapTL;						//coordinate to make the top left pixel of the displayed map
+	uint8_t focusX;
+	uint8_t focusY;
+	Entity eList[256];
+	uint8_t turn;
+
+}Map;
+
+Map map;
+uint8_t mapReceive = 0;
+uint8_t entityReceive = 0;
+
+uint8_t RXData[256];					//use this to receive data from UART
+
 
 /* USER CODE END PV */
 
@@ -56,23 +109,138 @@ TIM_HandleTypeDef htim1;
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_TIM1_Init(void);
-                                    
+static void MX_TIM3_Init(void);
+static void MX_RNG_Init(void);
+static void MX_TIM6_Init(void);
+static void MX_UART5_Init(void);
+
 void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
                                 
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
+void randomLEDS(void);
+void buttonReaction(void);
 
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
 
+void setColor(uint32_t R, uint32_t G, uint32_t B, uint8_t index)
+{
+	if (R > 15)
+	{
+		R = 15;
+	}
+	if (G > 15)
+	{
+		G = 15;
+	}
+	if (B > 15)
+	{
+		B = 15;
+	}
+	colors[index] = (R << 16) | (G << 8) | (B);
+}
+
+void recenter()
+{
+	map.focusX ++;
+	if(map.focusX > map.mapSizeX-10)
+	{
+		map.focusY++;
+		map.focusX = 0;
+	}
+	if(map.focusY > map.mapSizeY-10)
+	{
+		map.focusY = 0;
+	}
+}
+
+void LEDinit()
+{
+	uint8_t i = 0;
+	map.mapSizeX = 11;
+	map.mapSizeY = 11;
+	map.focusX = 0;
+	map.focusY = 0;
+	for(i = 0; i<121; i ++)
+	{
+		if(i<11 || i >= 109 || i%11 == 0 || i %11 == 10)
+		{
+			map.map[i%11][i/11] = 84;
+		}
+		else if(i%2)
+		{
+			map.map[i%11][i/11] = 128;
+		}
+		else map.map[i%11][i/11] = 0;
+	}
+}
+
+uint32_t colorConverter(uint32_t color)
+{
+	if(color >= 3)
+	{
+		color = 15;
+	}
+	else if(color == 2)
+	{
+		color = 7;
+	}
+	else if(color == 1)
+	{
+		color = 3;
+	}
+	else{color = 0;}
+	return color;
+}
+
+void drawMap()
+{
+	done = 0;
+	int i;
+	int j;
+	uint32_t R;
+	uint32_t G;
+	uint32_t B;
+	for(i = 0; i<10; i++)
+	{
+		for(j = 0; j < 10; j ++)
+		{
+			R = colorConverter((map.map[j+map.focusX][i+map.focusY]&192)>>6);
+			G = colorConverter((map.map[j+map.focusX][i+map.focusY]&48)>>4);
+			B = colorConverter((map.map[j+map.focusX][i+map.focusY]&12)>>2);
+			setColor(R,G,B,i*10 + j);
+		}
+	}
+	uint8_t xCord;
+	uint8_t yCord;
+//	for(i = 0; i < 256; i++)
+//	{
+//		xCord = map.eList[i].posX;
+//		yCord = map.eList[i].posY;
+//		if(xCord >= map.focusX && xCord < 10 + map.focusX)
+//		{
+//			if(yCord >= map.focusY && yCord < 10 + map.focusY)
+//			{
+//				map.map[xCord][yCord] = map.eList[i].color & (map.map[xCord][yCord] |3);
+//			}
+//		}
+//	}
+	HAL_TIM_Base_Stop_IT(&htim6);
+	//TIM_ClearITPendingBit( TIM3,  );
+
+	//HAL_TIM_Base_Start(&htim3);
+	HAL_TIM_Base_Start_IT(&htim3);
+}
 /* USER CODE END 0 */
 
 int main(void)
 {
 
   /* USER CODE BEGIN 1 */
+
 
   /* USER CODE END 1 */
 
@@ -95,18 +263,168 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_TIM1_Init();
+  MX_TIM3_Init();
+  MX_RNG_Init();
+  MX_TIM6_Init();
+  MX_UART5_Init();
 
   /* USER CODE BEGIN 2 */
+	//HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);    //starts PWM on CH1 pin
+	//HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_4); //starts PWM on CH1N pin
+	HAL_TIM_Base_Start(&htim6);
+	HAL_TIM_Base_Start_IT(&htim6);
+	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);    //starts PWM on CH1 pin
+	HAL_TIMEx_PWMN_Start(&htim3, TIM_CHANNEL_1); //starts PWM on CH1N pin
+	HAL_TIM_Base_Start_IT(&htim3);
+
+
+
+
+	zero = 1;
+
+	LEDinit();
+	drawMap();
+
+
+
+	while(!done);
+	//__enable_irq();
+	//NVIC_EnableIRQ(TIM3_IRQn);
+	//TIM1->CCR4 = 20;
+	//TIM3->CCR1 = 115;
+	uint8_t loadX = 0;							//use this to keep track of x position when loading map
+	uint8_t loadY = 0;							//use this to keep track of y position when loading map
+	//uint8_t RXDatas[257] = {0};					//use this to receive data from UART
+	uint8_t UART_ERROR = 0;
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+	uint32_t i = 0 ;
+	uint8_t size = 0;
+	char ERROR_MSG[11] = "UART ERROR\n";
+//zero  = 1;
   while (1)
   {
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
+	  	 //char hello[10] = "I am not!";
+
+
+	  	 //uint8_t bye[8];
+		 if( HAL_GPIO_ReadPin (USER_Btn_GPIO_Port, GPIO_PIN_13))
+		 {
+//			 randomLEDS();
+			 recenter();
+			 drawMap();
+			 //for(i = 0; i < 100000; i++);
+		 }
+//	  	 recenter();
+//	  	 drawMap();
+		 //for(i = 0; i < 100000; i++);
+//		 HAL_UART_Transmit(&huart5, (uint8_t *) hello, 10, 100000);	//transmit "I am not!" successful
+		 if (button_flag)
+		 {
+			 buttonReaction();
+		 }
+
+		 if(mapReceive)
+		 {																	//do this when loading maps from UART
+			 if(HAL_UART_Receive(&huart5, RXData, map.mapSizeX, 1000) == 0)
+			 {
+				 for(loadX = 0; loadX < map.mapSizeX; loadX++)
+				 {
+					 map.map[loadX][loadY] = RXData[loadX];
+				 }
+				 loadY++;
+				 if(loadY >= map.mapSizeY){
+					 mapReceive = 0;
+		 	 	 	 drawMap();
+//		 	 	 	 loadY = 0;
+				 }
+			 }
+			 else
+			 {
+				 UART_ERROR = 1;
+				 ERROR_MSG[0] = loadY;
+				 HAL_UART_Transmit(&huart5, (uint8_t *) ERROR_MSG, 10, 100000);	//transmit "UART ERROR" if data is not loaded correctly
+				 mapReceive = 0;
+			 }
+		 }
+		 else if(entityReceive)												// do this when loading entities from UART
+		 {
+			 if(HAL_UART_Receive(&huart5, RXData, 5, 1000) == 0)
+			 {
+				 map.eList[RXData[0]].posX = RXData[1];
+				 map.eList[RXData[0]].posY = RXData[2];
+				 map.eList[RXData[0]].Speed = RXData[3];
+				 if(RXData[4] == 0){
+					 entityReceive = 0;
+		 	 	 	 drawMap();
+				 }
+			 }
+			 else
+			 {
+				 UART_ERROR = 1;
+				 entityReceive = 0;
+			 }
+		 }
+		 else if(HAL_UART_Receive(&huart5, RXData, 1, 1000) == 0)					//do this when UART state is unspecified
+		 {
+			 if(RXData[0] == 1)												//1 is send map mode
+			 {
+				 if(HAL_UART_Receive(&huart5, RXData, 2, 1000) == 0){
+					 map.mapSizeX = RXData[0];
+					 map.mapSizeY = RXData[1];
+					 size = RXData[1];
+					 loadX = 0;
+					 loadY = 0;
+					 mapReceive = 1;
+				 }
+				 else
+				 {
+					 UART_ERROR = 1;
+				 }
+			 }
+			 else if(RXData[0] == 2)										//2 is send entity mode
+			 {
+				 entityReceive = 1;
+			 }
+			 else if(RXData[0] == 3)										//3 is send recenter mode
+			 {
+				 if(HAL_UART_Receive(&huart5, RXData, 2, 1000) == 0){
+					 map.focusX = RXData[0];
+					 map.focusY = RXData[1];
+		 	 	 	 drawMap();
+				 }
+				 else
+				 {
+					 UART_ERROR = 1;
+				 }
+			 }
+			 else if(RXData[0] == 4)										//4 is assign player turn
+			 {
+				 if(HAL_UART_Receive(&huart5, RXData, 1, 1000) == 0){
+					 map.turn = RXData[0];
+		 	 	 	 drawMap();
+
+				 }
+			 }
+			 else
+			 {
+				 UART_ERROR = 1;
+			 }
+
+
+	 }
+		 if(UART_ERROR)
+		 {
+			 UART_ERROR = 0;
+			 HAL_UART_Transmit(&huart5, (uint8_t *) map.map, 256, 100000);	//transmit "UART ERROR" if data is not loaded correctly
+		 }
+
 
   }
   /* USER CODE END 3 */
@@ -120,20 +438,33 @@ void SystemClock_Config(void)
 
   RCC_OscInitTypeDef RCC_OscInitStruct;
   RCC_ClkInitTypeDef RCC_ClkInitStruct;
+  RCC_PeriphCLKInitTypeDef PeriphClkInitStruct;
 
     /**Configure the main internal regulator output voltage 
     */
   __HAL_RCC_PWR_CLK_ENABLE();
 
-  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE3);
+  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
 
     /**Initializes the CPU, AHB and APB busses clocks 
     */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.HSICalibrationValue = 16;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
+  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+  RCC_OscInitStruct.PLL.PLLM = 8;
+  RCC_OscInitStruct.PLL.PLLN = 216;
+  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
+  RCC_OscInitStruct.PLL.PLLQ = 10;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+    /**Activate the Over-Drive mode 
+    */
+  if (HAL_PWREx_EnableOverDrive() != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
   }
@@ -142,12 +473,20 @@ void SystemClock_Config(void)
     */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSI;
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
-  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
+  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_7) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+  PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_UART5|RCC_PERIPHCLK_CLK48;
+  PeriphClkInitStruct.Uart5ClockSelection = RCC_UART5CLKSOURCE_PCLK1;
+  PeriphClkInitStruct.Clk48ClockSelection = RCC_CLK48SOURCE_PLL;
+  if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
   }
@@ -164,19 +503,29 @@ void SystemClock_Config(void)
   HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
 }
 
+/* RNG init function */
+static void MX_RNG_Init(void)
+{
+
+  hrng.Instance = RNG;
+  if (HAL_RNG_Init(&hrng) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+}
+
 /* TIM1 init function */
 static void MX_TIM1_Init(void)
 {
 
   TIM_ClockConfigTypeDef sClockSourceConfig;
   TIM_MasterConfigTypeDef sMasterConfig;
-  TIM_OC_InitTypeDef sConfigOC;
-  TIM_BreakDeadTimeConfigTypeDef sBreakDeadTimeConfig;
 
   htim1.Instance = TIM1;
   htim1.Init.Prescaler = 0;
   htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim1.Init.Period = 20;
+  htim1.Init.Period = 270;
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim1.Init.RepetitionCounter = 0;
   htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
@@ -191,11 +540,6 @@ static void MX_TIM1_Init(void)
     _Error_Handler(__FILE__, __LINE__);
   }
 
-  if (HAL_TIM_PWM_Init(&htim1) != HAL_OK)
-  {
-    _Error_Handler(__FILE__, __LINE__);
-  }
-
   sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
   sMasterConfig.MasterOutputTrigger2 = TIM_TRGO2_RESET;
   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
@@ -204,50 +548,361 @@ static void MX_TIM1_Init(void)
     _Error_Handler(__FILE__, __LINE__);
   }
 
+}
+
+/* TIM3 init function */
+static void MX_TIM3_Init(void)
+{
+
+  TIM_ClockConfigTypeDef sClockSourceConfig;
+  TIM_MasterConfigTypeDef sMasterConfig;
+  TIM_OC_InitTypeDef sConfigOC;
+
+  htim3.Instance = TIM3;
+  htim3.Init.Prescaler = 0;
+  htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim3.Init.Period = 1000;
+  htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
+  if (HAL_TIM_Base_Init(&htim3) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim3, &sClockSourceConfig) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+  if (HAL_TIM_PWM_Init(&htim3) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim3, &sMasterConfig) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
   sConfigOC.OCMode = TIM_OCMODE_PWM1;
-  sConfigOC.Pulse = 52428;
+  sConfigOC.Pulse = 0;
+  sConfigOC.OCPolarity = TIM_OCPOLARITY_LOW;
+  sConfigOC.OCFastMode = TIM_OCFAST_ENABLE;
+  if (HAL_TIM_PWM_ConfigChannel(&htim3, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+  sConfigOC.OCMode = TIM_OCMODE_PWM2;
+  sConfigOC.Pulse = 10;
   sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
-  sConfigOC.OCNPolarity = TIM_OCNPOLARITY_HIGH;
   sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
-  sConfigOC.OCIdleState = TIM_OCIDLESTATE_RESET;
-  sConfigOC.OCNIdleState = TIM_OCNIDLESTATE_RESET;
-  if (HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
+  if (HAL_TIM_PWM_ConfigChannel(&htim3, &sConfigOC, TIM_CHANNEL_3) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
   }
 
-  sBreakDeadTimeConfig.OffStateRunMode = TIM_OSSR_DISABLE;
-  sBreakDeadTimeConfig.OffStateIDLEMode = TIM_OSSI_DISABLE;
-  sBreakDeadTimeConfig.LockLevel = TIM_LOCKLEVEL_OFF;
-  sBreakDeadTimeConfig.DeadTime = 0;
-  sBreakDeadTimeConfig.BreakState = TIM_BREAK_DISABLE;
-  sBreakDeadTimeConfig.BreakPolarity = TIM_BREAKPOLARITY_HIGH;
-  sBreakDeadTimeConfig.BreakFilter = 0;
-  sBreakDeadTimeConfig.Break2State = TIM_BREAK2_DISABLE;
-  sBreakDeadTimeConfig.Break2Polarity = TIM_BREAK2POLARITY_HIGH;
-  sBreakDeadTimeConfig.Break2Filter = 0;
-  sBreakDeadTimeConfig.AutomaticOutput = TIM_AUTOMATICOUTPUT_DISABLE;
-  if (HAL_TIMEx_ConfigBreakDeadTime(&htim1, &sBreakDeadTimeConfig) != HAL_OK)
-  {
-    _Error_Handler(__FILE__, __LINE__);
-  }
-
-  HAL_TIM_MspPostInit(&htim1);
+  HAL_TIM_MspPostInit(&htim3);
 
 }
 
-/** Pinout Configuration
+/* TIM6 init function */
+static void MX_TIM6_Init(void)
+{
+
+  TIM_MasterConfigTypeDef sMasterConfig;
+
+  htim6.Instance = TIM6;
+  htim6.Init.Prescaler = 100;
+  htim6.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim6.Init.Period = 216;
+  htim6.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim6) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim6, &sMasterConfig) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+}
+
+/* UART5 init function */
+static void MX_UART5_Init(void)
+{
+
+  huart5.Instance = UART5;
+  huart5.Init.BaudRate = 9600;
+  huart5.Init.WordLength = UART_WORDLENGTH_8B;
+  huart5.Init.StopBits = UART_STOPBITS_1;
+  huart5.Init.Parity = UART_PARITY_NONE;
+  huart5.Init.Mode = UART_MODE_TX_RX;
+  huart5.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart5.Init.OverSampling = UART_OVERSAMPLING_16;
+  huart5.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+  huart5.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+  if (HAL_UART_Init(&huart5) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+}
+
+/** Configure pins as 
+        * Analog 
+        * Input 
+        * Output
+        * EVENT_OUT
+        * EXTI
+     PC1   ------> ETH_MDC
+     PA1   ------> ETH_REF_CLK
+     PA2   ------> ETH_MDIO
+     PA7   ------> ETH_CRS_DV
+     PC4   ------> ETH_RXD0
+     PC5   ------> ETH_RXD1
+     PB13   ------> ETH_TXD1
+     PD8   ------> USART3_TX
+     PD9   ------> USART3_RX
+     PA8   ------> USB_OTG_FS_SOF
+     PA9   ------> USB_OTG_FS_VBUS
+     PA10   ------> USB_OTG_FS_ID
+     PA11   ------> USB_OTG_FS_DM
+     PA12   ------> USB_OTG_FS_DP
+     PG11   ------> ETH_TX_EN
+     PG13   ------> ETH_TXD0
 */
 static void MX_GPIO_Init(void)
 {
 
+  GPIO_InitTypeDef GPIO_InitStruct;
+
   /* GPIO Ports Clock Enable */
+  __HAL_RCC_GPIOC_CLK_ENABLE();
+  __HAL_RCC_GPIOH_CLK_ENABLE();
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
+  __HAL_RCC_GPIOF_CLK_ENABLE();
   __HAL_RCC_GPIOE_CLK_ENABLE();
+  __HAL_RCC_GPIOD_CLK_ENABLE();
+  __HAL_RCC_GPIOG_CLK_ENABLE();
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_2|GPIO_PIN_6|GPIO_PIN_7, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4|GPIO_PIN_15, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOB, LD1_Pin|GPIO_PIN_1|GPIO_PIN_12|LD3_Pin 
+                          |GPIO_PIN_15|GPIO_PIN_4|GPIO_PIN_5|LD2_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(USB_PowerSwitchOn_GPIO_Port, USB_PowerSwitchOn_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : USER_Btn_Pin */
+  GPIO_InitStruct.Pin = USER_Btn_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(USER_Btn_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : RMII_MDC_Pin RMII_RXD0_Pin RMII_RXD1_Pin */
+  GPIO_InitStruct.Pin = RMII_MDC_Pin|RMII_RXD0_Pin|RMII_RXD1_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+  GPIO_InitStruct.Alternate = GPIO_AF11_ETH;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PC2 PC6 PC7 */
+  GPIO_InitStruct.Pin = GPIO_PIN_2|GPIO_PIN_6|GPIO_PIN_7;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : RMII_REF_CLK_Pin RMII_MDIO_Pin RMII_CRS_DV_Pin */
+  GPIO_InitStruct.Pin = RMII_REF_CLK_Pin|RMII_MDIO_Pin|RMII_CRS_DV_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+  GPIO_InitStruct.Alternate = GPIO_AF11_ETH;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PA4 PA15 */
+  GPIO_InitStruct.Pin = GPIO_PIN_4|GPIO_PIN_15;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PA5 */
+  GPIO_InitStruct.Pin = GPIO_PIN_5;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : LD1_Pin */
+  GPIO_InitStruct.Pin = LD1_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
+  HAL_GPIO_Init(LD1_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PB1 PB12 PB15 PB4 
+                           PB5 */
+  GPIO_InitStruct.Pin = GPIO_PIN_1|GPIO_PIN_12|GPIO_PIN_15|GPIO_PIN_4 
+                          |GPIO_PIN_5;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PF12 PF13 PF14 */
+  GPIO_InitStruct.Pin = GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PE9 PE11 PE0 */
+  GPIO_InitStruct.Pin = GPIO_PIN_9|GPIO_PIN_11|GPIO_PIN_0;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : RMII_TXD1_Pin */
+  GPIO_InitStruct.Pin = RMII_TXD1_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+  GPIO_InitStruct.Alternate = GPIO_AF11_ETH;
+  HAL_GPIO_Init(RMII_TXD1_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : LD3_Pin LD2_Pin */
+  GPIO_InitStruct.Pin = LD3_Pin|LD2_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : STLK_RX_Pin STLK_TX_Pin */
+  GPIO_InitStruct.Pin = STLK_RX_Pin|STLK_TX_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+  GPIO_InitStruct.Alternate = GPIO_AF7_USART3;
+  HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PD14 PD15 */
+  GPIO_InitStruct.Pin = GPIO_PIN_14|GPIO_PIN_15;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : USB_PowerSwitchOn_Pin */
+  GPIO_InitStruct.Pin = USB_PowerSwitchOn_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(USB_PowerSwitchOn_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : USB_OverCurrent_Pin */
+  GPIO_InitStruct.Pin = USB_OverCurrent_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(USB_OverCurrent_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : USB_SOF_Pin USB_ID_Pin USB_DM_Pin USB_DP_Pin */
+  GPIO_InitStruct.Pin = USB_SOF_Pin|USB_ID_Pin|USB_DM_Pin|USB_DP_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+  GPIO_InitStruct.Alternate = GPIO_AF10_OTG_FS;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : USB_VBUS_Pin */
+  GPIO_InitStruct.Pin = USB_VBUS_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(USB_VBUS_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : RMII_TX_EN_Pin RMII_TXD0_Pin */
+  GPIO_InitStruct.Pin = RMII_TX_EN_Pin|RMII_TXD0_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+  GPIO_InitStruct.Alternate = GPIO_AF11_ETH;
+  HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PB8 */
+  GPIO_InitStruct.Pin = GPIO_PIN_8;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 }
 
 /* USER CODE BEGIN 4 */
+//void randomLEDS(void)
+//{
+//	uint8_t j;
+//	uint32_t mask = 0x000F0F0F;
+//	uint32_t rand;
+//	for(j = 0; j < NUM_LEDS; j++)
+//	{
+//		HAL_RNG_GenerateRandomNumber (&hrng, &rand);
+//		rand = rand & mask;
+////		colors[j] = rand;
+//		setColor((uint8_t)(rand>>16), (uint8_t)(rand>>8), (uint8_t)(rand), j );
+//
+//	}
+//	HAL_TIM_Base_Stop_IT(&htim6);
+//	//TIM_ClearITPendingBit( TIM3,  );
+//
+//	//HAL_TIM_Base_Start(&htim3);
+//	HAL_TIM_Base_Start_IT(&htim3);
+//
+//
+//}
 
+void buttonReaction(void)
+{
+	uint16_t buttonsRegistered [10];
+	uint8_t i;
+	uint8_t row;
+	uint8_t changed = 0;
+	uint16_t j;
+	for (i = 0; i < 10; i ++)
+	{
+		buttonsRegistered [i] = (buttonMatrix [i] ^ lastButtons [i]) & buttonMatrix [i];//ocm
+		row = 0;
+		for (j = 1; j <= 0x200; j = j << 1)
+		{
+			if (buttonsRegistered [i] & j)
+			{
+				changed = 1;
+				uint32_t mask = 0x000F0F0F;
+				uint32_t rand;
+				HAL_RNG_GenerateRandomNumber(&hrng, &rand);
+				rand = rand & mask;
+				setColor((uint8_t)(rand>>16), (uint8_t)(rand>>8), (uint8_t)(rand), 3 * i + row);
+			}
+			row ++;
+		}
+	}
+	if (changed)
+	{
+		HAL_TIM_Base_Stop_IT(&htim6);
+		HAL_TIM_Base_Start_IT(&htim3);
+	}
+	button_flag = 0;
+}
 /* USER CODE END 4 */
 
 /**

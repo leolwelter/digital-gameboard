@@ -41,6 +41,7 @@
 
 /* USER CODE BEGIN Includes */
 
+//#include "uart_receive.c"
 #define ON 15
 #define HALF 7
 #define OFF 0
@@ -69,35 +70,8 @@ uint16_t buttonMatrix[10] = {0};			//input buttons
 uint16_t lastButtons[10] = {0};				//debounced buttons
 uint8_t button_flag = 0;
 
-//uint32_t ZRGB;
-
-uint32_t colors [100];					//keeps track of led colors
 uint8_t buttonPressed = 100;			//maybe get rid of this
-//uint8_t refreshLEDS = 0;				//was used to enable leds and disable the rest
 
-typedef struct Entities{
-	uint8_t posX;
-	uint8_t posY;
-	uint8_t Speed;
-	uint8_t color;
-
-}Entity;
-
-typedef struct Maps{
-	uint8_t mapSizeX;					//the size of the map x
-	uint8_t mapSizeY;					//the size of the map y
-	uint8_t map[256][256];			//initialize map to all zeros, {rrggbbmm} [x][y]
-	uint8_t	movement[256][256];		//movement array initialized to zeros
-	//uint16_t mapTL;						//coordinate to make the top left pixel of the displayed map
-	uint8_t focusX;
-	uint8_t focusY;
-	Entity eList[256];
-	uint8_t turn;
-
-}Map;
-
-Map map;
-uint8_t mapReceive = 0;
 uint8_t entityReceive = 0;
 
 uint8_t RXData[256];					//use this to receive data from UART
@@ -119,121 +93,13 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
-void randomLEDS(void);
-void buttonReaction(void);
+//void randomLEDS(void);
+//void buttonReaction(void);
 
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
 
-void setColor(uint32_t R, uint32_t G, uint32_t B, uint8_t index)
-{
-	if (R > 15)
-	{
-		R = 15;
-	}
-	if (G > 15)
-	{
-		G = 15;
-	}
-	if (B > 15)
-	{
-		B = 15;
-	}
-	colors[index] = (R << 16) | (G << 8) | (B);
-}
-
-void recenter()
-{
-	map.focusX ++;
-	if(map.focusX > map.mapSizeX-10)
-	{
-		map.focusY++;
-		map.focusX = 0;
-	}
-	if(map.focusY > map.mapSizeY-10)
-	{
-		map.focusY = 0;
-	}
-}
-
-void LEDinit()
-{
-	uint8_t i = 0;
-	map.mapSizeX = 11;
-	map.mapSizeY = 11;
-	map.focusX = 0;
-	map.focusY = 0;
-	for(i = 0; i<121; i ++)
-	{
-		if(i<11 || i >= 109 || i%11 == 0 || i %11 == 10)
-		{
-			map.map[i%11][i/11] = 84;
-		}
-		else if(i%2)
-		{
-			map.map[i%11][i/11] = 128;
-		}
-		else map.map[i%11][i/11] = 0;
-	}
-}
-
-uint32_t colorConverter(uint32_t color)
-{
-	if(color >= 3)
-	{
-		color = 15;
-	}
-	else if(color == 2)
-	{
-		color = 7;
-	}
-	else if(color == 1)
-	{
-		color = 3;
-	}
-	else{color = 0;}
-	return color;
-}
-
-void drawMap()
-{
-	done = 0;
-	int i;
-	int j;
-	uint32_t R;
-	uint32_t G;
-	uint32_t B;
-	for(i = 0; i<10; i++)
-	{
-		for(j = 0; j < 10; j ++)
-		{
-			R = colorConverter((map.map[j+map.focusX][i+map.focusY]&192)>>6);
-			G = colorConverter((map.map[j+map.focusX][i+map.focusY]&48)>>4);
-			B = colorConverter((map.map[j+map.focusX][i+map.focusY]&12)>>2);
-			setColor(R,G,B,i*10 + j);
-		}
-	}
-	uint8_t xCord;
-	uint8_t yCord;
-//	for(i = 0; i < 256; i++)
-//	{
-//		xCord = map.eList[i].posX;
-//		yCord = map.eList[i].posY;
-//		if(xCord >= map.focusX && xCord < 10 + map.focusX)
-//		{
-//			if(yCord >= map.focusY && yCord < 10 + map.focusY)
-//			{
-//				map.map[xCord][yCord] = map.eList[i].color & (map.map[xCord][yCord] |3);
-//			}
-//		}
-//	}
-	HAL_TIM_Base_Stop_IT(&htim6);
-	//TIM_ClearITPendingBit( TIM3,  );
-
-	//HAL_TIM_Base_Start(&htim3);
-	HAL_TIM_Base_Start_IT(&htim3);
-}
 /* USER CODE END 0 */
 
 int main(void)
@@ -292,139 +158,31 @@ int main(void)
 	//NVIC_EnableIRQ(TIM3_IRQn);
 	//TIM1->CCR4 = 20;
 	//TIM3->CCR1 = 115;
-	uint8_t loadX = 0;							//use this to keep track of x position when loading map
-	uint8_t loadY = 0;							//use this to keep track of y position when loading map
+//	uint8_t loadX = 0;							//use this to keep track of x position when loading map
+//	uint8_t loadY = 0;							//use this to keep track of y position when loading map
 	//uint8_t RXDatas[257] = {0};					//use this to receive data from UART
-	uint8_t UART_ERROR = 0;
+//	uint8_t UART_ERROR = 0;
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-	uint32_t i = 0 ;
-	uint8_t size = 0;
-	char ERROR_MSG[11] = "UART ERROR\n";
+	char hello[10] = "hello greg";
+//	uint32_t i = 0 ;
+//	uint8_t size = 0;
+//	char ERROR_MSG[11] = "UART ERROR\n";
 //zero  = 1;
   while (1)
   {
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
+
 	  	 //char hello[10] = "I am not!";
-
-
-	  	 //uint8_t bye[8];
-		 if( HAL_GPIO_ReadPin (USER_Btn_GPIO_Port, GPIO_PIN_13))
-		 {
-//			 randomLEDS();
-			 recenter();
-			 drawMap();
-			 //for(i = 0; i < 100000; i++);
-		 }
-//	  	 recenter();
-//	  	 drawMap();
-		 //for(i = 0; i < 100000; i++);
-//		 HAL_UART_Transmit(&huart5, (uint8_t *) hello, 10, 100000);	//transmit "I am not!" successful
-		 if (button_flag)
-		 {
-			 buttonReaction();
-		 }
-
-		 if(mapReceive)
-		 {																	//do this when loading maps from UART
-			 if(HAL_UART_Receive(&huart5, RXData, map.mapSizeX, 1000) == 0)
-			 {
-				 for(loadX = 0; loadX < map.mapSizeX; loadX++)
-				 {
-					 map.map[loadX][loadY] = RXData[loadX];
-				 }
-				 loadY++;
-				 if(loadY >= map.mapSizeY){
-					 mapReceive = 0;
-		 	 	 	 drawMap();
-//		 	 	 	 loadY = 0;
-				 }
-			 }
-			 else
-			 {
-				 UART_ERROR = 1;
-				 ERROR_MSG[0] = loadY;
-				 HAL_UART_Transmit(&huart5, (uint8_t *) ERROR_MSG, 10, 100000);	//transmit "UART ERROR" if data is not loaded correctly
-				 mapReceive = 0;
-			 }
-		 }
-		 else if(entityReceive)												// do this when loading entities from UART
-		 {
-			 if(HAL_UART_Receive(&huart5, RXData, 5, 1000) == 0)
-			 {
-				 map.eList[RXData[0]].posX = RXData[1];
-				 map.eList[RXData[0]].posY = RXData[2];
-				 map.eList[RXData[0]].Speed = RXData[3];
-				 if(RXData[4] == 0){
-					 entityReceive = 0;
-		 	 	 	 drawMap();
-				 }
-			 }
-			 else
-			 {
-				 UART_ERROR = 1;
-				 entityReceive = 0;
-			 }
-		 }
-		 else if(HAL_UART_Receive(&huart5, RXData, 1, 1000) == 0)					//do this when UART state is unspecified
-		 {
-			 if(RXData[0] == 1)												//1 is send map mode
-			 {
-				 if(HAL_UART_Receive(&huart5, RXData, 2, 1000) == 0){
-					 map.mapSizeX = RXData[0];
-					 map.mapSizeY = RXData[1];
-					 size = RXData[1];
-					 loadX = 0;
-					 loadY = 0;
-					 mapReceive = 1;
-				 }
-				 else
-				 {
-					 UART_ERROR = 1;
-				 }
-			 }
-			 else if(RXData[0] == 2)										//2 is send entity mode
-			 {
-				 entityReceive = 1;
-			 }
-			 else if(RXData[0] == 3)										//3 is send recenter mode
-			 {
-				 if(HAL_UART_Receive(&huart5, RXData, 2, 1000) == 0){
-					 map.focusX = RXData[0];
-					 map.focusY = RXData[1];
-		 	 	 	 drawMap();
-				 }
-				 else
-				 {
-					 UART_ERROR = 1;
-				 }
-			 }
-			 else if(RXData[0] == 4)										//4 is assign player turn
-			 {
-				 if(HAL_UART_Receive(&huart5, RXData, 1, 1000) == 0){
-					 map.turn = RXData[0];
-		 	 	 	 drawMap();
-
-				 }
-			 }
-			 else
-			 {
-				 UART_ERROR = 1;
-			 }
-
-
-	 }
-		 if(UART_ERROR)
-		 {
-			 UART_ERROR = 0;
-			 HAL_UART_Transmit(&huart5, (uint8_t *) map.map, 256, 100000);	//transmit "UART ERROR" if data is not loaded correctly
-		 }
-
+	  if(!uartReceive())
+	  {
+		  HAL_UART_Transmit(&huart5, (uint8_t *) hello, 10, 100000);	//transmit "I am not!" successful
+	  }
 
   }
   /* USER CODE END 3 */
@@ -849,60 +607,8 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-//void randomLEDS(void)
-//{
-//	uint8_t j;
-//	uint32_t mask = 0x000F0F0F;
-//	uint32_t rand;
-//	for(j = 0; j < NUM_LEDS; j++)
-//	{
-//		HAL_RNG_GenerateRandomNumber (&hrng, &rand);
-//		rand = rand & mask;
-////		colors[j] = rand;
-//		setColor((uint8_t)(rand>>16), (uint8_t)(rand>>8), (uint8_t)(rand), j );
-//
-//	}
-//	HAL_TIM_Base_Stop_IT(&htim6);
-//	//TIM_ClearITPendingBit( TIM3,  );
-//
-//	//HAL_TIM_Base_Start(&htim3);
-//	HAL_TIM_Base_Start_IT(&htim3);
-//
-//
-//}
 
-void buttonReaction(void)
-{
-	uint16_t buttonsRegistered [10];
-	uint8_t i;
-	uint8_t row;
-	uint8_t changed = 0;
-	uint16_t j;
-	for (i = 0; i < 10; i ++)
-	{
-		buttonsRegistered [i] = (buttonMatrix [i] ^ lastButtons [i]) & buttonMatrix [i];//ocm
-		row = 0;
-		for (j = 1; j <= 0x200; j = j << 1)
-		{
-			if (buttonsRegistered [i] & j)
-			{
-				changed = 1;
-				uint32_t mask = 0x000F0F0F;
-				uint32_t rand;
-				HAL_RNG_GenerateRandomNumber(&hrng, &rand);
-				rand = rand & mask;
-				setColor((uint8_t)(rand>>16), (uint8_t)(rand>>8), (uint8_t)(rand), 3 * i + row);
-			}
-			row ++;
-		}
-	}
-	if (changed)
-	{
-		HAL_TIM_Base_Stop_IT(&htim6);
-		HAL_TIM_Base_Start_IT(&htim3);
-	}
-	button_flag = 0;
-}
+
 /* USER CODE END 4 */
 
 /**

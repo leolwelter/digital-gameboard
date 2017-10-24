@@ -1,9 +1,9 @@
-<div class="col-xs-6 col-xs-offset-3">
+<div class="col-xs-8 col-xs-offset-2">
   <!--character previews -->
   <mat-card>
     <mat-card-header>My Characters</mat-card-header>
     <mat-card-content>
-      <mat-grid-list cols="4" class="charGrid">
+      <mat-grid-list cols="3" class="charGrid">
         <mat-grid-tile *ngFor="let character of (characters | async)">
           <button mat-raised-button (click)="toCharacter(character.name)" class="charPanel" color="primary">
             {{ character.name }}
@@ -19,7 +19,7 @@
       My Maps
     </mat-card-header>
     <mat-card-content>
-      <mat-grid-list cols="2" class="charGrid">
+      <mat-grid-list cols="3" class="charGrid">
         <mat-grid-tile *ngFor="let map of (maps | async)" >
           <button mat-raised-button (click)="toMap(map.name)"  class="charPanel" color="accent">
             {{ map.name }}

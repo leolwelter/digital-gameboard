@@ -10,6 +10,8 @@ import {DashboardComponent} from './dashboard/dashboard.component';
 import {AuthGuard} from './_services/auth-guard.service';
 import {CharacterListComponent} from './character-list/character-list.component';
 import {CharacterDetailComponent} from './character-detail/character-detail.component';
+import {MapListComponent} from './map-list/map-list.component';
+import {MapDetailComponent} from './map-detail/map-detail.component';
 
 // Define all routes for the application
 const routes: Routes = [
@@ -26,6 +28,15 @@ const routes: Routes = [
   {
     path: 'myCharacters/:name',
     component: CharacterDetailComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'myMaps',
+    component: MapListComponent,
+    canActivate: [AuthGuard]
+  },
+  { path: 'myMaps/:mapId',
+    component: MapDetailComponent,
     canActivate: [AuthGuard]
   },
   {

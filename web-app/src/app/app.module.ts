@@ -26,6 +26,11 @@ import {CharacterListComponent} from './character-list/character-list.component'
 import {CharacterService} from './_services/character.service';
 import {AuthGuard} from './_services/auth-guard.service';
 import {environment} from '../environments/environment';
+import {MapListComponent} from './map-list/map-list.component';
+import {NewMapComponent} from './map-list/new-map/new-map.component';
+import {DeleteMapComponent} from './map-list/delete-map/delete-map.component';
+import {MapService} from './_services/map.service';
+import {MapDetailComponent} from './map-detail/map-detail.component';
 
 @NgModule({
   imports: [
@@ -40,11 +45,17 @@ import {environment} from '../environments/environment';
     AngularFireDatabaseModule,
   ],
   declarations: [
-    // Components
-    CharacterDetailComponent,
-    DeleteCharacterComponent,
-    NewCharacterComponent,
+    // Characters
     CharacterListComponent,
+    CharacterDetailComponent,
+    NewCharacterComponent,
+    DeleteCharacterComponent,
+    // Maps
+    MapListComponent,
+    NewMapComponent,
+    DeleteMapComponent,
+    MapDetailComponent,
+    // Navigation
     DashboardComponent,
     LoginComponent,
     RegisterComponent,
@@ -54,11 +65,14 @@ import {environment} from '../environments/environment';
   ],
   providers: [
     CharacterService,
+    MapService,
     AuthGuard,
   ],
   entryComponents: [
     NewCharacterComponent,
     DeleteCharacterComponent,
+    NewMapComponent,
+    DeleteMapComponent,
   ],
   bootstrap: [AppComponent],
 })

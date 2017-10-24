@@ -1,0 +1,31 @@
+<form class="col-xs-12">
+  <h3>New Map</h3>
+  <mat-form-field class="col-xs-12">
+    <input matInput
+          type="text"
+          name="name"
+          [(ngModel)]="name"
+          placeholder="name"
+    />
+  </mat-form-field>
+  <mat-form-field class="col-xs-12">
+    <input matInput
+      id="dimensionX"
+      name="sizeX"
+      [(ngModel)]="dimensionX"
+      type="number"
+      placeholder="Rows">
+  </mat-form-field>
+  <mat-form-field class="col-xs-12">
+    <input matInput
+      id="dimensionY"
+      name="sizeY"
+      [(ngModel)]="dimensionY"
+      type="number"
+      placeholder="Columns">
+  </mat-form-field>
+  <button mat-raised-button mat-icon-button color="primary" (click)="createMap()">
+    <mat-icon>add</mat-icon>
+  </button>
+
+</form>

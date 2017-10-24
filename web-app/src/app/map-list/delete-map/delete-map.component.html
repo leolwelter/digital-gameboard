@@ -1,0 +1,16 @@
+<form class="col-xs-12">
+  <h3>Are you sure?</h3>
+  <div>
+    <label for="inputName">Type name of map</label>
+    <input
+      (keyup)="checkName()"
+      id="inputName"
+      name="name"
+      [(ngModel)]="name"
+      type="text"
+      placeholder="TropeVille"
+    >
+    <button mat-raised-button [disabled]="!nameCheck" color="warn" (click)="confirmDelete()">Delete</button>
+  </div>
+
+</form>

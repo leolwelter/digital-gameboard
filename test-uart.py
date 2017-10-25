@@ -30,21 +30,23 @@ def main(args):
 		baudrate=9600,
 		parity=serial.PARITY_NONE,
 		stopbits=serial.STOPBITS_ONE,
-		bytesize=serial.EIGHTBITS
+		bytesize=serial.EIGHTBITS,
+		timeout = 2
 	)
 	print(ser.name)
 	while(True):
-		ser.flush()
+		#ser.flush()
 		time.sleep(0.001)
 		
-		# now read one byte
-		read_data = ser.read(size=10)
-		print("Data: {0}   |   {1}\n".format(read_data, time.time()))
-
 		time.sleep(0.001)
 		# write one byte
 		write_data = b'ABCDEFGH' * 32
 		ser.write(write_data)
+		
+				# now read one byte
+		read_data = ser.read(size=10)
+		print("Data: {0}   |   {1}\n".format(read_data, time.time()))
+
 	ser.close()
 	
 	

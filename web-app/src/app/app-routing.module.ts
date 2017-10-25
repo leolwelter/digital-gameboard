@@ -35,7 +35,8 @@ const routes: Routes = [
     component: MapListComponent,
     canActivate: [AuthGuard]
   },
-  { path: 'myMaps/:mapId',
+  {
+    path: 'myMaps/:name',
     component: MapDetailComponent,
     canActivate: [AuthGuard]
   },

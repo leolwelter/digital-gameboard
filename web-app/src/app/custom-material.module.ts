@@ -2,7 +2,7 @@ import {
   MatButtonModule, MatCardModule, MatCheckboxModule, MatChipsModule, MatDialogModule, MatExpansionModule,
   MatGridListModule,
   MatIconModule,
-  MatInputModule,
+  MatInputModule, MatListModule,
   MatMenuModule, MatOptionModule, MatPaginatorModule, MatProgressBarModule, MatProgressSpinnerModule, MatSelectModule,
   MatSidenavModule,
   MatSliderModule,
@@ -35,7 +35,8 @@ import {NgModule} from '@angular/core';
     MatSidenavModule,
     MatProgressSpinnerModule,
     MatTabsModule,
-    MatSelectModule
+    MatSelectModule,
+    MatListModule
   ],
   exports: [
     MatButtonModule,
@@ -59,7 +60,8 @@ import {NgModule} from '@angular/core';
     MatSidenavModule,
     MatProgressSpinnerModule,
     MatTabsModule,
-    MatSelectModule
+    MatSelectModule,
+    MatListModule
   ],
 })
 export class CustomMaterialModule { }

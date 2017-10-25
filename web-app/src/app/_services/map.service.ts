@@ -31,7 +31,7 @@ export class MapService {
     return this.db.object(path).remove();
   }
 
-  getMapRef(name: string): AngularFireObject<any> {
+  getMapRef(name: string): AngularFireObject<GameMap> {
     const uid = this.afAuth.auth.currentUser.uid;
     const path = 'users/' + uid + '/maps/' + name;
     return this.db.object(path);

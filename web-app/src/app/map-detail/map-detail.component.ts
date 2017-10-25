@@ -44,8 +44,8 @@ export class MapDetailComponent implements OnInit {
   }
 
 
-  initMap(charData: GameMap): void {
-    this.map = new GameMap(charData);
+  initMap(mapData: GameMap): void {
+    this.map = new GameMap(mapData);
   }
 
   saveMap(): void {
@@ -61,6 +61,4 @@ export class MapDetailComponent implements OnInit {
   goBack(): void {
     this.location.back();
   }
-
-
 }

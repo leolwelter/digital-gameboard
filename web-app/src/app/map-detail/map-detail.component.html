@@ -1,1 +1,38 @@
-<h3>MapDetailComponent</h3>
+<mat-tab-group>
+  <mat-tab label="Edit">
+    Editor
+  </mat-tab>
+  <mat-tab label="Notes">
+    Notes
+  </mat-tab>
+  <button mat-icon-button (click)="mapSideNav.open()">
+    <mat-icon>
+      info
+    </mat-icon>
+  </button>
+</mat-tab-group>
+
+<mat-sidenav-container>
+  <mat-sidenav #mapSideNav
+               class="map-detail-nav"
+               mode="side"
+               opened="false"
+               (mouseleave)="mapSideNav.close()">
+    <mat-list *ngIf="mapData | async">
+      <h3 mat-subheader>Stats: {{ map.name }}</h3>
+      <!--map stats-->
+      <mat-list-item *ngFor="let stat of stats">
+        <mat-icon mat-list-icon>data</mat-icon>
+        <h4 mat-line>{{stat.name}}</h4>
+      </mat-list-item>
+      <!--players -->
+      <mat-divider></mat-divider>
+      <h3 mat-subheader>Players</h3>
+      <mat-list-item *ngFor="let character of map.characters">
+        <mat-icon mat-list-icon>person</mat-icon>
+        <h4 mat-line>{{character.name}}</h4>
+        <p mat-line> {{character.classOne}} </p>
+      </mat-list-item>
+    </mat-list>
+  </mat-sidenav>
+</mat-sidenav-container>

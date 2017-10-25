@@ -41,7 +41,7 @@ export class MapListComponent implements OnInit {
     this.myMaps = this.mapService.getMapObservableList();
   }
   gotoDetail(): void {
-    this.router.navigate(['/myMaps', this.currentMap.game]);
+    this.router.navigate(['/myMaps', this.currentMap.name]);
   }
   createMap(): void {
     // Open dialog for name

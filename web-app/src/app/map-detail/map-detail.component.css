@@ -1,0 +1,38 @@
+.map-detail-nav {
+  width: 30%;
+  height: auto;
+  border: groove;
+}
+
+.map-detail-nav mat-sidenav {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.map-detail-nav .mat-sidenav-content,
+.map-detail-nav mat-sidenav {
+  display: flex;
+  overflow: visible;
+}
+
+mat-sidenav-container {
+  height: 100%;
+  width: 100%;
+}
+
+.scrolling-content {
+  overflow: auto;
+  height: 100%;
+}
+
+.example-fab.mat-mini-fab {
+  position: absolute;
+  right: 20px;
+  bottom: 10px;
+}
+
+#sideNavTrigger {
+  position: absolute;
+  right: 50px;
+  bottom: 50px;
+}

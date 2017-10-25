@@ -52,7 +52,7 @@
 
 RNG_HandleTypeDef hrng;
 
-TIM_HandleTypeDef htim1;
+TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim6;
 
@@ -82,11 +82,11 @@ uint8_t RXData[256];					//use this to receive data from UART
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
-static void MX_TIM1_Init(void);
 static void MX_TIM3_Init(void);
 static void MX_RNG_Init(void);
 static void MX_TIM6_Init(void);
 static void MX_UART5_Init(void);
+static void MX_TIM2_Init(void);
 
 void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
                                 
@@ -128,17 +128,19 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_TIM1_Init();
   MX_TIM3_Init();
   MX_RNG_Init();
   MX_TIM6_Init();
   MX_UART5_Init();
+  MX_TIM2_Init();
 
   /* USER CODE BEGIN 2 */
 	//HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);    //starts PWM on CH1 pin
 	//HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_4); //starts PWM on CH1N pin
 	HAL_TIM_Base_Start(&htim6);
 	HAL_TIM_Base_Start_IT(&htim6);
+	HAL_TIM_Base_Start(&htim2);
+	HAL_TIM_Base_Start_IT(&htim2);
 	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);    //starts PWM on CH1 pin
 	HAL_TIMEx_PWMN_Start(&htim3, TIM_CHANNEL_1); //starts PWM on CH1N pin
 	HAL_TIM_Base_Start_IT(&htim3);
@@ -167,7 +169,8 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-	char hello[10] = "hello greg";
+//	char hello[10] = "Tyler sux!";
+	uint8_t error = 0;
 //	uint32_t i = 0 ;
 //	uint8_t size = 0;
 //	char ERROR_MSG[11] = "UART ERROR\n";
@@ -179,9 +182,16 @@ int main(void)
   /* USER CODE BEGIN 3 */
 
 	  	 //char hello[10] = "I am not!";
-	  if(!uartReceive())
+	  error = uartReceive();
+	  if(error)
 	  {
-		  HAL_UART_Transmit(&huart5, (uint8_t *) hello, 10, 100000);	//transmit "I am not!" successful
+		  HAL_UART_Transmit(&huart5, &error, 1, 100);	//transmit "Tyler sux!" successful
+		  __HAL_UART_CLEAR_OREFLAG( &huart5 );
+	  }
+	  if(button_flag)
+	  {
+		  buttonReaction();
+		  button_flag = 0;
 	  }
 
   }
@@ -273,35 +283,33 @@ static void MX_RNG_Init(void)
 
 }
 
-/* TIM1 init function */
-static void MX_TIM1_Init(void)
+/* TIM2 init function */
+static void MX_TIM2_Init(void)
 {
 
   TIM_ClockConfigTypeDef sClockSourceConfig;
   TIM_MasterConfigTypeDef sMasterConfig;
 
-  htim1.Instance = TIM1;
-  htim1.Init.Prescaler = 0;
-  htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim1.Init.Period = 270;
-  htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  htim1.Init.RepetitionCounter = 0;
-  htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
-  if (HAL_TIM_Base_Init(&htim1) != HAL_OK)
+  htim2.Instance = TIM2;
+  htim2.Init.Prescaler = 10000;
+  htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim2.Init.Period = 720;
+  htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
   }
 
   sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
-  if (HAL_TIM_ConfigClockSource(&htim1, &sClockSourceConfig) != HAL_OK)
+  if (HAL_TIM_ConfigClockSource(&htim2, &sClockSourceConfig) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
   }
 
   sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
-  sMasterConfig.MasterOutputTrigger2 = TIM_TRGO2_RESET;
   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
-  if (HAL_TIMEx_MasterConfigSynchronization(&htim1, &sMasterConfig) != HAL_OK)
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
   }
@@ -397,7 +405,7 @@ static void MX_UART5_Init(void)
 {
 
   huart5.Instance = UART5;
-  huart5.Init.BaudRate = 9600;
+  huart5.Init.BaudRate = 115200;
   huart5.Init.WordLength = UART_WORDLENGTH_8B;
   huart5.Init.StopBits = UART_STOPBITS_1;
   huart5.Init.Parity = UART_PARITY_NONE;

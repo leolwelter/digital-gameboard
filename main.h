@@ -111,6 +111,9 @@ typedef struct Characters{
 	uint8_t posY;
 	uint8_t Speed;
 	uint8_t color;
+	uint8_t moveRem;
+	uint8_t moveSpent;
+	uint8_t room;
 }Character;
 
 typedef struct Items{
@@ -119,26 +122,52 @@ typedef struct Items{
 	uint8_t valid;
 }Item;
 
+typedef struct Rooms{
+	uint8_t posX1;
+	uint8_t posY1;
+	uint8_t posX2;
+	uint8_t posY2;
+}Room;
+
 typedef struct Maps{
 	uint8_t mapSizeX;					//the size of the map x
 	uint8_t mapSizeY;					//the size of the map y
-	uint8_t map[256][256];			//initialize map to all zeros, {rrggbbmm} [x][y]
-//	uint8_t chars[256][256];		//use these for speed if we use a smaller map
-//	uint8_t items[256][256];
-	uint8_t	movement[256][256];		//movement array initialized to zeros
-	//uint16_t mapTL;						//coordinate to make the top left pixel of the displayed map
+	uint8_t map[256][256];				//initialize map to all zeros, {rrggbbmm} [x][y]
+//	uint8_t	movement[256][256];			//movement array initialized to zeros
+	uint8_t movement[19][19];			//only allows movement on visible map
+	uint8_t movementOffX;				//offset of the movement array
+	uint8_t movementOffY;
 	uint8_t focusX;
 	uint8_t focusY;
-	Character cList[64];
-	Item iList[64];
+	Character cList[255];
+	Item iList[255];
+	Room rList[255];
 	uint8_t turn;
+	uint8_t pathFlag;					//pathfinding flag
+	uint8_t isRooms;					//shows that there is at least one room
 
 }Map;
 
-uint8_t uartReceive();
-void drawMap();
+uint8_t image[100][3];				//used to store images(RGB * 100)
+
+uint8_t uartReceive();				//uart in function
+
+void drawMap();						//map functions
+void recenter(uint8_t, uint8_t);
+uint8_t scroll(uint8_t);
+void drawImage();
 void LEDinit();
+
 Map map;
+
+void playerMove();					//uart out functions
+void playerAttack(uint8_t);
+void buttonOutput(uint8_t);
+
+void buttonReaction();				//button Reaction function
+
+//void pathFindingRecursion(uint8_t, uint8_t, uint8_t);
+
 
 
 /* USER CODE END Private defines */

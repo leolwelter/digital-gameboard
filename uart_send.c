@@ -1,7 +1,7 @@
 /**
   ******************************************************************************
-  * File Name          : button_presses.c
-  * Description        : button pressing code
+  * File Name          : uart_send.c
+  * Description        : uart send functions
   ******************************************************************************
   ** This notice applies to any and all portions of this file
   * that are not between comment pairs USER CODE BEGIN and
@@ -35,39 +35,30 @@
   *
   ******************************************************************************
   */
-
-
 #include "../Inc/main.h"
-
-extern TIM_HandleTypeDef htim3;
-extern TIM_HandleTypeDef htim6;
-extern uint16_t buttonMatrix[10];
-extern uint16_t lastButtons[10];
+extern UART_HandleTypeDef huart5;
 
 
-void buttonReaction()
+void playerMove()
 {
-	uint16_t buttonsRegistered [10];
-	uint8_t i;
-	uint8_t row;
-	uint8_t changed = 0;
-	uint16_t j;
-	for (i = 0; i < 10; i ++)
-	{
-		buttonsRegistered [i] = (buttonMatrix [i] ^ lastButtons [i]) & buttonMatrix [i];//ocm
-		row = 0;
-		for (j = 1; j <= 0x200; j = j << 1)
-		{
-			if (buttonsRegistered [i] & j)
-			{
-//				if()
-			}
-			row ++;
-		}
-	}
-	if (changed)
-	{
-		HAL_TIM_Base_Stop_IT(&htim6);
-		HAL_TIM_Base_Start_IT(&htim3);
-	}
+	uint8_t id = 1;
+	HAL_UART_Transmit(&huart5, &id, 5, 100);
+	HAL_UART_Transmit(&huart5, &map.cList[map.turn].posX,1,100);
+	HAL_UART_Transmit(&huart5, &map.cList[map.turn].posY,1,100);
+}
+
+void playerAttack(uint8_t enemyID)
+{
+	uint8_t id = 2;
+	HAL_UART_Transmit(&huart5, &id, 5, 100);
+	HAL_UART_Transmit(&huart5, &map.cList[map.turn].posX,1,100);
+	HAL_UART_Transmit(&huart5, &map.cList[map.turn].posY,1,100);
+	HAL_UART_Transmit(&huart5, &enemyID,1,100);
+}
+
+void buttonOutput(uint8_t button)
+{
+	uint8_t id = 17;
+	HAL_UART_Transmit(&huart5, &id, 5, 100);
+	HAL_UART_Transmit(&huart5, &button, 1, 100);
 }

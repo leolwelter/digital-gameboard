@@ -1,7 +1,7 @@
 /**
   ******************************************************************************
-  * File Name          : button_presses.c
-  * Description        : button pressing code
+  * File Name          : pathfinding.c
+  * Description        : pathfinding code
   ******************************************************************************
   ** This notice applies to any and all portions of this file
   * that are not between comment pairs USER CODE BEGIN and
@@ -36,38 +36,94 @@
   ******************************************************************************
   */
 
-
 #include "../Inc/main.h"
 
-extern TIM_HandleTypeDef htim3;
-extern TIM_HandleTypeDef htim6;
-extern uint16_t buttonMatrix[10];
-extern uint16_t lastButtons[10];
+#define coltot 19
+#define rowtot 19
 
 
-void buttonReaction()
+void pathFinding()
 {
-	uint16_t buttonsRegistered [10];
-	uint8_t i;
-	uint8_t row;
-	uint8_t changed = 0;
-	uint16_t j;
-	for (i = 0; i < 10; i ++)
+	if((map.mapSizeX < 19) || (map.cList[map.turn].posX < 9))//adjust x (may need this to change)
 	{
-		buttonsRegistered [i] = (buttonMatrix [i] ^ lastButtons [i]) & buttonMatrix [i];//ocm
-		row = 0;
-		for (j = 1; j <= 0x200; j = j << 1)
+		map.movementOffX = 0;
+	}
+	else if(map.cList[map.turn].posX + 9 > map.mapSizeX)
+	{
+		map.movementOffX = map.mapSizeX - 19;
+	}
+	else
+	{
+		map.movementOffX = map.cList[map.turn].posX - 9;
+	}
+
+	if((map.mapSizeY < 19) || (map.cList[map.turn].posY < 9))//adjust y
+	{
+		map.movementOffY = 0;
+	}
+	else if(map.cList[map.turn].posY + 9 > map.mapSizeY)
+	{
+		map.movementOffY = map.mapSizeY - 19;
+	}
+	else
+	{
+		map.movementOffY = map.cList[map.turn].posY - 9;
+	}
+	for(uint8_t i = 0; i < 19; i++)
+	{
+		for(uint8_t j = 0; j < 19; j++)
 		{
-			if (buttonsRegistered [i] & j)
-			{
-//				if()
-			}
-			row ++;
+			map.movement[i][j] = 3;
 		}
 	}
-	if (changed)
-	{
-		HAL_TIM_Base_Stop_IT(&htim6);
-		HAL_TIM_Base_Start_IT(&htim3);
+
+
+	pathFindingRecursion(map.cList[map.turn].posX,map.cList[map.turn].posY,1);
+}
+
+uint8_t min(uint8_t a, uint8_t b)
+{
+	return ((a < b) ? a : b);
+}
+
+void pathFindingRecursion(uint8_t x, uint8_t y, uint8_t start)
+{
+	int framecost = map.map[x][y]&3;
+	if (!start) { 																// first position must have XXXXXX11 for character position
+		if (map.map[x][y] == 3) return;
+		if (map.cList[map.turn].moveRem == 0 || map.cList[map.turn].moveRem - (map.map[x][y] & 3) < 0) return;
+
+		map.cList[map.turn].moveRem -= map.map[x][y] & 3;
+		map.cList[map.turn].moveSpent += map.map[x][y] & 3;
+		map.map[x][y] = 255;
+
+		map.movement[x-map.movementOffX][y-map.movementOffY] = min(map.movement[x][y], map.cList[map.turn].moveSpent);
 	}
+	//left
+	if (x > map.movementOffX)
+	{
+		pathFindingRecursion(x - 1, y, 0);
+	}
+	//up
+	if (y > map.movementOffY)
+	{
+		pathFindingRecursion(x , y - 1, 0);
+	}
+	//right
+	if (x < map.movementOffX + coltot - 1)
+	{
+		pathFindingRecursion(x + 1, y, 0);
+	}
+	//down
+	if (y < map.movementOffY + rowtot - 1)
+	{
+		pathFindingRecursion(x, y + 1, 0);
+	}
+	if (!start)
+	{
+		map.map[x][y] = map.map[x][y] & framecost;
+		map.cList[map.turn].moveSpent -= framecost;
+		map.cList[map.turn].moveRem += framecost;
+	}
+	return;
 }

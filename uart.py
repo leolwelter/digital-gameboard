@@ -10,16 +10,17 @@ class UART:
 	BOARD_SIZE_Y = 10
 	BAUD_RATE = 115200
 	PORT = '/dev/ttyS0'
-	TIMEOUT = 2
+	TIMEOUT = .05
 	READ_SIZE = 10
-	WRITE_WAIT = .5
 	
-	CODE_MAP = 1
-	CODE_SCROLL = 35
+	CODE_ADD_MAP = 1
 	CODE_ADD_CREATURE = 2
-	CODE_DELETE_CREATURE = 17
 	CODE_ADD_ITEM = 3
-	CODE_DELETE_ITEM = 19
+	CODE_DELETE_CREATURE = 17
+	CODE_DELETE_ITEM = 18
+	CODE_PLAYER_TURN = 33
+	CODE_CENTER_MAP = 34
+	CODE_SCROLL = 35
 	
 	SCROLL_UP = 1
 	SCROLL_DOWN = 3
@@ -40,20 +41,32 @@ def initUART():
 	)
 	return ser
 	
+def checkError(ser, command):
+	err = ser.read(size=1)
+	if not (err == b''):
+		print("Attempt to {0} failed\nMicro error: {1}".format(command, err))
+		return -1
+	return 0
+	
 def writeItem(ser, item):
 	if (item.x < UART.MAP_SIZE_X and item.y < UART.MAP_SIZE_Y and item.x >= 0 and item.y >= 0):
 		ser.write([UART.CODE_ADD_ITEM, item.itemID, item.x, item.y])
-		return 0
+		return checkError(ser, "write item")
 	return 1
+	
+def deleteItem(ser, item):
+	ser.write([UART.CODE_DELETE_ITEM, item.itemID])
+	return checkError(ser, "delete item")
 	
 def writeCreature(ser, creature):
 	if (creature.x < UART.MAP_SIZE_X and creature.y < UART.MAP_SIZE_Y and creature.x >= 0 and creature.y >= 0):
 		ser.write([UART.CODE_ADD_CREATURE, creature.creatureID, creature.x, creature.y, creature.colorVal(), creature.movement])
-		return 0
+		return checkError(ser, "write creature")
 	return 1
 	
 def deleteCreature(ser, creature):
 	ser.write([UART.CODE_DELETE_CREATURE, creature.creatureID])
+	return checkError(ser, "delete creature")
 
 def scrollMap(direction, ser):
 	if (direction == "up"):
@@ -65,6 +78,17 @@ def scrollMap(direction, ser):
 	elif (direction == "right"):
 		direction = UART.SCROLL_RIGHT
 	ser.write([UART.CODE_SCROLL, direction])
+	return checkError(ser, "scroll creature")
+	
+def playerTurn(ser, creature):
+	ser.write([UART.CODE_PLAYER_TURN, creature.creatureID])
+	return checkError(ser, "player turn")
+	
+def centerMap(ser, x, y):
+	if x < UART.MAP_SIZE_X and y < UART.MAP_SIZE_Y and x >= 0 and y >= 0:
+		ser.write([UART.CODE_CENTER_MAP, x, y])
+		return checkError(ser, "center map")
+	return 1
 	
 #@param sizeX int, sizeY int, cellList int[][], ser Serial
 def writeMap(sizeX, sizeY, cellList, ser):
@@ -79,27 +103,26 @@ def writeMap(sizeX, sizeY, cellList, ser):
 	cellList = convertMap(cellList)
 	if (sizeX < 256 and sizeY < 256):
 		ser.flush()
-		ser.write([UART.CODE_MAP])
+		ser.write([UART.CODE_ADD_MAP])
 		ser.write([sizeX])
 		ser.write([sizeY])
 		ser.write(cellList)
-		return 0
+		return checkError(ser, "write map")
 	return 1
 
 def main(args):
 	ser = initUART();
 	sizeX = 10
 	sizeY = 10
-	cellList = testMap()#createCells(sizeX,sizeY,0,3,2)
+	cellList = testMap()
 	
 	# write map data
 	writeMap(sizeX, sizeY,cellList,ser)
-	paul = Creature("Paulllll", 10, Color(3,3,3))
-	potion = Item("Potion", 0, 5)
+	paul = Creature("Paulllll", 10)
+	potion = Item("Potion", 5, 0)
 	writeItem(ser, potion)
 	direction = "start"
 	while (direction != "quit"):
-		time.sleep(UART.WRITE_WAIT)
 		if (writeCreature(ser, paul) == 1):
 			paul.x = x
 			paul.y = y
@@ -122,7 +145,7 @@ def main(args):
 		#~ direction == "left" or direction == "right"):
 			#~ scrollMap(direction, ser)
 	deleteCreature(ser, paul)
-	print(ser.read(size=UART.READ_SIZE))
+	deleteItem(ser, potion)
 	ser.close()
 		
 def printMap(cells, x, y):

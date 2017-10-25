@@ -3,6 +3,7 @@ import time
 from cell import Cell
 from color import Color
 from creature import Creature
+from item import Item
 
 class UART:
 	BOARD_SIZE_X = 10
@@ -94,6 +95,8 @@ def main(args):
 	# write map data
 	writeMap(sizeX, sizeY,cellList,ser)
 	paul = Creature("Paulllll", 10, Color(3,3,3))
+	potion = Item("Potion", 0, 5)
+	writeItem(ser, potion)
 	direction = "start"
 	while (direction != "quit"):
 		time.sleep(UART.WRITE_WAIT)

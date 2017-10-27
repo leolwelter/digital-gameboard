@@ -13,6 +13,8 @@ import {GameMap} from '../_types/GameMap';
 import {AngularFireObject} from 'angularfire2/database';
 import {Observable} from 'rxjs/Observable';
 import {MatSnackBar} from '@angular/material';
+import {Cell} from '../_types/Cell';
+import {Color} from "../_types/Color";
 
 
 @Component({
@@ -30,7 +32,7 @@ export class MapDetailComponent implements OnInit {
   map: GameMap;
   mapRef: AngularFireObject<GameMap>;
   mapData: Observable<GameMap>;
-
+  cellList: Cell[];
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
@@ -46,9 +48,12 @@ export class MapDetailComponent implements OnInit {
 
   initMap(mapData: GameMap): void {
     this.map = new GameMap(mapData);
+    this.cellList = this.map.parseCellList();
+    console.log(this.cellList);
   }
 
   saveMap(): void {
+    this.map.updateCellString(this.cellList);
     this.mapRef.update(this.map)
       .then(success => {
         this.snackbar.open('Success!', '', {duration: 2000});
@@ -60,5 +65,12 @@ export class MapDetailComponent implements OnInit {
 
   goBack(): void {
     this.location.back();
+  }
+
+  getCellColor(color: Color): string {
+    const red = color.red.toString(16);
+    const green = color.green.toString(16);
+    const blue = color.blue.toString(16);
+    return (red + green + blue);
   }
 }

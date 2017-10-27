@@ -10,9 +10,20 @@ export class GameMap {
   }
 
   name: string;
-  cells?: Cell[];
-  game?: string; // gameId
+  cellstring?: string;
+  game?: string;
   characters?: Character[];
   sizeX: number;
   sizeY: number;
+
+  parseCellList(): Cell[] {
+    if (this.cellstring) {
+      return JSON.parse(this.cellstring);
+    }
+    return null;
+  }
+
+  updateCellString(cellList: Cell[]): void {
+    this.cellstring = JSON.stringify(cellList);
+  }
 }

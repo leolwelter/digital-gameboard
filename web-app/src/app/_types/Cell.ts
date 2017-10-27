@@ -1,4 +1,5 @@
 import {Color} from './Color';
+import {Item} from './Item';
 
 export class Cell {
   constructor(coordX?: number, coordY?: number, color?: Color, cost?: number) {
@@ -13,6 +14,6 @@ export class Cell {
   color: Color;
   cost: number;
   creature: string; // Character or Monsters
-  // items: Item[]; // TODO
+  items: Item[]; // TODO
 
 }

@@ -1,38 +1,51 @@
-<mat-tab-group>
-  <mat-tab label="Edit">
-    Editor
-  </mat-tab>
-  <mat-tab label="Notes">
-    Notes
-  </mat-tab>
-  <button mat-icon-button (click)="mapSideNav.open()">
-    <mat-icon>
-      info
-    </mat-icon>
-  </button>
-</mat-tab-group>
+<mat-sidenav-container *ngIf="cellList">
+  <mat-tab-group>
+    <!--map editor-->
+    <mat-tab label="Edit">
+      <mat-toolbar>EDITOR</mat-toolbar>
+      <mat-grid-list [cols]="map.sizeX">
+        <mat-grid-tile *ngFor="let cell of cellList">
+          <button mat-raised-button [color]="getCellColor(cell.color)"></button>
+        </mat-grid-tile>
 
-<mat-sidenav-container>
-  <mat-sidenav #mapSideNav
-               class="map-detail-nav"
-               mode="side"
-               opened="false"
-               (mouseleave)="mapSideNav.close()">
-    <mat-list *ngIf="mapData | async">
-      <h3 mat-subheader>Stats: {{ map.name }}</h3>
-      <!--map stats-->
-      <mat-list-item *ngFor="let stat of stats">
-        <mat-icon mat-list-icon>data</mat-icon>
-        <h4 mat-line>{{stat.name}}</h4>
-      </mat-list-item>
-      <!--players -->
-      <mat-divider></mat-divider>
-      <h3 mat-subheader>Players</h3>
-      <mat-list-item *ngFor="let character of map.characters">
-        <mat-icon mat-list-icon>person</mat-icon>
-        <h4 mat-line>{{character.name}}</h4>
-        <p mat-line> {{character.classOne}} </p>
-      </mat-list-item>
-    </mat-list>
-  </mat-sidenav>
+      </mat-grid-list>
+    </mat-tab>
+
+    <!--dm notes -->
+    <mat-tab label="Notes">
+      <mat-toolbar>NOTES</mat-toolbar>
+    </mat-tab>
+
+    <!--map info -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <button mat-icon-button>
+          <mat-icon>info</mat-icon>
+        </button>
+      </ng-template>
+
+      <mat-toolbar class="info-toolbar" color="primary">
+        <span>Stats: {{ map.name }}</span>
+        <span class="filler"></span>
+      </mat-toolbar>
+      <mat-list >
+        <!--map stats-->
+        <mat-list-item *ngFor="let stat of stats">
+          <mat-icon mat-list-icon>data</mat-icon>
+          <h4 mat-line>{{stat.name}}</h4>
+        </mat-list-item>
+        <!--players -->
+        <mat-divider></mat-divider>
+        <h3 mat-subheader>Players</h3>
+        <mat-list-item *ngFor="let character of map.characters">
+          <mat-icon mat-list-icon>person</mat-icon>
+          <h4 mat-line>{{character.name}}</h4>
+          <p mat-line> {{character.classOne}} </p>
+        </mat-list-item>
+      </mat-list>
+    </mat-tab>
+  </mat-tab-group>
 </mat-sidenav-container>
+
+<!--loading-->
+<mat-progress-spinner *ngIf="!mapData"></mat-progress-spinner>

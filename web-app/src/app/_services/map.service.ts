@@ -52,4 +52,10 @@ export class MapService {
       return this.db.list(path).valueChanges();
     }
   }
+
+  getCellsObservableList(map: string): Observable<any[]> {
+    const uid = this.afAuth.auth.currentUser.uid;
+    const path = 'users/' + uid + '/maps/' + map + '/cells/';
+    return this.db.list(path).valueChanges();
+  }
 }

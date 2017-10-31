@@ -1,13 +1,14 @@
-<mat-sidenav-container *ngIf="cellList">
-  <mat-tab-group>
+<mat-sidenav-container>
+  <mat-tab-group *ngIf="(cellList | async)">
     <!--map editor-->
-    <mat-tab label="Edit">
+    <mat-tab label="Edit" >
       <mat-toolbar>EDITOR</mat-toolbar>
-      <mat-grid-list [cols]="map.sizeX">
-        <mat-grid-tile *ngFor="let cell of cellList">
-          <button mat-raised-button [color]="getCellColor(cell.color)"></button>
+      <mat-grid-list [cols]="columns" class="editorGrid col-xs-8 col-xs-offset-2">
+        <mat-grid-tile *ngFor="let cell of (cellList | async)">
+          <button mat-raised-button class="cellTile"  [ngStyle]="{'background-color': getCellColor(cell.color)}">
+            R:{{ cell.color.red }} G: {{cell.color.green }} B: {{ cell.color.blue }}
+          </button>
         </mat-grid-tile>
-
       </mat-grid-list>
     </mat-tab>
 
@@ -32,12 +33,12 @@
         <!--map stats-->
         <mat-list-item *ngFor="let stat of stats">
           <mat-icon mat-list-icon>data</mat-icon>
-          <h4 mat-line>{{stat.name}}</h4>
+          <h4 mat-line>{{stat}}</h4>
         </mat-list-item>
         <!--players -->
         <mat-divider></mat-divider>
         <h3 mat-subheader>Players</h3>
-        <mat-list-item *ngFor="let character of map.characters">
+        <mat-list-item *ngFor="let character of (mapData | async)?.characters">
           <mat-icon mat-list-icon>person</mat-icon>
           <h4 mat-line>{{character.name}}</h4>
           <p mat-line> {{character.classOne}} </p>

@@ -10,11 +10,11 @@ import {MapService} from '../_services/map.service';
 import {GameMap} from '../_types/GameMap';
 
 // AngularFire2
-import {AngularFireObject} from 'angularfire2/database';
+import {AngularFireList, AngularFireObject} from 'angularfire2/database';
 import {Observable} from 'rxjs/Observable';
 import {MatSnackBar} from '@angular/material';
 import {Cell} from '../_types/Cell';
-import {Color} from "../_types/Color";
+import {Color} from '../_types/Color';
 
 
 @Component({
@@ -30,17 +30,20 @@ export class MapDetailComponent implements OnInit {
     private snackbar: MatSnackBar,
   ) {}
   map: GameMap;
+  stats: string[]; // init later?
+  columns: number;
   mapRef: AngularFireObject<GameMap>;
   mapData: Observable<GameMap>;
-  cellList: Cell[];
+  cellList: Observable<any[]>;
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
       const name = params.get('name');
       this.mapRef = this.mapService.getMapRef(name);
       this.mapData = this.mapRef.valueChanges();
-      this.mapData.subscribe(mapData => {
-        this.initMap(mapData);
+      this.columns = 0;
+      this.mapData.subscribe(rData => {
+        this.initMap(rData);
       });
     });
   }
@@ -48,12 +51,11 @@ export class MapDetailComponent implements OnInit {
 
   initMap(mapData: GameMap): void {
     this.map = new GameMap(mapData);
-    this.cellList = this.map.parseCellList();
-    console.log(this.cellList);
+    this.columns = this.map.sizeX;
+    this.cellList = this.mapService.getCellsObservableList(this.map.name);
   }
 
   saveMap(): void {
-    this.map.updateCellString(this.cellList);
     this.mapRef.update(this.map)
       .then(success => {
         this.snackbar.open('Success!', '', {duration: 2000});
@@ -68,9 +70,10 @@ export class MapDetailComponent implements OnInit {
   }
 
   getCellColor(color: Color): string {
-    const red = color.red.toString(16);
-    const green = color.green.toString(16);
-    const blue = color.blue.toString(16);
-    return (red + green + blue);
+    const scale = 3;
+    const red = (color.red * scale).toString(16);
+    const green = (color.green * scale).toString(16);
+    const blue = (color.blue * scale).toString(16);
+    return ('#' + red + green + blue);
   }
 }

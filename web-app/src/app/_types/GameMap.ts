@@ -6,11 +6,11 @@ export class GameMap {
       this.name = 'Tropeville';
     }
     Object.assign(this, mapData);
-    console.log(this);
   }
 
   name: string;
   cellstring?: string;
+  cells?: Cell[];
   game?: string;
   characters?: Character[];
   sizeX: number;

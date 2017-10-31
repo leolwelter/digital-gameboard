@@ -7,3 +7,17 @@
   align-content: flex-end;
   max-height: 10px;
 }
+
+.editorGrid,
+mat-grid-list {
+  padding: 10px;
+  border: inset #7c70e1 1em;
+}
+
+.cellButton{
+}
+
+.cellTile {
+  width: 50%;
+  height: 50%;
+}

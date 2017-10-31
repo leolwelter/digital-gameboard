@@ -232,6 +232,7 @@ uint8_t nextPlayer()
 		else
 		{
 			map.turn = RXData[0];
+			map.cList[map.turn].moveRem = map.cList[map.turn].Speed;
 			recenter(map.cList[map.turn].posX-4,map.cList[map.turn].posY-4); //CHANGE THIS IF PLAYER NEEDS MOVED
 			return 0;
 		}

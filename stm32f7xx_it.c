@@ -46,13 +46,13 @@ uint8_t column = 0;
 uint8_t row = 0;
 uint8_t write = 1;
 uint8_t led_index = 0;
-GPIO_TypeDef * writePortArray[10] = {GPIOC, GPIOB, GPIOB};
-uint16_t writePinArray[10] = {GPIO_PIN_6, GPIO_PIN_15, GPIO_PIN_12};
-GPIO_TypeDef * readPortArray[10] = {GPIOA, GPIOD, GPIOD};
-uint16_t readPinArray[10] = {GPIO_PIN_5, GPIO_PIN_14, GPIO_PIN_15};
+GPIO_TypeDef * writePortArray[10] = {GPIOC, GPIOB, GPIOB, GPIOA, GPIOC, GPIOB, GPIOA, GPIOB, GPIOB, GPIOC};
+uint16_t writePinArray[10] = {GPIO_PIN_6, GPIO_PIN_15, GPIO_PIN_12, GPIO_PIN_15, GPIO_PIN_7, GPIO_PIN_5, GPIO_PIN_4, GPIO_PIN_4, GPIO_PIN_1, GPIO_PIN_2};
+GPIO_TypeDef * readPortArray[10] = {GPIOB, GPIOA, GPIOD, GPIOD, GPIOF, GPIOF, GPIOE, GPIOE, GPIOF, GPIOE};
+uint16_t readPinArray[10] = {GPIO_PIN_8, GPIO_PIN_5, GPIO_PIN_14, GPIO_PIN_15, GPIO_PIN_12, GPIO_PIN_13, GPIO_PIN_9, GPIO_PIN_11, GPIO_PIN_14, GPIO_PIN_0};
 extern uint32_t colors[100];
 extern uint8_t button_flag;
-extern uint16_t lastButtons[10];
+//extern uint16_t lastButtons[10];
 extern uint16_t buttonMatrix[10];
 extern uint8_t zero;
 extern uint8_t done;
@@ -186,7 +186,7 @@ void TIM6_DAC_IRQHandler(void)
 	{
 		if (column == 0)
 		{
-			HAL_GPIO_WritePin(writePortArray[2], writePinArray[2], GPIO_PIN_RESET);
+			HAL_GPIO_WritePin(writePortArray[9], writePinArray[9], GPIO_PIN_RESET);
 		}
 		else
 		{
@@ -198,10 +198,9 @@ void TIM6_DAC_IRQHandler(void)
 	else
 	{
 		//buttonPressed = 100;
-		lastButtons[column] = buttonMatrix[column];
 		buttonMatrix[column] = 0x0;
 		uint16_t i = 0x1;
-		for (row = 0; row < 3; row++)
+		for (row = 0; row < 10; row++)
 		{
 			//uint16_t i = 0x1;
 			if (HAL_GPIO_ReadPin(readPortArray[row], readPinArray[row]))
@@ -213,10 +212,10 @@ void TIM6_DAC_IRQHandler(void)
 			i = i<< 1;
 		}
 		column++;
-		if ( column == 3)
+		if ( column == 10)
 		{
 			button_flag = 1;
-			 column = 0;
+			column = 0;
 		}
 		write = 1;
 	}

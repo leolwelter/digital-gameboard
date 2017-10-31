@@ -42,7 +42,7 @@ extern UART_HandleTypeDef huart5;
 void playerMove()
 {
 	uint8_t id = 1;
-	HAL_UART_Transmit(&huart5, &id, 5, 100);
+	HAL_UART_Transmit(&huart5, &id, 1, 100);
 	HAL_UART_Transmit(&huart5, &map.cList[map.turn].posX,1,100);
 	HAL_UART_Transmit(&huart5, &map.cList[map.turn].posY,1,100);
 }
@@ -50,7 +50,7 @@ void playerMove()
 void playerAttack(uint8_t enemyID)
 {
 	uint8_t id = 2;
-	HAL_UART_Transmit(&huart5, &id, 5, 100);
+	HAL_UART_Transmit(&huart5, &id, 1, 100);
 	HAL_UART_Transmit(&huart5, &map.cList[map.turn].posX,1,100);
 	HAL_UART_Transmit(&huart5, &map.cList[map.turn].posY,1,100);
 	HAL_UART_Transmit(&huart5, &enemyID,1,100);
@@ -59,6 +59,6 @@ void playerAttack(uint8_t enemyID)
 void buttonOutput(uint8_t button)
 {
 	uint8_t id = 17;
-	HAL_UART_Transmit(&huart5, &id, 5, 100);
+	HAL_UART_Transmit(&huart5, &id, 1, 100);
 	HAL_UART_Transmit(&huart5, &button, 1, 100);
 }

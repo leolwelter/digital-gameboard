@@ -45,29 +45,28 @@ extern uint16_t buttonMatrix[10];
 extern uint16_t lastButtons[10];
 
 
-void buttonReaction()
+uint8_t buttonReaction()
 {
-	uint16_t buttonsRegistered [10];
+	uint16_t buttonsRegistered;
 	uint8_t i;
 	uint8_t row;
-	uint8_t changed = 0;
+//	uint8_t changed = 0;
 	uint16_t j;
 	for (i = 0; i < 10; i ++)
 	{
-		buttonsRegistered [i] = (buttonMatrix [i] ^ lastButtons [i]) & buttonMatrix [i];//ocm
+
+		buttonsRegistered = (buttonMatrix [i] ^ lastButtons [i]) & buttonMatrix [i];//ocm
+		lastButtons[i] = buttonMatrix[i];
 		row = 0;
 		for (j = 1; j <= 0x200; j = j << 1)
 		{
-			if (buttonsRegistered [i] & j)
+			if (buttonsRegistered & j)
 			{
-//				if()
+				//buttonOutput(i * 10 + row);
+				return (i * 10 + row);
 			}
 			row ++;
 		}
 	}
-	if (changed)
-	{
-		HAL_TIM_Base_Stop_IT(&htim6);
-		HAL_TIM_Base_Start_IT(&htim3);
-	}
+	return 255;
 }

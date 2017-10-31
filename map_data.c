@@ -41,8 +41,8 @@
 
 
 extern uint8_t done;
-extern TIM_HandleTypeDef htim3;
-extern TIM_HandleTypeDef htim6;
+//extern TIM_HandleTypeDef htim3;
+//extern TIM_HandleTypeDef htim6;
 uint32_t colors [100];					//keeps track of led colors
 
 
@@ -102,6 +102,9 @@ void setColor(uint32_t R, uint32_t G, uint32_t B, uint8_t index)
 	{
 		B = 15;
 	}
+	R = R*2;
+	G = G*2;
+	B = B*2;
 	colors[index] = (R << 16) | (G << 8) | (B);
 }
 void recenter(uint8_t x, uint8_t y)
@@ -152,6 +155,11 @@ void LEDinit()
 		}
 		else map.map[i%11][i/11] = 0;
 	}
+}
+
+void drawPath(uint8_t pos)
+{
+	colors[pos] = colors[pos] | 460551;
 }
 
 uint32_t colorConverter(uint8_t color)
@@ -233,24 +241,23 @@ void drawMap()
 			}
 		}
 	}
-//	if(map.pathFlag)
-//	{
-//		for(i = 0; i < 10; i ++)
-//		{
-//			for(j = 0; j < 10; j++)
-//			{
-//				x = j + map.movementOffX - map.focusX;
-//				y = i + map.movementOffY - map.focusY;
-//				if(x > 0 && x < 19 && y > 0 && y < 19)
-//				{
-//					if((map.movement[x][y]&3) != 3)
-//					{
-//						setPath(i * 10 + j);
-//					}
-//				}
-//			}
-//		}
-//	}
+
+	if(map.pathFlag)
+	{
+		for(i = 0; i < 10; i ++)
+		{
+			for(j = 0; j < 10; j++)
+			{
+				if(map.movement[i][j]!=255)
+				{
+					drawPath(i * 10 + j);
+					//setColor(0,0,15,i * 10 + j);
+				}
+			}
+		}
+	}
+	setMap(map.cList[map.turn].color,(map.cList[map.turn].posY-map.focusY)*10 + (map.cList[map.turn].posX-map.focusX));		//set cell to char color if char is there
+
 //	while(done == 0);
 //	HAL_TIM_Base_Stop_IT(&htim6);
 //	//TIM_ClearITPendingBit( TIM3,  );

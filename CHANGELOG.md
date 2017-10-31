@@ -38,9 +38,11 @@ ID			XY Dimensions		One Row at a Time
 PLAYERS AND ENEMIES:	2
 ID		Char ID		X Cordinates	Y Cordinates	Color			Max Movement
 1 Byte	1 Byte		1 Byte			1 Byte			1 Byte			1 Byte
-0010	0-254		0-255			0-255			rrggbb00		0-255
-													(if zeros,		(if 0, don't allow movement)
-													char ignored)	(if 255 don't run pathfinding, allow movement)
+0010	0-254		0-255			0-255			rrggbbXX		0-255
+													(if XX = 01,	(if 0, don't allow movement)
+													is player		(if 255 don't run pathfinding, allow movement)
+													if XX = 10,
+													is enemy)
 
 ITEMS:					3
 ID		Item ID		X Cordinates	Y Cordinates

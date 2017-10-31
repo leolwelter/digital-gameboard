@@ -38,92 +38,61 @@
 
 #include "../Inc/main.h"
 
-#define coltot 19
-#define rowtot 19
+#define COLTOT 10
+#define ROWTOT 10
 
 
 void pathFinding()
 {
-	if((map.mapSizeX < 19) || (map.cList[map.turn].posX < 9))//adjust x (may need this to change)
-	{
-		map.movementOffX = 0;
-	}
-	else if(map.cList[map.turn].posX + 9 > map.mapSizeX)
-	{
-		map.movementOffX = map.mapSizeX - 19;
-	}
-	else
-	{
-		map.movementOffX = map.cList[map.turn].posX - 9;
-	}
 
-	if((map.mapSizeY < 19) || (map.cList[map.turn].posY < 9))//adjust y
+	for(uint8_t i = 0; i < 10; i++)
 	{
-		map.movementOffY = 0;
-	}
-	else if(map.cList[map.turn].posY + 9 > map.mapSizeY)
-	{
-		map.movementOffY = map.mapSizeY - 19;
-	}
-	else
-	{
-		map.movementOffY = map.cList[map.turn].posY - 9;
-	}
-	for(uint8_t i = 0; i < 19; i++)
-	{
-		for(uint8_t j = 0; j < 19; j++)
+		for(uint8_t j = 0; j < 10; j++)
 		{
-			map.movement[i][j] = 3;
+			map.movement[i][j] = 255;
 		}
 	}
+//	map.movement[map.cList[map.turn].posX][map.cList[map.turn].posX] = map.cList[map.turn].moveRem;
+	pathFindingRecursion(map.cList[map.turn].posX,map.cList[map.turn].posY, map.cList[map.turn].moveRem);
+//	pathFindingRecursion(map.cList[map.turn].posX,map.cList[map.turn].posY, 5);
+	map.pathFlag = 1;
+	map.movement[map.cList[map.turn].posX][map.cList[map.turn].posX] = 255;
 
-
-	pathFindingRecursion(map.cList[map.turn].posX,map.cList[map.turn].posY,1);
+	drawMap();
 }
 
-uint8_t min(uint8_t a, uint8_t b)
+
+void pathFindingRecursion(uint8_t x, uint8_t y, uint8_t remMovement)
 {
-	return ((a < b) ? a : b);
-}
-
-void pathFindingRecursion(uint8_t x, uint8_t y, uint8_t start)
-{
-	int framecost = map.map[x][y]&3;
-	if (!start) { 																// first position must have XXXXXX11 for character position
-		if (map.map[x][y] == 3) return;
-		if (map.cList[map.turn].moveRem == 0 || map.cList[map.turn].moveRem - (map.map[x][y] & 3) < 0) return;
-
-		map.cList[map.turn].moveRem -= map.map[x][y] & 3;
-		map.cList[map.turn].moveSpent += map.map[x][y] & 3;
-		map.map[x][y] = 255;
-
-		map.movement[x-map.movementOffX][y-map.movementOffY] = min(map.movement[x][y], map.cList[map.turn].moveSpent);
-	}
-	//left
-	if (x > map.movementOffX)
+	uint8_t cost = map.map[x][y]&3;
+	if(map.movement[x][y] != 255 && map.movement[x][y] >= remMovement)
 	{
-		pathFindingRecursion(x - 1, y, 0);
+		return;
+	}
+	if(cost == 3 || cost == 0)
+	{
+		return;
+	}
+	map.movement[x][y] = remMovement;
+	//left
+	if ((x > map.focusX) && (remMovement >= (map.map[x-1][y] & 3)))
+	{
+		pathFindingRecursion(x - 1, y, remMovement - (map.map[x-1][y] & 3));
 	}
 	//up
-	if (y > map.movementOffY)
+	if ((y > map.focusY) && (remMovement >= (map.map[x][y-1] & 3)))
 	{
-		pathFindingRecursion(x , y - 1, 0);
+		pathFindingRecursion(x, y - 1, remMovement - (map.map[x][y-1] & 3));
 	}
 	//right
-	if (x < map.movementOffX + coltot - 1)
+	if ((x < map.focusX + COLTOT - 1) && (remMovement >= (map.map[x+1][y] & 3)))
 	{
-		pathFindingRecursion(x + 1, y, 0);
+		pathFindingRecursion(x + 1, y, remMovement - (map.map[x+1][y] & 3));
 	}
 	//down
-	if (y < map.movementOffY + rowtot - 1)
+	if ((y < map.focusY + ROWTOT - 1) && (remMovement >= (map.map[x][y + 1] & 3)))
 	{
-		pathFindingRecursion(x, y + 1, 0);
-	}
-	if (!start)
-	{
-		map.map[x][y] = map.map[x][y] & framecost;
-		map.cList[map.turn].moveSpent -= framecost;
-		map.cList[map.turn].moveRem += framecost;
+		pathFindingRecursion(x, y + 1, remMovement - (map.map[x][y+1] & 3));
 	}
 	return;
 }

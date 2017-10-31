@@ -169,19 +169,16 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-//	char hello[10] = "Tyler sux!";
+	map.turn = 0;
+//	map.cList[map.turn].moveRem = map.cList[map.turn].Speed;
 	uint8_t error = 0;
-//	uint32_t i = 0 ;
-//	uint8_t size = 0;
-//	char ERROR_MSG[11] = "UART ERROR\n";
-//zero  = 1;
+	uint8_t pushedButton = 255;	// keeps track of the current pressed button
   while (1)
   {
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
 
-	  	 //char hello[10] = "I am not!";
 	  error = uartReceive();
 	  if(error)
 	  {
@@ -190,8 +187,27 @@ int main(void)
 	  }
 	  if(button_flag)
 	  {
-		  buttonReaction();
-		  button_flag = 0;
+		  pushedButton = buttonReaction();
+//		  buttonOutput(pushedButton);
+
+//		  if(pushedButton != 255){
+//			  map.cList[0].posX = 1;
+//			  buttonOutput(pushedButton);
+//			  drawMap();
+//
+//		  }
+		  if((pushedButton/10 == map.cList[map.turn].posY) && (pushedButton%10 == map.cList[map.turn].posX))
+		  {
+			  pathFinding();
+			  map.pathFlag = 1;
+			  drawMap();
+		  }
+		  else if(pushedButton != 255)
+		  {
+			  map.pathFlag = 0;
+			  drawMap();
+		  }
+//		  button_flag = 0;
 	  }
 
   }

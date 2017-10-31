@@ -7,7 +7,7 @@ class Creature:
 	
 	_creatureID = 0
 	
-	def __init__(self, name, movement = MAX_MOVEMENT, color = Color(3,0,0), x=0, y=0, **kwargs):
+	def __init__(self, name, movement = MAX_MOVEMENT, player = False, color = Color(3,0,0), x=0, y=0, **kwargs):
 		self.creatureID = Creature._creatureID
 		if (Creature._creatureID == Creature.MAX_CREATURE_ID):
 			Creature._creatureID = 0
@@ -17,6 +17,7 @@ class Creature:
 		if movement > Creature.MAX_MOVEMENT:
 			movement = 0
 		self.movement = movement
+		self.player = player
 		self.color = color
 		self.x = x
 		self.y = y
@@ -27,8 +28,10 @@ class Creature:
 		byteVal = self.color.getRed() * 64
 		byteVal += self.color.getGreen() * 16
 		byteVal += self.color.getBlue() * 4
-		if byteVal == 0:
-			byteVal = 3
+		if self.player == True:
+			byteVal += 1
+		else:
+			byteVal += 2
 		return byteVal
 		
 	def printCreature(self):

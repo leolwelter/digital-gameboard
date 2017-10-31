@@ -114,38 +114,31 @@ def main(args):
 	ser = initUART();
 	sizeX = 10
 	sizeY = 10
-	cellList = testMap()
+	cellList = createCells(10,10,0,1,0)#testMap()
 	
 	# write map data
 	writeMap(sizeX, sizeY,cellList,ser)
-	paul = Creature("Paulllll", 10)
-	potion = Item("Potion", 5, 0)
+	paul = Creature("Paulllll", 3, True, Color(3, 1, 1))
+	paul.x = 5
+	paul.y = 5
+	writeCreature(ser, paul)
+	potion = Item("Potion", 2, 0)
 	writeItem(ser, potion)
-	direction = "start"
-	while (direction != "quit"):
-		if (writeCreature(ser, paul) == 1):
-			paul.x = x
-			paul.y = y
-		x = paul.x
-		y = paul.y
-		ser.flush()
-		direction = input("Enter direction to move: ")
-		if (direction == "up"):
-			paul.y -= 1
-		if (direction == "down"):
-			paul.y += 1
-		if (direction == "left"):
-			paul.x -= 1
-		if (direction == "right"):
-			paul.x += 1
-		if (direction == "reset"):
-			paul.x = 0
-			paul.y = 0
-		#~ if (direction == "up" or direction == "down" or
-		#~ direction == "left" or direction == "right"):
-			#~ scrollMap(direction, ser)
-	deleteCreature(ser, paul)
-	deleteItem(ser, potion)
+	playerTurn(ser, paul)
+	#~ x = 0
+	#~ y = 0
+	#~ while (paul.x != 9 or paul.y != 9):#direction != "quit"):
+	#~ ser.flush()
+	#~ code = ser.read(size = 1)
+	#~ print(code)
+	#~ if (code == b'\x11'):
+		#~ coord = ser.read(size=1)
+		#~ print(coord)
+		#~ paul.x = int.from_bytes(coord, byteorder = 'big') % UART.BOARD_SIZE_X
+		#~ paul.y = int(int.from_bytes(coord, byteorder = 'big') / UART.BOARD_SIZE_X)
+		#~ writeCreature(ser, paul)
+	#~ deleteCreature(ser, paul)
+	#~ deleteItem(ser, potion)
 	ser.close()
 		
 def printMap(cells, x, y):
@@ -212,82 +205,6 @@ def testMap():
 	cells.append(Cell(0, Color(0,0,1)))
 	cells.append(Cell(0, Color(0,0,1)))
 	cells.append(Cell(0, Color(0,0,1)))
-	
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
-	cells.append(Cell(0, Color(0,0,0)))
 	
 	return cells
 	

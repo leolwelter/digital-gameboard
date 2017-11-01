@@ -39,8 +39,6 @@
 
 #include "../Inc/main.h"
 
-extern TIM_HandleTypeDef htim3;
-extern TIM_HandleTypeDef htim6;
 extern uint16_t buttonMatrix[10];
 extern uint16_t lastButtons[10];
 

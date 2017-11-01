@@ -346,6 +346,6 @@ uint8_t uartReceive()
 		}
 		return 255;
 	}
-	return 0;
+	return 254;		//Timed out
 }
 

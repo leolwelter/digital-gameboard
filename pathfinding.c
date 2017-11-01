@@ -41,6 +41,7 @@
 #define COLTOT 10
 #define ROWTOT 10
 
+void pathFindingRecursion(uint8_t x, uint8_t y, uint8_t remMovement);
 
 void pathFinding()
 {
@@ -52,11 +53,26 @@ void pathFinding()
 			map.movement[i][j] = 255;
 		}
 	}
+	for (uint8_t i = 0; i < 255; i ++)
+	{
+		uint8_t enemy = ((map.cList[i].color & 3) == 2);
+		if (enemy)
+		{
+			map.movement[map.cList[i].posX][map.cList[i].posY] = 254;
+		}
+	}
 //	map.movement[map.cList[map.turn].posX][map.cList[map.turn].posX] = map.cList[map.turn].moveRem;
 	pathFindingRecursion(map.cList[map.turn].posX,map.cList[map.turn].posY, map.cList[map.turn].moveRem);
 //	pathFindingRecursion(map.cList[map.turn].posX,map.cList[map.turn].posY, 5);
 	map.pathFlag = 1;
-	map.movement[map.cList[map.turn].posX][map.cList[map.turn].posX] = 255;
+	for (uint8_t i = 0; i < 255; i ++)
+	{
+		uint8_t human = ((map.cList[i].color & 3) == 1);
+		if (human)
+		{
+			map.movement[map.cList[i].posX][map.cList[i].posY] = 255;
+		}
+	}
 
 	drawMap();
 }
@@ -65,11 +81,11 @@ void pathFinding()
 void pathFindingRecursion(uint8_t x, uint8_t y, uint8_t remMovement)
 {
 	uint8_t cost = map.map[x][y]&3;
-	if(map.movement[x][y] != 255 && map.movement[x][y] >= remMovement)
+	if(cost == 3 || cost == 0)
 	{
 		return;
 	}
-	if(cost == 3 || cost == 0)
+	if(map.movement[x][y] != 255 && map.movement[x][y] >= remMovement)	//anything > 200 should work for obstacles
 	{
 		return;
 	}

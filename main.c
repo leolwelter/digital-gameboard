@@ -64,11 +64,13 @@ UART_HandleTypeDef huart5;
 uint8_t NUM_LEDS = 100;
 
 uint8_t zero = 0;							//makes the pwm go to zero
-uint8_t done = 0;							//1 if pwm is done
+uint8_t drawLock = 1;							//1 if drawMap is done
+uint8_t	pwmLock = 1;							//1 if pwm is done
 
 uint16_t buttonMatrix[10] = {0};			//input buttons
 uint16_t lastButtons[10] = {0};				//debounced buttons
 uint8_t button_flag = 0;
+uint8_t mapFlag = 0;
 
 uint8_t buttonPressed = 100;			//maybe get rid of this
 
@@ -153,9 +155,6 @@ int main(void)
 	LEDinit();
 	drawMap();
 
-
-
-	while(!done);
 	//__enable_irq();
 	//NVIC_EnableIRQ(TIM3_IRQn);
 	//TIM1->CCR4 = 20;
@@ -171,7 +170,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
 	map.turn = 0;
 //	map.cList[map.turn].moveRem = map.cList[map.turn].Speed;
-	uint8_t error = 0;
+	uint8_t uart = 0;
 	uint8_t pushedButton = 255;	// keeps track of the current pressed button
   while (1)
   {
@@ -179,35 +178,47 @@ int main(void)
 
   /* USER CODE BEGIN 3 */
 
-	  error = uartReceive();
-	  if(error)
+	  uart = uartReceive();
+	  if(uart == 0)
 	  {
-		  HAL_UART_Transmit(&huart5, &error, 1, 100);	//transmit "Tyler sux!" successful
-		  __HAL_UART_CLEAR_OREFLAG( &huart5 );
+		  map.pathFlag = 0;
+		  drawMap();
+	  }
+	  else if (uart != 254)
+	  {
+		  HAL_UART_Transmit(&huart5, &uart, 1, 100);	//transmit "Tyler sux!" successful
+		  		  __HAL_UART_CLEAR_OREFLAG( &huart5 );
 	  }
 	  if(button_flag)
 	  {
 		  pushedButton = buttonReaction();
-//		  buttonOutput(pushedButton);
-
-//		  if(pushedButton != 255){
-//			  map.cList[0].posX = 1;
-//			  buttonOutput(pushedButton);
-//			  drawMap();
-//
-//		  }
+		  if (map.pathFlag == 1)
+		  {
+			  if(pushedButton!=255)
+			  {
+				  if(map.movement[pushedButton%10][pushedButton/10] < 254)	//if the pushed button is a valid space to move, go there
+				  {															//or disable pathfinding
+					  map.cList[map.turn].posX = pushedButton%10;
+					  map.cList[map.turn].posY = pushedButton/10;
+					  map.cList[map.turn].moveRem = map.movement[pushedButton%10][pushedButton/10];
+					  playerMove();
+				  }
+				  map.pathFlag = 0;
+			  }
+			  drawMap();
+		  }
 		  if((pushedButton/10 == map.cList[map.turn].posY) && (pushedButton%10 == map.cList[map.turn].posX))
 		  {
 			  pathFinding();
 			  map.pathFlag = 1;
-			  drawMap();
 		  }
+
 		  else if(pushedButton != 255)
 		  {
 			  map.pathFlag = 0;
 			  drawMap();
 		  }
-//		  button_flag = 0;
+
 	  }
 
   }

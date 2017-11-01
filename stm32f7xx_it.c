@@ -55,7 +55,8 @@ extern uint8_t button_flag;
 //extern uint16_t lastButtons[10];
 extern uint16_t buttonMatrix[10];
 extern uint8_t zero;
-extern uint8_t done;
+extern uint8_t drawLock;
+extern uint8_t pwmLock;
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
@@ -110,7 +111,12 @@ void TIM2_IRQHandler(void)
 void TIM3_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM3_IRQn 0 */
-	//HAL_TIM_Base_Stop_IT(&htim6);
+	if(!drawLock)
+	{
+		return;
+	}
+	pwmLock = 0;
+	HAL_TIM_Base_Stop_IT(&htim6);
 	if(zero)
 	{
 		if (led_index < 20)
@@ -143,7 +149,6 @@ void TIM3_IRQHandler(void)
 					TIM3 -> CCR1 = 20;
 				}
 				bitPos = bitPos >> 1;
-				done = 0;
 			}
 			else
 			{
@@ -153,7 +158,7 @@ void TIM3_IRQHandler(void)
 				HAL_TIM_Base_Start_IT(&htim6);
 				bitPos = 0x800000;
 				start = 1;
-				done = 1;
+				pwmLock = 1;
 
 			}
 			if (bitPos == 0)

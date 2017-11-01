@@ -40,10 +40,12 @@
 //#include "stm32f7xx_hal.h"
 
 
-extern uint8_t done;
+extern uint8_t drawLock;
+extern uint8_t pwmLock;
 //extern TIM_HandleTypeDef htim3;
 //extern TIM_HandleTypeDef htim6;
 uint32_t colors [100];					//keeps track of led colors
+uint8_t pathCounter;
 
 
 
@@ -157,11 +159,6 @@ void LEDinit()
 	}
 }
 
-void drawPath(uint8_t pos)
-{
-	colors[pos] = colors[pos] | 460551;
-}
-
 uint32_t colorConverter(uint8_t color)
 {
 	if(color >= 3)
@@ -191,16 +188,29 @@ void setMap(uint8_t tile, uint8_t pos)
 
 void setPath(uint8_t pos)
 {
-	colors[pos] = colors[pos] | 8;
+	if (pathCounter >= 20)
+		return;
+	else if (pathCounter >= 15)
+		colors[pos] = colors[pos] | 0b100000001000000010;
+	else if (pathCounter >= 10)
+		colors[pos] = colors[pos] | 0b1000000010000000100;
+	else if (pathCounter >= 5)
+		colors[pos] = colors[pos] | 0b100000001000000010;
+
 }
 
 void drawMap()
 {
-	done = 0;
+	while(!pwmLock);
+	drawLock = 0;
 	int i;
+	for(i = 0; i < 100; i++);
+	while(!pwmLock)
+	{
+		drawLock = 1;
+	}
+	drawLock = 0;
 	int j;
-	int x;
-	int y;
 
 	for(i = 0; i<10; i++)//y
 	{
@@ -244,31 +254,37 @@ void drawMap()
 
 	if(map.pathFlag)
 	{
-		for(i = 0; i < 10; i ++)
+		for(i = 0; i < 10; i ++)//y
 		{
-			for(j = 0; j < 10; j++)
+			for(j = 0; j < 10; j++)//x
 			{
-				if(map.movement[i][j]!=255)
+				if(map.movement[j][i]<250)
 				{
-					drawPath(i * 10 + j);
+					setPath(i * 10 + j);
 					//setColor(0,0,15,i * 10 + j);
 				}
 			}
 		}
+		pathCounter -= 2;
+		if (pathCounter == 0)
+			pathCounter = 26;
 	}
+	else
+		pathCounter = 26;
 	setMap(map.cList[map.turn].color,(map.cList[map.turn].posY-map.focusY)*10 + (map.cList[map.turn].posX-map.focusX));		//set cell to char color if char is there
-
 //	while(done == 0);
 //	HAL_TIM_Base_Stop_IT(&htim6);
 //	//TIM_ClearITPendingBit( TIM3,  );
 //
 //	//HAL_TIM_Base_Start(&htim3);
 //	HAL_TIM_Base_Start_IT(&htim3);
+	drawLock = 1;
 }
 
 void drawImage()
 {
-	done = 0;
+	while(!pwmLock);
+	drawLock = 0;
 	int i;
 	int j;
 	for(i = 0; i<10; i++)//y
@@ -278,6 +294,7 @@ void drawImage()
 			setColor(image[i*10+j][0],image[i*10+j][1],image[i*10+j][2],i*10 + j);
 		}
 	}
+	drawLock = 1;
 //	HAL_TIM_Base_Stop_IT(&htim6);
 //	//TIM_ClearITPendingBit( TIM3,  );
 //

@@ -91,6 +91,11 @@ ID		DIRECTION
 1 Byte	1 Byte
 0011	(1 = Up)(2 = Right)(3 = Down)(4 = Left)
 
+MODIFY REMAINING Movement														To Do!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ID		OPERATION	NUMBER
+1 Byte	1 Byte		1 Byte
+0100				0-255
+
 (Room for more)
 
 DRAWING 0011XXXX

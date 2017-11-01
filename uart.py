@@ -84,6 +84,16 @@ def playerTurn(ser, creature):
 	ser.write([UART.CODE_PLAYER_TURN, creature.creatureID])
 	return checkError(ser, "player turn")
 	
+def waitForMove(ser, character):
+	code = ser.read(size=1)
+	while code != b'\x01':
+		print(code)
+		code = ser.read(size=1)
+	x = ser.read(size=1)
+	y = ser.read(size = 1)
+	character.x = x
+	character.y = y
+	
 def centerMap(ser, x, y):
 	if x < UART.MAP_SIZE_X and y < UART.MAP_SIZE_Y and x >= 0 and y >= 0:
 		ser.write([UART.CODE_CENTER_MAP, x, y])
@@ -114,31 +124,48 @@ def main(args):
 	ser = initUART();
 	sizeX = 10
 	sizeY = 10
-	cellList = createCells(10,10,0,1,0)#testMap()
+	cellList = testMap()
 	
 	# write map data
 	writeMap(sizeX, sizeY,cellList,ser)
-	paul = Creature("Paulllll", 3, True, Color(3, 1, 1))
-	paul.x = 5
-	paul.y = 5
+	
+	# init Player Characters
+	paul = Creature("Paul", 27, True, Color(3, 1, 1))
+	paul.x = 0
+	paul.y = 1
+	tyler = Creature("Tyler", 5, True, Color(0, 3, 3))
+	tyler.x = 1
+	tyler.y = 0
+	
+	leopluridon = Creature("Leopluridon", 3, True, Color(3, 0, 0))
+	leopluridon.x = 9
+	leopluridon.y = 6
+		
+	# init Items
+	#~ potion = Item("Potion", 2, 0)
+	#~ sword = Item("Sword", 4, 3)	
+	
+	# write data to current game
 	writeCreature(ser, paul)
-	potion = Item("Potion", 2, 0)
-	writeItem(ser, potion)
+	writeCreature(ser, tyler)
+	writeCreature(ser, leopluridon)
+	
 	playerTurn(ser, paul)
-	#~ x = 0
-	#~ y = 0
-	#~ while (paul.x != 9 or paul.y != 9):#direction != "quit"):
-	#~ ser.flush()
-	#~ code = ser.read(size = 1)
-	#~ print(code)
-	#~ if (code == b'\x11'):
-		#~ coord = ser.read(size=1)
-		#~ print(coord)
-		#~ paul.x = int.from_bytes(coord, byteorder = 'big') % UART.BOARD_SIZE_X
-		#~ paul.y = int(int.from_bytes(coord, byteorder = 'big') / UART.BOARD_SIZE_X)
-		#~ writeCreature(ser, paul)
-	#~ deleteCreature(ser, paul)
-	#~ deleteItem(ser, potion)
+	playerTurn(ser, leopluridon)
+	
+	cList = [paul, tyler, leopluridon]
+	
+	quitFlag = False
+	while (not quitFlag):
+		selected = input("Whose turn is it? : ")
+		for creature in cList:
+			if (creature.name == selected):
+				playerTurn(ser, creature)
+				waitForMove(ser, creature)
+				print(creature.x,creature.y)
+		
+		if selected == 'quit':
+			quitFlag = True
 	ser.close()
 		
 def printMap(cells, x, y):
@@ -179,29 +206,113 @@ def createCells(x, y, r, g, b):
 	
 def testMap():
 	cells = []
-	
-	cells.append(Cell(0, Color(1,0,0)))
-	cells.append(Cell(0, Color(1,0,0)))
+	#1
+	cells.append(Cell(1, Color(0,1,0)))
+	cells.append(Cell(1, Color(0,1,0)))
 	cells.append(Cell(2, Color(1,1,0)))
 	cells.append(Cell(2, Color(1,1,0)))
+	cells.append(Cell(2, Color(1,1,0)))
+	cells.append(Cell(2, Color(1,1,0)))
+	cells.append(Cell(2, Color(1,1,0)))
+	cells.append(Cell(2, Color(1,1,0)))
+	cells.append(Cell(2, Color(1,1,0)))
+	cells.append(Cell(2, Color(1,1,0)))
+	#2
+	cells.append(Cell(1, Color(0,1,0)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(2, Color(1,1,0)))
+	#3
+	cells.append(Cell(1, Color(0,1,0)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(2, Color(1,1,0)))
+	#4
+	cells.append(Cell(1, Color(0,1,0)))
+	cells.append(Cell(1, Color(0,1,0)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(2, Color(1,1,0)))
+	#5
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(1, Color(0,1,0)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(2, Color(1,1,0)))
+	#6
+	cells.append(Cell(1, Color(0,1,0)))
+	cells.append(Cell(1, Color(0,1,0)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(0, Color(0,0,1)))
 	cells.append(Cell(1, Color(1,0,1)))
-	cells.append(Cell(0, Color(1,0,0)))
-	cells.append(Cell(0, Color(1,0,0)))
-	cells.append(Cell(2, Color(1,1,0)))
-	cells.append(Cell(2, Color(1,1,0)))
 	cells.append(Cell(1, Color(0,1,0)))
-	cells.append(Cell(0, Color(1,0,0)))
-	cells.append(Cell(2, Color(1,1,0)))
-	cells.append(Cell(2, Color(1,1,0)))
 	cells.append(Cell(1, Color(0,1,0)))
-	cells.append(Cell(0, Color(0,0,1)))
-	cells.append(Cell(0, Color(1,0,0)))
 	cells.append(Cell(1, Color(0,1,0)))
+	#7
 	cells.append(Cell(1, Color(0,1,0)))
 	cells.append(Cell(0, Color(0,0,1)))
 	cells.append(Cell(0, Color(0,0,1)))
-	cells.append(Cell(0, Color(1,0,0)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(0, Color(0,0,1)))
 	cells.append(Cell(1, Color(0,1,0)))
+	#8
+	cells.append(Cell(1, Color(0,1,0)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(1, Color(0,1,0)))
+	cells.append(Cell(1, Color(0,1,0)))
+	cells.append(Cell(1, Color(0,1,0)))
+	cells.append(Cell(1, Color(0,1,0)))
+	cells.append(Cell(1, Color(0,1,0)))
+	cells.append(Cell(1, Color(0,1,0)))
+	#9
+	cells.append(Cell(1, Color(0,1,0)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(1, Color(0,1,0)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(0, Color(0,0,1)))
+	#10
+	cells.append(Cell(1, Color(0,1,0)))
+	cells.append(Cell(1, Color(0,1,0)))
+	cells.append(Cell(1, Color(0,1,0)))
+	cells.append(Cell(1, Color(0,1,0)))
+	cells.append(Cell(1, Color(0,1,0)))
+	cells.append(Cell(0, Color(0,0,1)))
+	cells.append(Cell(0, Color(0,0,1)))
 	cells.append(Cell(0, Color(0,0,1)))
 	cells.append(Cell(0, Color(0,0,1)))
 	cells.append(Cell(0, Color(0,0,1)))

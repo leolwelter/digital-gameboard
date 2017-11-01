@@ -4,6 +4,7 @@ from color import Color
 class Creature:
 	MAX_CREATURE_ID = 255
 	MAX_MOVEMENT = 255
+	LEGAL_MOVEMENT = 100
 	
 	_creatureID = 0
 	
@@ -14,7 +15,7 @@ class Creature:
 		else:
 			Creature._creatureID += 1
 		self.name = name
-		if movement > Creature.MAX_MOVEMENT:
+		if (movement > Creature.LEGAL_MOVEMENT) and (movement != Creature.MAX_MOVEMENT):
 			movement = 0
 		self.movement = movement
 		self.player = player

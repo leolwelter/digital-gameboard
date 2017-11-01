@@ -9,6 +9,7 @@ import {AngularFireAuth} from 'angularfire2/auth';
 
 // Authored
 import {GameMap} from '../_types/GameMap';
+import {Cell} from '../_types/Cell';
 
 @Injectable() // for dependency injection
 export class MapService {
@@ -57,5 +58,11 @@ export class MapService {
     const uid = this.afAuth.auth.currentUser.uid;
     const path = 'users/' + uid + '/maps/' + map + '/cells/';
     return this.db.list(path).valueChanges();
+  }
+
+  getCellsRef(map: string): AngularFireList<Cell> {
+    const uid = this.afAuth.auth.currentUser.uid;
+    const path = 'users/' + uid + '/maps/' + map + '/cells/';
+    return this.db.list(path);
   }
 }

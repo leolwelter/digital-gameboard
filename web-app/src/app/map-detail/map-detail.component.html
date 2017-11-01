@@ -1,52 +1,36 @@
-<mat-sidenav-container>
-  <mat-tab-group *ngIf="(cellList | async)">
-    <!--map editor-->
-    <mat-tab label="Edit" >
-      <mat-toolbar>EDITOR</mat-toolbar>
-      <mat-grid-list [cols]="columns" class="editorGrid col-xs-8 col-xs-offset-2">
+<mat-tab-group *ngIf="columns != 0">
+  <!--map editor-->
+  <mat-tab label="Edit" >
+    <mat-toolbar class="col-xs-12">
+      <span>Editor</span>
+      <span class="filler"></span>
+      <button mat-icon-button (click)="saveMap()">
+        <mat-icon>save</mat-icon>
+      </button>
+      <button mat-icon-button>
+        <mat-icon>settings</mat-icon>
+      </button>
+    </mat-toolbar>
+    <div class="editorGrid col-xs-6 col-xs-offset-3">
+      <mat-grid-list [cols]="columns">
         <mat-grid-tile *ngFor="let cell of (cellList | async)">
-          <button mat-raised-button class="cellTile"  [ngStyle]="{'background-color': getCellColor(cell.color)}">
-            R:{{ cell.color.red }} G: {{cell.color.green }} B: {{ cell.color.blue }}
+          <button mat-raised-button
+                  (click)="cellSelect(cell)"
+                  class="cellTile"
+                  [ngStyle]="{'background-color': getCellColor(cell.color)}">
+            #{{ cell.color.red }} {{ cell.color.green }} {{ cell.color.blue }}
           </button>
         </mat-grid-tile>
       </mat-grid-list>
-    </mat-tab>
+    </div>
+    <div class="col-xs-3">
+    </div>
+  </mat-tab>
 
-    <!--dm notes -->
-    <mat-tab label="Notes">
-      <mat-toolbar>NOTES</mat-toolbar>
-    </mat-tab>
+  <!-- info tab -->
 
-    <!--map info -->
-    <mat-tab>
-      <ng-template mat-tab-label>
-        <button mat-icon-button>
-          <mat-icon>info</mat-icon>
-        </button>
-      </ng-template>
-
-      <mat-toolbar class="info-toolbar" color="primary">
-        <span>Stats: {{ map.name }}</span>
-        <span class="filler"></span>
-      </mat-toolbar>
-      <mat-list >
-        <!--map stats-->
-        <mat-list-item *ngFor="let stat of stats">
-          <mat-icon mat-list-icon>data</mat-icon>
-          <h4 mat-line>{{stat}}</h4>
-        </mat-list-item>
-        <!--players -->
-        <mat-divider></mat-divider>
-        <h3 mat-subheader>Players</h3>
-        <mat-list-item *ngFor="let character of (mapData | async)?.characters">
-          <mat-icon mat-list-icon>person</mat-icon>
-          <h4 mat-line>{{character.name}}</h4>
-          <p mat-line> {{character.classOne}} </p>
-        </mat-list-item>
-      </mat-list>
-    </mat-tab>
-  </mat-tab-group>
-</mat-sidenav-container>
+  <!-- help tab -->
+</mat-tab-group>
 
 <!--loading-->
 <mat-progress-spinner *ngIf="!mapData"></mat-progress-spinner>

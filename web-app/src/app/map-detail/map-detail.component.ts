@@ -12,9 +12,10 @@ import {GameMap} from '../_types/GameMap';
 // AngularFire2
 import {AngularFireList, AngularFireObject} from 'angularfire2/database';
 import {Observable} from 'rxjs/Observable';
-import {MatSnackBar} from '@angular/material';
+import {MatDialog, MatSnackBar} from '@angular/material';
 import {Cell} from '../_types/Cell';
 import {Color} from '../_types/Color';
+import {PaletteDialogComponent} from "./palette-dialog/palette-dialog.component";
 
 
 @Component({
@@ -28,12 +29,14 @@ export class MapDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private location: Location,
     private snackbar: MatSnackBar,
+    private dialog: MatDialog
   ) {}
   map: GameMap;
-  stats: string[]; // init later?
-  columns: number;
+  stats: string[];
+  columns = 0;
   mapRef: AngularFireObject<GameMap>;
   mapData: Observable<GameMap>;
+  cellsRef: AngularFireList<Cell>;
   cellList: Observable<any[]>;
 
   ngOnInit(): void {
@@ -41,9 +44,13 @@ export class MapDetailComponent implements OnInit {
       const name = params.get('name');
       this.mapRef = this.mapService.getMapRef(name);
       this.mapData = this.mapRef.valueChanges();
-      this.columns = 0;
       this.mapData.subscribe(rData => {
         this.initMap(rData);
+      });
+
+      this.cellsRef = this.mapService.getCellsRef(name);
+      this.cellList = this.cellsRef.snapshotChanges().map(changes => {
+        return changes.map(c => ({ key: c.payload.key, ...c.payload.val() }));
       });
     });
   }
@@ -52,7 +59,6 @@ export class MapDetailComponent implements OnInit {
   initMap(mapData: GameMap): void {
     this.map = new GameMap(mapData);
     this.columns = this.map.sizeX;
-    this.cellList = this.mapService.getCellsObservableList(this.map.name);
   }
 
   saveMap(): void {
@@ -65,12 +71,30 @@ export class MapDetailComponent implements OnInit {
       });
   }
 
+
+  saveCell(key: string, cellData: Cell): void {
+    console.log(key, cellData);
+    this.cellsRef.update(key, cellData);
+  }
+
+  cellSelect(cell: Cell) {
+    // Open dialog for celldata
+    const dRef = this.dialog.open(
+      PaletteDialogComponent,
+      { width: '75vw'}
+    );
+    // set celldata then save cell
+    dRef.afterClosed().subscribe(cellData => {
+      console.log(cellData);
+    });
+  }
+
   goBack(): void {
     this.location.back();
   }
 
   getCellColor(color: Color): string {
-    const scale = 3;
+    const scale = 4;
     const red = (color.red * scale).toString(16);
     const green = (color.green * scale).toString(16);
     const blue = (color.blue * scale).toString(16);

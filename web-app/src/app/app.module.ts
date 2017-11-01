@@ -31,6 +31,7 @@ import {NewMapComponent} from './map-list/new-map/new-map.component';
 import {DeleteMapComponent} from './map-list/delete-map/delete-map.component';
 import {MapService} from './_services/map.service';
 import {MapDetailComponent} from './map-detail/map-detail.component';
+import {PaletteDialogComponent} from './map-detail/palette-dialog/palette-dialog.component';
 
 @NgModule({
   imports: [
@@ -55,6 +56,7 @@ import {MapDetailComponent} from './map-detail/map-detail.component';
     NewMapComponent,
     DeleteMapComponent,
     MapDetailComponent,
+    PaletteDialogComponent,
     // Navigation
     DashboardComponent,
     LoginComponent,
@@ -73,6 +75,7 @@ import {MapDetailComponent} from './map-detail/map-detail.component';
     DeleteCharacterComponent,
     NewMapComponent,
     DeleteMapComponent,
+    PaletteDialogComponent,
   ],
   bootstrap: [AppComponent],
 })

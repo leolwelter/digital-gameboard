@@ -11,7 +11,9 @@ import {GameMap} from '../_types/GameMap';
 import {MatDialog, MatSnackBar} from '@angular/material';
 import {Cell} from '../_types/Cell';
 import {Color} from '../_types/Color';
+import {Item} from '../_types/Item';
 import {PaletteDialogComponent} from './palette-dialog/palette-dialog.component';
+import {CharacterService} from '../_services/character.service';
 
 // AngularFire2
 import {AngularFireList, AngularFireObject} from 'angularfire2/database';
@@ -26,6 +28,7 @@ import {Observable} from 'rxjs/Observable';
 export class MapDetailComponent implements OnInit {
   constructor(
     private mapService: MapService,
+    private characterService: CharacterService,
     private route: ActivatedRoute,
     private location: Location,
     private snackbar: MatSnackBar,
@@ -38,9 +41,15 @@ export class MapDetailComponent implements OnInit {
   mapData: Observable<GameMap>;
   cellsRef: AngularFireList<Cell>;
   cellList: Observable<any[]>;
+  terrainRefList: AngularFireList<any>;
+  terrainList: Observable<any[]>;
+  itemRef: AngularFireList<Item>;
+  itemList: Observable<any[]>;
+  selectedAsset: any;
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
+      // load map data
       const name = params.get('name');
       this.mapRef = this.mapService.getMapRef(name);
       this.mapData = this.mapRef.valueChanges();
@@ -53,6 +62,12 @@ export class MapDetailComponent implements OnInit {
         return changes.map(c => ({ key: c.payload.key, ...c.payload.val() }));
       });
     });
+    // load terrain data
+    this.terrainRefList = this.mapService.getPublicTerrainReferenceList();
+    this.terrainList = this.terrainRefList.snapshotChanges().map(changes => {
+      return changes.map(c => ({ key: c.payload.key, ...c.payload.val() }));
+    });
+
   }
 
 
@@ -100,10 +115,15 @@ export class MapDetailComponent implements OnInit {
     });
   }
 
-  goBack(): void {
-    this.location.back();
+  toggleBrush(asset: any, assetType: string) {
+    // if the asset is the same as selected, clear it and return
+    if (asset === this.selectedAsset) {
+      this.selectedAsset = null;
+      return;
+    }
+    this.selectedAsset = asset;
+    console.log(this.selectedAsset);
   }
-
 
   getCellColor(color: Color): string {
     const scale = 4;
@@ -111,5 +131,13 @@ export class MapDetailComponent implements OnInit {
     const green = (color.green * scale).toString(16);
     const blue = (color.blue * scale).toString(16);
     return ('#' + red + green + blue);
+  }
+
+  getTerrainColor(red: number, green: number, blue: number): string {
+    const scale = 4;
+    const redHex = (red * scale).toString(16);
+    const greenHex = (green * scale).toString(16);
+    const blueHex = (blue * scale).toString(16);
+    return ('#' + redHex + greenHex + blueHex);
   }
 }

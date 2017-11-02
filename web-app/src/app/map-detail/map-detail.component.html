@@ -1,8 +1,8 @@
 <mat-tab-group *ngIf="columns != 0">
   <!--map editor-->
-  <mat-tab label="Edit" >
+  <mat-tab label="Edit">
     <mat-toolbar class="col-xs-12">
-      <span>Editor</span>
+      <span>Editor: {{ map.name }}</span>
       <span class="filler"></span>
       <button mat-icon-button (click)="saveMap()">
         <mat-icon>save</mat-icon>
@@ -26,7 +26,35 @@
     </div>
 
     <!-- quick-access brush tools -->
-    <div class="col-xs-3">
+    <div class="col-xs-3 col-lg-4 quick-brush-panel">
+      <mat-list>
+        <h3 mat-subheader>
+          <mat-icon mat-list-icon>map</mat-icon>
+          Terrain
+        </h3>
+        <div *ngIf="terrainList" class="quick-brush-panel-section">
+          <mat-list-item *ngFor="let terrain of terrainList | async">
+            <p mat-line>
+              <button mat-raised-button
+                      [ngStyle]="{'background-color': getTerrainColor(terrain.red, terrain.green, terrain.blue)}"
+                      (click)="toggleBrush(terrain, 'terrain')">
+                {{ terrain.key }}
+              </button>
+            </p>
+          </mat-list-item>
+        </div>
+        <mat-divider></mat-divider>
+        <h3 mat-subheader>
+          <mat-icon mat-list-icon>work</mat-icon>
+          Items
+        </h3>
+        <div *ngIf="itemList" class="quick-brush-panel-section">
+          <mat-list-item *ngFor="let item of itemList | async">
+            <h4 mat-line>{{ item.key }}</h4>
+            <p mat-line> {{ item.rarity }} </p>
+          </mat-list-item>
+        </div>
+      </mat-list>
     </div>
   </mat-tab>
 

@@ -1,9 +1,22 @@
 <h3>Select Asset</h3>
 <mat-tab-group>
+  <mat-tab label="Terrains">
+    <mat-list>
+      <mat-list-item *ngFor="let terrain of (terrainList | async)">
+        <mat-icon mat-list-icon>map</mat-icon>
+        <h4 mat-line>{{terrain.key}}</h4>
+        <button mat-raised-button
+                mat-icon-button
+                [ngStyle]="{'background-color': getTerrainColor(terrain.red, terrain.green, terrain.blue)}"
+                (click)="onSelect(terrain)">
+          <mat-icon>add</mat-icon>
+        </button>
+      </mat-list-item>
+    </mat-list>
+  </mat-tab>
+
   <mat-tab label="Players">
-    <mat-selection-list *ngFor="let i of items">
-      {{ i }}
-    </mat-selection-list>
+    <span *ngIf="!players">No Players in this game!</span>
   </mat-tab>
 
   <mat-tab label="Monsters">
@@ -14,7 +27,5 @@
 
   </mat-tab>
 
-  <mat-tab label="Terrains">
 
-  </mat-tab>
 </mat-tab-group>

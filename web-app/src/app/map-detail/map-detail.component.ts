@@ -8,14 +8,14 @@ import 'rxjs/add/operator/switchMap';
 // Authored
 import {MapService} from '../_services/map.service';
 import {GameMap} from '../_types/GameMap';
-
-// AngularFire2
-import {AngularFireList, AngularFireObject} from 'angularfire2/database';
-import {Observable} from 'rxjs/Observable';
 import {MatDialog, MatSnackBar} from '@angular/material';
 import {Cell} from '../_types/Cell';
 import {Color} from '../_types/Color';
 import {PaletteDialogComponent} from './palette-dialog/palette-dialog.component';
+
+// AngularFire2
+import {AngularFireList, AngularFireObject} from 'angularfire2/database';
+import {Observable} from 'rxjs/Observable';
 
 
 @Component({
@@ -77,7 +77,7 @@ export class MapDetailComponent implements OnInit {
     this.cellsRef.update(key, cellData);
   }
 
-  cellSelect(cell: Cell) {
+  cellSelect(cell: Cell, key: string) {
     // Open dialog for celldata
     const dRef = this.dialog.open(
       PaletteDialogComponent,
@@ -85,13 +85,25 @@ export class MapDetailComponent implements OnInit {
     );
     // set celldata then save cell
     dRef.afterClosed().subscribe(cellData => {
-      console.log(cellData);
+      if (cellData) {
+        this.cellsRef.update(key, {
+          'cost': cellData.cost,
+          'color': {
+            'red': cellData.red,
+            'green': cellData.green,
+            'blue': cellData.blue
+          },
+          'coordX': cell.coordX,
+          'coordY': cell.coordY
+        });
+      }
     });
   }
 
   goBack(): void {
     this.location.back();
   }
+
 
   getCellColor(color: Color): string {
     const scale = 4;

@@ -25,7 +25,7 @@ export class GameMap {
     let i, j: number;
     for (i = 0; i < this.sizeY; i++) {
       for (j = 0; j < this.sizeX; j++) {
-        cellsObject[j + ',' + i] = (new Cell(j, i, new Color(3, 3, 3), 1));
+        cellsObject[j + ',' + i] = (new Cell(j, i, new Color(0, 2, 0), 1));
       }
     }
     this.cells = cellsObject;

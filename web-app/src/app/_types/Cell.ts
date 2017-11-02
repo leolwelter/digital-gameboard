@@ -13,7 +13,7 @@ export class Cell {
   coordY: number;
   color: Color;
   cost: number;
-  creature: string; // Character or Monsters
-  items: Item[]; // TODO
+  creature?: string; // Character or Monsters
+  items?: Item[]; // TODO
 
 }

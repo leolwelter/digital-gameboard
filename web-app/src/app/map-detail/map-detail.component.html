@@ -11,12 +11,12 @@
         <mat-icon>settings</mat-icon>
       </button>
     </mat-toolbar>
-    <div class="editorGrid col-xs-6 col-xs-offset-3">
-      <mat-grid-list [cols]="columns">
-        <mat-grid-tile *ngFor="let cell of (cellList | async)">
+    <div class="editorGrid col-xs-6 col-xs-offset-3 col-lg-4 col-lg-offset-4">
+      <mat-grid-list [cols]="columns" rowHeight="60px">
+        <mat-grid-tile class="editorTile" *ngFor="let cell of (cellList | async)">
           <button mat-raised-button
                   (click)="cellSelect(cell)"
-                  class="cellTile"
+                  class="cellButton"
                   [ngStyle]="{'background-color': getCellColor(cell.color)}">
             #{{ cell.color.red }} {{ cell.color.green }} {{ cell.color.blue }}
           </button>

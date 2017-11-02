@@ -19,10 +19,13 @@ export class MapService {
   ) {}
 
 
-  // methods
+  /*
+  GameMap methods
+   */
   createMap(map: GameMap) {
     const uid = this.afAuth.auth.currentUser.uid;
     const path = 'users/' + uid + '/maps/' + map.name;
+    map.resetMap();
     return this.db.object(path).set(map);
   }
 
@@ -54,6 +57,10 @@ export class MapService {
     }
   }
 
+
+  /*
+  Cell methods
+   */
   getCellsObservableList(map: string): Observable<any[]> {
     const uid = this.afAuth.auth.currentUser.uid;
     const path = 'users/' + uid + '/maps/' + map + '/cells/';
@@ -64,5 +71,26 @@ export class MapService {
     const uid = this.afAuth.auth.currentUser.uid;
     const path = 'users/' + uid + '/maps/' + map + '/cells/';
     return this.db.list(path);
+  }
+
+
+  /*
+  Terrain methods
+   */
+  getPublicTerrainObservableList(): Observable<any[]> {
+    const path = 'terrain/';
+    return this.db.list(path).valueChanges();
+  }
+  getPublicTerrainReferenceList(): AngularFireList<any> {
+    const path = 'terrain/';
+    return this.db.list(path);
+  }
+  getPublicTerrainObservable(name: string): Observable<any> {
+    const path = 'terrain/' + name;
+    return this.db.object(path).valueChanges();
+  }
+  getPublicTerrainRef(name: string): AngularFireObject<any> {
+    const path = 'terrain' + name;
+    return this.db.object(path);
   }
 }

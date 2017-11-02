@@ -15,7 +15,7 @@ import {Observable} from 'rxjs/Observable';
 import {MatDialog, MatSnackBar} from '@angular/material';
 import {Cell} from '../_types/Cell';
 import {Color} from '../_types/Color';
-import {PaletteDialogComponent} from "./palette-dialog/palette-dialog.component";
+import {PaletteDialogComponent} from './palette-dialog/palette-dialog.component';
 
 
 @Component({

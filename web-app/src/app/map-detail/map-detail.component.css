@@ -37,7 +37,12 @@ mat-grid-tile {
   max-height: 30vh;
 }
 
-.quick-brush-selected {
+.brush-cursor {
+  cursor: nw-resize;
+}
 
+.quick-brush,
+.selected {
+  border: #000 1px groove;
 }
 

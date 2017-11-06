@@ -18,6 +18,7 @@
           <button mat-raised-button
                   (click)="cellSelect(cell, cell.key)"
                   class="cellButton"
+                  [class.brush-cursor]="null !== selectedAsset"
                   [ngStyle]="{'background-color': getCellColor(cell.color)}">
             {{ cell.key }}
           </button>
@@ -28,6 +29,7 @@
     <!-- quick-access brush tools -->
     <div class="col-xs-3 col-lg-4 quick-brush-panel">
       <mat-list>
+        <h1 mat-subheader>Quick Brush</h1>
         <h3 mat-subheader>
           <mat-icon mat-list-icon>map</mat-icon>
           Terrain
@@ -37,6 +39,7 @@
             <p mat-line>
               <button mat-raised-button
                       [ngStyle]="{'background-color': getTerrainColor(terrain.red, terrain.green, terrain.blue)}"
+                      [class.selected]="terrain === selectedAsset"
                       (click)="toggleBrush(terrain, 'terrain')">
                 {{ terrain.key }}
               </button>
@@ -54,6 +57,7 @@
             <p mat-line> {{ item.rarity }} </p>
           </mat-list-item>
         </div>
+        <mat-divider></mat-divider>
       </mat-list>
     </div>
   </mat-tab>

@@ -46,6 +46,7 @@ export class MapDetailComponent implements OnInit {
   itemRef: AngularFireList<Item>;
   itemList: Observable<any[]>;
   selectedAsset: any;
+  selectedAssetType: string;
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
@@ -69,7 +70,8 @@ export class MapDetailComponent implements OnInit {
     this.terrainList = this.terrainRefList.snapshotChanges().map(changes => {
       return changes.map(c => ({ key: c.payload.key, ...c.payload.val() }));
     });
-
+    // misc
+    this.selectedAsset = null;
   }
 
   saveMap(): void {
@@ -89,36 +91,51 @@ export class MapDetailComponent implements OnInit {
   }
 
   cellSelect(cell: Cell, key: string) {
-    // Open dialog for celldata
-    const dRef = this.dialog.open(
-      PaletteDialogComponent,
-      { width: '75vw'}
-    );
-    // set celldata then save cell
-    dRef.afterClosed().subscribe(cellData => {
-      if (cellData) {
-        this.cellsRef.update(key, {
-          'cost': cellData.cost,
-          'color': {
-            'red': cellData.red,
-            'green': cellData.green,
-            'blue': cellData.blue
-          },
-          'coordX': cell.coordX,
-          'coordY': cell.coordY
-        });
-      }
-    });
+    if (this.selectedAsset) {
+      // terrain
+      this.cellsRef.update(key, {
+        'cost': this.selectedAsset.cost,
+        'color': {
+          'red': this.selectedAsset.red,
+          'green': this.selectedAsset.green,
+          'blue': this.selectedAsset.blue
+        },
+        'coordX': cell.coordX,
+        'coordY': cell.coordY
+      });
+    } else {
+      // Open dialog for celldata
+      const dRef = this.dialog.open(
+        PaletteDialogComponent,
+        { width: '75vw'}
+      );
+      // set celldata then save cell
+      dRef.afterClosed().subscribe(cellData => {
+        if (cellData) {
+          this.cellsRef.update(key, {
+            'cost': cellData.cost,
+            'color': {
+              'red': cellData.red,
+              'green': cellData.green,
+              'blue': cellData.blue
+            },
+            'coordX': cell.coordX,
+            'coordY': cell.coordY
+          });
+        }
+      });
+    }
   }
 
   toggleBrush(asset: any, assetType: string) {
     // if the asset is the same as selected, clear it and return
     if (asset === this.selectedAsset) {
       this.selectedAsset = null;
+      this.selectedAssetType = null;
       return;
     }
     this.selectedAsset = asset;
-    console.log(this.selectedAsset);
+    this.selectedAssetType = assetType;
   }
 
   getCellColor(color: Color): string {

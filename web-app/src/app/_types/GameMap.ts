@@ -21,13 +21,15 @@ export class GameMap {
 
   resetMap(): void {
     const cellsObject: object = {};
-    const cellList: Cell[] = [];
     let i, j: number;
-    for (i = 0; i < this.sizeY; i++) {
-      for (j = 0; j < this.sizeX; j++) {
+    let cnt = 0;
+    this.cells = cellsObject;
+    for (j = 0; j < this.sizeY; j++) {
+      for (i = 0; i < this.sizeX; i++) {
         cellsObject[j + ',' + i] = (new Cell(j, i, new Color(0, 2, 0), 1));
+        cellsObject[j + ',' + i].order = cnt;
+        cnt++;
       }
     }
-    this.cells = cellsObject;
   }
 }

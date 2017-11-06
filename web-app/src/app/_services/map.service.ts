@@ -70,7 +70,9 @@ export class MapService {
   getCellsRef(map: string): AngularFireList<Cell> {
     const uid = this.afAuth.auth.currentUser.uid;
     const path = 'users/' + uid + '/maps/' + map + '/cells/';
-    return this.db.list(path);
+    return this.db.list(path, ref => {
+      return ref.orderByChild('order');
+    });
   }
 
 

@@ -14,8 +14,8 @@ export class NewMapComponent {
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
   name: string;
-  dimensionX: number;
-  dimensionY: number;
+  dimensionX = 10;
+  dimensionY = 10;
 
   onNoClick(): void {
     this.dialogRef.close(false);

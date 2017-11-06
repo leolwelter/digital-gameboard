@@ -54,9 +54,11 @@ export class MapDetailComponent implements OnInit {
       this.mapRef = this.mapService.getMapRef(name);
       this.mapData = this.mapRef.valueChanges();
       this.mapData.subscribe(rData => {
-        this.initMap(rData);
+        this.map = new GameMap(rData);
+        this.columns = this.map.sizeX;
       });
 
+      // parse cells
       this.cellsRef = this.mapService.getCellsRef(name);
       this.cellList = this.cellsRef.snapshotChanges().map(changes => {
         return changes.map(c => ({ key: c.payload.key, ...c.payload.val() }));
@@ -68,12 +70,6 @@ export class MapDetailComponent implements OnInit {
       return changes.map(c => ({ key: c.payload.key, ...c.payload.val() }));
     });
 
-  }
-
-
-  initMap(mapData: GameMap): void {
-    this.map = new GameMap(mapData);
-    this.columns = this.map.sizeX;
   }
 
   saveMap(): void {

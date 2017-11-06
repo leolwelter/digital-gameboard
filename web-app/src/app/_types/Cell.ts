@@ -15,5 +15,5 @@ export class Cell {
   cost: number;
   creature?: string; // Character or Monsters
   items?: Item[]; // TODO
-
+  order?: number;
 }

@@ -33,4 +33,8 @@ export class DashboardComponent implements OnInit {
     toMap(name) {
       this.router.navigate(['/myMaps/', name]);
     }
+
+    toMonster(name) {
+      this.router.navigate(['/myMonsters/', name]);
+    }
 }

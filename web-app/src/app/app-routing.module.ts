@@ -16,13 +16,13 @@ import {MapDetailComponent} from './map-detail/map-detail.component';
 // Define all routes for the application
 const routes: Routes = [
   {
-    path: 'myCharacters',
-    component: CharacterListComponent,
+    path: 'dashboard',
+    component: DashboardComponent,
     canActivate: [AuthGuard]
   },
   {
-    path: 'dashboard',
-    component: DashboardComponent,
+    path: 'myCharacters',
+    component: CharacterListComponent,
     canActivate: [AuthGuard]
   },
   {
@@ -38,6 +38,16 @@ const routes: Routes = [
   {
     path: 'myMaps/:name',
     component: MapDetailComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'myMonsters',
+    component: MonsterListComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'myMonsters/:name',
+    component: MonsterDetailComponent,
     canActivate: [AuthGuard]
   },
   {

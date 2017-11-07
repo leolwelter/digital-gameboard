@@ -1,13 +1,13 @@
 import pyrebase
 from PyQt5 import QtWidgets, QtGui, QtCore
 import sys
-import ui_cellEditor
 import Configuration
 import serial
 import time
 import test_ui
 import landingUI
 import ui_cellEditor
+import json
 
 
 #class ApplicationWindow(QtWidgets.QMainWindow, test_ui.Ui_MainWindow):
@@ -67,7 +67,9 @@ class LoginWindow(QtWidgets.QWidget):
             self.loginSignal.emit()  # EMIT SIGNAL
         except:
             self.validation.setText("Incorrect login information.\n")
-        print(self.user)
+            #self.loginSignal.emit()  # EMIT SIGNAL
+        #print(self.auth.current_user)
+        #print("in attemptlogin2")
 
 
 class GameInstance(LoginWindow):
@@ -82,43 +84,82 @@ class GameInstance(LoginWindow):
         self.editui = ui_cellEditor.Ui_MainWindow()
         self.EditWindow = QtWidgets.QMainWindow()
         self.editui.setupUi(self.EditWindow)
-        self.makeMapGrid()
         self.loginSignal.connect(self.loadApp)
 
 
     def loadApp(self):
         self.db = self.firebase.database()
         try:
-            users = self.db.child("users").get()
+            #users = self.db.child("users").get()
             #test = self.db.child("users").child(self.user["localId"]).shallow().get()
-            userdata = users.val()[self.auth.current_user["localId"]]
+            self.pullMapString()
+            self.makeMapGrid()
             self.LandingWindow.show()
-        except:
-            print("nope")
+        #except:
+        #    print("nopeee")
+        finally:
+            pass
 
     def makeMapGrid(self):
-        self.mapx = 40
-        self.mapy = 40
+        self.mapx = self.map["sizeX"]
+        self.mapy = self.map["sizeY"]
         self.maplayout = QtWidgets.QGridLayout()
         for i in range(self.mapy):
-            for j in range(self.mapx):
+           for j in range(self.mapx):
                 button = QtWidgets.QPushButton()
                 button.setObjectName("tile_row" + str(i) + "col" + str(j))
                 button.setFixedHeight(30)
                 button.setFixedWidth(30)
                 button.clicked.connect(lambda z=1, m=i, ll=j: self.editCell(m, ll))
-                #button.setText(str(i) + ", " + str(j))
-                button.setStyleSheet("background-color: green; border-radius: 0px; border: 1px solid gray;")
+                self.makeCSSColor(i, j)
+                button.setStyleSheet("background-color: #"+self.tilecolor+"; border-radius: 0px; border: 1px solid gray;")
 
                 self.maplayout.addWidget(button, i, j, 1, 1)
-        self.landingui.scrollAreaWidgetContents.resize(30*j, 30*i)
+        self.landingui.scrollAreaWidgetContents.resize(30*self.mapx, 30*self.mapy)
         self.landingui.scrollAreaWidgetContents.setLayout(self.maplayout)
+
+    def pullMapString(self):
+        self.mapref = self.db.child("users").child(self.user["localId"]).child("maps").child("Testmap").get()
+        self.map = self.mapref.val()
 
 
     def editCell(self, row, col):
-        print(str(row) + "row, and col is " + str(col))
+        #print(str(row) + "row, and col is " + str(col))
+        currentCell = self.map["cells"][str(row)+","+str(col)]
+        tab1text = QtWidgets.QLineEdit()
+        tab1label = QtWidgets.QTextBrowser()
+        tab1label.setText("Red Value:")
+        tab1label.setFixedHeight(30)
+        tab1text.setText(str(currentCell["color"]["red"]))
+        tab2label = QtWidgets.QTextBrowser()
+        tab2label.setText("Green Value:")
+        tab2label.setFixedHeight(30)
+        tab2text = QtWidgets.QLineEdit()
+        tab2text.setText(str(currentCell["color"]["green"]))
+        tab3label = QtWidgets.QTextBrowser()
+        tab3label.setText("Blue Value:")
+        tab3label.setFixedHeight(30)
+        tab3text = QtWidgets.QLineEdit()
+        tab3text.setText(str(currentCell["color"]["blue"]))
+        cellupdatebtn = QtWidgets.QPushButton()
+        cellupdatebtn.setText("Update cell")
+        self.editui.gridLayout_3.addWidget(tab1label, 0, 0, 1, 1)
+        self.editui.gridLayout_3.addWidget(tab1text, 0, 1, 1, 1)
+        self.editui.gridLayout_3.addWidget(tab2label, 1, 0, 1, 1)
+        self.editui.gridLayout_3.addWidget(tab2text, 1, 1, 1, 1)
+        self.editui.gridLayout_3.addWidget(tab3label, 2, 0, 1, 1)
+        self.editui.gridLayout_3.addWidget(tab3text, 2, 1, 1, 1)
+        self.editui.gridLayout_3.addWidget(cellupdatebtn, 3, 0, 1, 1)
         self.EditWindow.show()
 
+    def makeCSSColor(self, row, col):
+        self.red = str(hex(round(int(self.map["cells"][str(row)+","+str(col)]["color"]["red"])*255/7))[2:].zfill(2))
+        self.green = str(hex(round(int(self.map["cells"][str(row)+","+str(col)]["color"]["green"])*255/7))[2:].zfill(2))
+        self.blue = str(hex(round(int(self.map["cells"][str(row)+","+str(col)]["color"]["blue"])*255/3))[2:].zfill(2))
+        self.tilecolor = self.red + self.green + self.blue
+
+
+    #def populateEditor(self, row, col):
 
 
     def pullFirebase(self, jsonDict):
@@ -133,6 +174,7 @@ class GameInstance(LoginWindow):
             characterInfoString += "\n\n"
         #print(characterInfoString)
         self.appui.textBrowser.setText(characterInfoString)
+
 
 
 

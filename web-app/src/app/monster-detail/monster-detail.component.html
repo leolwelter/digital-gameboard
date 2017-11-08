@@ -1,0 +1,34 @@
+<mat-tab-group *ngIf="monsterData | async">
+  <mat-tab label="Overview">
+    <mat-card class="col-xs-12">
+      <!--row 1-->
+      <mat-card class="col-xs-12">
+        {{ monsterData | async | json }}
+      </mat-card>
+
+      <!--update button-->
+      <mat-card-actions>
+        <button mat-raised-button color="accent" (click)="saveMonster()">
+          Save Changes
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </mat-tab>
+
+  <!--tab 2-->
+  <mat-tab label="Lore">
+    Page 2
+  </mat-tab>
+
+  <!--tab 3-->
+  <mat-tab label="Spells and Abilities">
+    Page 3
+  </mat-tab>
+</mat-tab-group>
+
+<!--progress spinner -->
+<mat-spinner color="accent" *ngIf="!monsterData"></mat-spinner>
+
+
+
+

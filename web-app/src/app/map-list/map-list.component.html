@@ -6,7 +6,7 @@
       <mat-expansion-panel *ngFor="let map of myMaps | async">
         <mat-expansion-panel-header (click)="onSelect(map)">
           <mat-panel-title> {{ map.name }}</mat-panel-title>
-          <mat-panel-description> {{ map.sizeX }} x {{ map.sizeY }}</mat-panel-description>
+          <mat-panel-description> {{ map.sizeY }} x {{ map.sizeX }}</mat-panel-description>
         </mat-expansion-panel-header>
         <mat-action-row>
           <button class="actionButton" mat-raised-button color="primary" (click)="gotoDetail()"> Details </button>

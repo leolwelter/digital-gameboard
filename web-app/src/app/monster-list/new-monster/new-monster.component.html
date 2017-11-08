@@ -1,0 +1,15 @@
+<form class="col-xs-12">
+  <h3>New Monster</h3>
+  <div>
+    <label for="inputName">Name</label>
+    <input
+      id="inputName"
+      name="name"
+      [(ngModel)]="name"
+      type="text"
+      placeholder="Pirate Man"
+    >
+    <button class="btn btn-success" (click)="createMonster()">+</button>
+  </div>
+
+</form>

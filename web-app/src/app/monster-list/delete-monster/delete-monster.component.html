@@ -1,0 +1,16 @@
+<form class="col-xs-12">
+  <h3>Are you sure?</h3>
+  <div>
+    <label for="inputName">Type name of monster</label>
+    <input
+      (keyup)="checkName()"
+      id="inputName"
+      name="name"
+      [(ngModel)]="name"
+      type="text"
+      placeholder="Pirate Man"
+    >
+    <button [disabled]="!nameCheck" class="btn btn-danger" (click)="confirmDelete()">Delete</button>
+  </div>
+
+</form>

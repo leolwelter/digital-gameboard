@@ -9,7 +9,8 @@
 /node_modules
 
 # IDEs and editors
-/.idea
+../.idea
+../__pycache__/
 .project
 .classpath
 .c9/

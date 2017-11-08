@@ -32,6 +32,11 @@ import {DeleteMapComponent} from './map-list/delete-map/delete-map.component';
 import {MapService} from './_services/map.service';
 import {MapDetailComponent} from './map-detail/map-detail.component';
 import {PaletteDialogComponent} from './map-detail/palette-dialog/palette-dialog.component';
+import {MonsterDetailComponent} from './monster-detail/monster-detail.component';
+import {MonsterListComponent} from './monster-list/monster-list.component';
+import {DeleteMonsterComponent} from './monster-list/delete-monster/delete-monster.component';
+import {NewMonsterComponent} from './monster-list/new-monster/new-monster.component';
+import {MonsterService} from './_services/monster.service';
 
 @NgModule({
   imports: [
@@ -51,6 +56,11 @@ import {PaletteDialogComponent} from './map-detail/palette-dialog/palette-dialog
     CharacterDetailComponent,
     NewCharacterComponent,
     DeleteCharacterComponent,
+    // Monsters
+    MonsterListComponent,
+    MonsterDetailComponent,
+    NewMonsterComponent,
+    DeleteMonsterComponent,
     // Maps
     MapListComponent,
     NewMapComponent,
@@ -67,12 +77,15 @@ import {PaletteDialogComponent} from './map-detail/palette-dialog/palette-dialog
   ],
   providers: [
     CharacterService,
+    MonsterService,
     MapService,
     AuthGuard,
   ],
   entryComponents: [
     NewCharacterComponent,
     DeleteCharacterComponent,
+    NewMonsterComponent,
+    DeleteMonsterComponent,
     NewMapComponent,
     DeleteMapComponent,
     PaletteDialogComponent,

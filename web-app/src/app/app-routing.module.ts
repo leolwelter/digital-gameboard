@@ -10,6 +10,8 @@ import {DashboardComponent} from './dashboard/dashboard.component';
 import {AuthGuard} from './_services/auth-guard.service';
 import {CharacterListComponent} from './character-list/character-list.component';
 import {CharacterDetailComponent} from './character-detail/character-detail.component';
+import {MonsterListComponent} from './monster-list/monster-list.component';
+import {MonsterDetailComponent} from './monster-detail/monster-detail.component';
 import {MapListComponent} from './map-list/map-list.component';
 import {MapDetailComponent} from './map-detail/map-detail.component';
 

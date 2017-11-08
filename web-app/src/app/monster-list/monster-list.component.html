@@ -1,0 +1,36 @@
+<!--Display a list of all monsters for this user-->
+<div class="col-xs-6">
+  <mat-nav-list>
+    <!--display each monster-->
+    <mat-accordion>
+      <mat-expansion-panel *ngFor="let monster of myMonsters | async">
+        <mat-expansion-panel-header (click)="onSelect(monster)">
+          <mat-panel-title> {{ monster.name }} </mat-panel-title>
+          <mat-panel-description> {{ monster.classOne }} </mat-panel-description>
+        </mat-expansion-panel-header>
+        <mat-action-row>
+          <button class="actionButton" mat-raised-button color="primary" (click)="gotoDetail()"> Details </button>
+          <button class="actionButton" mat-raised-button color="warn" (click)="deleteMonster()"> Delete </button>
+        </mat-action-row>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </mat-nav-list>
+</div>
+
+
+<!--Display preview of selected-->
+<div class="col-xs-6">
+  <div *ngIf="currentMonster">
+    <h2>
+      {{ currentMonster.name }} selected
+    </h2>
+  </div>
+</div>
+
+
+<!--For adding new monsters -->
+<div class="col-xs-12 newButton">
+  <button class="actionButton" mat-fab color="accent" (click)="createMonster()">
+    <mat-icon>add</mat-icon>
+  </button>
+</div>

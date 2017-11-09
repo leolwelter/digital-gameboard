@@ -29,7 +29,6 @@ class GameInstance(LoginWindow):
             self.ser = initUART()
         except Exception as err:
             print("Error in initUART: {0}".format(err))
-            sys.exit(1)
 
         # configure firebase
         self.config = Configuration.getConfig()
@@ -42,14 +41,30 @@ class GameInstance(LoginWindow):
 
     def onLogin(self, userEmail):
         try:
+            #self.ser = 0 #for debugging only
             self.users = self.db.child("users").get()
             self.pullMapString('McDonalds')
             self.makeMapGrid()
-            writeMap(self.map['sizeX'], self.map['sizeY'], self.map['cells'], self.ser)
+            self.cellList = self.cellDictToList(self.map['cells'])
+            writeMap(self.map['sizeX'], self.map['sizeY'], self.cellList, self.ser)
             self.LandingWindow.show()
         except Exception as err:
             print("Error in loading application: {0}".format(err))
             sys.exit(1)
+
+
+    def cellDictToList(self, cellDict):
+        cellList = []
+        for coordKey, data in cellDict.items():
+            print('{0}   |   {1}'.format(coordKey.split(','), data['color']))
+            color = Color(data['color']['red'], data['color']['green'], data['color']['blue'])
+            coordX = data['coordX']
+            coordY = data['coordY']
+            cost = data['cost']
+            order = data['order']
+            cellList.append(Cell(cost, color, coordX=coordX, coordY=coordY, order=order))
+            cellList.sort(key=lambda cell: cell.order)
+        return cellList
 
     def makeMapGrid(self):
         self.mapx = self.map["sizeX"]

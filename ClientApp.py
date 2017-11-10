@@ -35,11 +35,17 @@ class GameInstance(LoginWindow):
         self.openMapAction.triggered.connect(self.loadMap)
         self.exitAction = QAction(QIcon('exit24.png'), 'Exit')
         self.exitAction.triggered.connect(sys.exit)
+        self.loadCharacterAction = QAction(QIcon('open.png'), 'Load')
+        self.loadCharacterAction.triggered.connect(self.loadCharacter)
 
         # Define File menu and add actions
         self.landingui.fileMenu = self.landingui.menubar.addMenu('&File')
         self.landingui.fileMenu.addAction(self.exitAction)
         self.landingui.fileMenu.addAction(self.openMapAction)
+
+        # Define Characters menu
+        self.landingui.characterMenu = self.landingui.menubar.addMenu('&Characters')
+        self.landingui.characterMenu.addAction(self.loadCharacterAction)
         ### landing window ###
 
         self.editui = ui_cellEditor.Ui_MainWindow()
@@ -59,9 +65,38 @@ class GameInstance(LoginWindow):
         self.firebase = pyrebase.initialize_app(self.config)
         self.auth = self.firebase.auth()
         self.db = self.firebase.database()
-
+        self.charRefList = []
+        self.charDataList = []
         # handle login
         self.loginSignal.connect(lambda: self.loadMap(userEmail=self.user['email']))
+
+
+    def loadCharacter(self):
+        try:
+            self.users = self.db.child("users").get()
+
+            characters = self.db.child("users").child(self.user['localId']).child('characters').shallow().get().val()
+            charName, ok = QInputDialog.getItem(self, "Select Character", "Name:", characters, 0, False)
+            if ok and charName:
+                # hacky way of getting coordinates
+                coordY, ok = QInputDialog.getInt(self, "Coordinates", "Row?", 0, 0, self.mapy, 1)
+                if coordY and ok:
+                    coordX, ok = QInputDialog.getInt(self, "Coordinates", "Column?", 0, 0, self.mapx, 1)
+                    if coordX and ok:
+                        charRef = self.db.child("users").child(self.user['localId']).child('characters').child(charName).get()
+                        charData = charRef.val()
+                        self.charRefList.append(charRef)
+                        self.charDataList.append(charData)
+                        self.map['cells'][str(coordX) + ',' + str(coordY)]['creature'] = charData
+                        self.db.update(self.map, token=self.user['idToken'])
+                        charCreature = Creature(charData['name'], 5, True, Color(3, 0, 0), coordX, coordY)
+                        writeCreature(self.ser, charCreature)
+
+
+
+        except Exception as err:
+            print("Error loading character: {0}".format(err))
+
 
     def loadMap(self, userEmail=None):
         try:
@@ -138,6 +173,7 @@ class GameInstance(LoginWindow):
         tab3text.setText(str(currentCell["color"]["blue"]))
         cellupdatebtn = QtWidgets.QPushButton()
         cellupdatebtn.setText("Update cell")
+        cellupdatebtn.clicked.connect(lambda cell=currentCell: self.updateCell(cell))
         self.editui.gridLayout_3.addWidget(tab1label, 0, 0, 1, 1)
         self.editui.gridLayout_3.addWidget(tab1text, 0, 1, 1, 1)
         self.editui.gridLayout_3.addWidget(tab2label, 1, 0, 1, 1)
@@ -146,6 +182,13 @@ class GameInstance(LoginWindow):
         self.editui.gridLayout_3.addWidget(tab3text, 2, 1, 1, 1)
         self.editui.gridLayout_3.addWidget(cellupdatebtn, 3, 0, 1, 1)
         self.EditWindow.show()
+
+    def updateCell(self, cellData):
+        print("Celldata {0}".format(cellData))
+        print(self.EditWindow)
+
+
+
 
     def makeCSSColor(self, row, col):
         red = str(
@@ -156,16 +199,6 @@ class GameInstance(LoginWindow):
             hex(round(int(self.map["cells"][str(row) + "," + str(col)]["color"]["blue"]) * 255 / 3))[2:].zfill(2))
         return red + green + blue
 
-    # def pullFirebase(self, jsonDict):
-    #     characterInfoString = ""
-    #     characters = jsonDict["characters"]
-    #     print(characters)
-    #     for character in sorted(characters.items()):
-    #         characterInfoString += character[0] + "\n"
-    #         specs = character[1]
-    #         for spec in sorted(specs.items()):
-    #             characterInfoString += "\t" + spec[0] + " : " + str(spec[1]) + "\n"
-    #         characterInfoString += "\n\n"
 
 
 

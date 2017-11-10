@@ -1,15 +1,23 @@
-import pyrebase
+# python core
 import sys
-from PyQt5.QtWidgets import QMainWindow, QTextEdit, QAction, QApplication
+
+# PyQt
+from PyQt5.QtWidgets import QMainWindow, QTextEdit, QAction, QApplication, QInputDialog
 from PyQt5.QtGui import QIcon
 
-import Configuration
-import serial
+# UI components
 import test_ui
 import landingUI
 import ui_cellEditor
 from loginUI import *
+
+# embedded
+import serial
 from uart import *
+
+# database
+import pyrebase
+import Configuration
 
 class GameInstance(LoginWindow):
     def __init__(self):
@@ -40,15 +48,19 @@ class GameInstance(LoginWindow):
         self.db = self.firebase.database()
 
         # handle login
-        self.loginSignal.connect(lambda: self.onLogin(userEmail=self.user['email']))
+        self.loginSignal.connect(lambda: self.loadMap(userEmail=self.user['email']))
 
-    def onLogin(self, userEmail):
+    def loadMap(self, userEmail):
         try:
             self.users = self.db.child("users").get()
-            self.pullMapString('McDonalds')
+            print('getting new map')
+            mapName, ok = QInputDialog.getText(None, 'Select Map', 'Enter map name:')
+            if ok:
+                self.pullMapString(mapName)
             self.makeMapGrid()
             self.cellList = self.cellDictToList(self.map['cells'])
-            #writeMap(self.map['sizeX'], self.map['sizeY'], self.cellList, self.ser)
+            if self.ser:
+                writeMap(self.map['sizeX'], self.map['sizeY'], self.cellList, self.ser)
             self.LandingWindow.show()
         except Exception as err:
             print("Error in loading application: {0}".format(err))
@@ -68,6 +80,7 @@ class GameInstance(LoginWindow):
             cellList.sort(key=lambda cell: cell.order)
         return cellList
 
+
     def makeMapGrid(self):
         self.mapx = self.map["sizeX"]
         self.mapy = self.map["sizeY"]
@@ -86,10 +99,6 @@ class GameInstance(LoginWindow):
                 self.maplayout.addWidget(button, i, j, 1, 1)
         self.landingui.scrollAreaWidgetContents.resize(30 * self.mapx, 30 * self.mapy)
         self.landingui.scrollAreaWidgetContents.setLayout(self.maplayout)
-
-    def pullMapString(self, mapName):
-        self.mapref = self.db.child("users").child(self.user["localId"]).child("maps").child(mapName).get()
-        self.map = self.mapref.val()
 
 
     def editCell(self, row, col):
@@ -141,6 +150,11 @@ class GameInstance(LoginWindow):
                 characterInfoString += "\t" + spec[0] + " : " + str(spec[1]) + "\n"
             characterInfoString += "\n\n"
         self.appui.textBrowser.setText(characterInfoString)
+
+
+    def pullMapString(self, mapName):
+        self.mapref = self.db.child("users").child(self.user["localId"]).child("maps").child(mapName).get()
+        self.map = self.mapref.val()
 
 
 if __name__ == '__main__':

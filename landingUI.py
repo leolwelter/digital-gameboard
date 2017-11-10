@@ -8,8 +8,11 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QAction
+from PyQt5.QtWidgets import QAction, QInputDialog
 import sys
+
+from uart import *
+from ClientApp import GameInstance
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -59,10 +62,15 @@ class Ui_MainWindow(object):
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1201, 25))
         self.menubar.setObjectName("menubar")
+        # Define Actions
+        self.openMapAction = QAction(QIcon('open.png'), 'Load Map')
+        self.openMapAction.triggered.connect(GameInstance.loadMap)
         self.exitAction = QAction(QIcon('exit24.png'), 'Exit')
         self.exitAction.triggered.connect(sys.exit)
+        # Define File menu and add actions
         self.fileMenu = self.menubar.addMenu('&File')
         self.fileMenu.addAction(self.exitAction)
+        self.fileMenu.addAction(self.openMapAction)
         self.menuDigital_Gameboard_Console = QtWidgets.QMenu(self.menubar)
         self.menuDigital_Gameboard_Console.setObjectName("menuDigital_Gameboard_Console")
         MainWindow.setMenuBar(self.menubar)
@@ -80,6 +88,7 @@ class Ui_MainWindow(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "DM Console"))
         self.menuDigital_Gameboard_Console.setTitle(_translate("MainWindow", "Digital Gameboard Console"))
+
 
 
 if __name__ == "__main__":

@@ -2,7 +2,7 @@
 import sys
 
 # PyQt
-from PyQt5.QtWidgets import QMainWindow, QTextEdit, QAction, QApplication, QInputDialog
+from PyQt5.QtWidgets import QMainWindow, QTextEdit, QAction, QApplication, QInputDialog, QWidget
 from PyQt5.QtGui import QIcon
 
 # UI components
@@ -24,11 +24,24 @@ class GameInstance(LoginWindow):
         LoginWindow.__init__(self)
         # initialize windows
         self.AppWindow = QtWidgets.QMainWindow()
-        self.appui = test_ui.Ui_MainWindow()
-        self.appui.setupUi(self.AppWindow)
+
+        ### landing window
         self.LandingWindow = QtWidgets.QMainWindow()
         self.landingui = landingUI.Ui_MainWindow()
         self.landingui.setupUi(self.LandingWindow)
+
+        # Define Actions
+        self.openMapAction = QAction(QIcon('open.png'), 'Load Map')
+        self.openMapAction.triggered.connect(self.loadMap)
+        self.exitAction = QAction(QIcon('exit24.png'), 'Exit')
+        self.exitAction.triggered.connect(sys.exit)
+
+        # Define File menu and add actions
+        self.landingui.fileMenu = self.landingui.menubar.addMenu('&File')
+        self.landingui.fileMenu.addAction(self.exitAction)
+        self.landingui.fileMenu.addAction(self.openMapAction)
+        ### landing window ###
+
         self.editui = ui_cellEditor.Ui_MainWindow()
         self.EditWindow = QtWidgets.QMainWindow()
         self.editui.setupUi(self.EditWindow)
@@ -50,7 +63,7 @@ class GameInstance(LoginWindow):
         # handle login
         self.loginSignal.connect(lambda: self.loadMap(userEmail=self.user['email']))
 
-    def loadMap(self, userEmail):
+    def loadMap(self, userEmail=None):
         try:
             self.users = self.db.child("users").get()
             print('getting new map')
@@ -59,18 +72,20 @@ class GameInstance(LoginWindow):
                 self.pullMapString(mapName)
             self.makeMapGrid()
             self.cellList = self.cellDictToList(self.map['cells'])
-            if self.ser:
-                writeMap(self.map['sizeX'], self.map['sizeY'], self.cellList, self.ser)
+            writeMap(self.map['sizeX'], self.map['sizeY'], self.cellList, self.ser)
             self.LandingWindow.show()
         except Exception as err:
             print("Error in loading application: {0}".format(err))
             sys.exit(1)
 
+    def pullMapString(self, mapName):
+        self.mapref = self.db.child("users").child(self.user["localId"]).child("maps").child(mapName).get()
+        self.map = self.mapref.val()
 
     def cellDictToList(self, cellDict):
         cellList = []
         for coordKey, data in cellDict.items():
-            print('{0}   |   {1}'.format(coordKey.split(','), data['color']))
+            #print('{0}   |   {1}'.format(coordKey.split(','), data['color']))
             color = Color(data['color']['red'], data['color']['green'], data['color']['blue'])
             coordX = data['coordX']
             coordY = data['coordY']
@@ -92,12 +107,14 @@ class GameInstance(LoginWindow):
                 button.setFixedHeight(30)
                 button.setFixedWidth(30)
                 button.clicked.connect(lambda z=1, m=i, ll=j: self.editCell(m, ll))
-                self.makeCSSColor(i, j)
+                tilecolor = self.makeCSSColor(i, j)
                 button.setStyleSheet(
-                    "background-color: #" + self.tilecolor + "; border-radius: 0px; border: 1px solid gray;")
+                    "background-color: #" + tilecolor + "; border-radius: 0px; border: 1px solid gray;")
 
                 self.maplayout.addWidget(button, i, j, 1, 1)
         self.landingui.scrollAreaWidgetContents.resize(30 * self.mapx, 30 * self.mapy)
+        if self.landingui.scrollAreaWidgetContents.layout():
+            QWidget().setLayout(self.landingui.scrollAreaWidgetContents.layout())
         self.landingui.scrollAreaWidgetContents.setLayout(self.maplayout)
 
 
@@ -131,30 +148,26 @@ class GameInstance(LoginWindow):
         self.EditWindow.show()
 
     def makeCSSColor(self, row, col):
-        self.red = str(
+        red = str(
             hex(round(int(self.map["cells"][str(row) + "," + str(col)]["color"]["red"]) * 255 / 7))[2:].zfill(2))
-        self.green = str(
+        green = str(
             hex(round(int(self.map["cells"][str(row) + "," + str(col)]["color"]["green"]) * 255 / 7))[2:].zfill(2))
-        self.blue = str(
+        blue = str(
             hex(round(int(self.map["cells"][str(row) + "," + str(col)]["color"]["blue"]) * 255 / 3))[2:].zfill(2))
-        self.tilecolor = self.red + self.green + self.blue
+        return red + green + blue
 
-    def pullFirebase(self, jsonDict):
-        characterInfoString = ""
-        characters = jsonDict["characters"]
-        print(characters)
-        for character in sorted(characters.items()):
-            characterInfoString += character[0] + "\n"
-            specs = character[1]
-            for spec in sorted(specs.items()):
-                characterInfoString += "\t" + spec[0] + " : " + str(spec[1]) + "\n"
-            characterInfoString += "\n\n"
-        self.appui.textBrowser.setText(characterInfoString)
+    # def pullFirebase(self, jsonDict):
+    #     characterInfoString = ""
+    #     characters = jsonDict["characters"]
+    #     print(characters)
+    #     for character in sorted(characters.items()):
+    #         characterInfoString += character[0] + "\n"
+    #         specs = character[1]
+    #         for spec in sorted(specs.items()):
+    #             characterInfoString += "\t" + spec[0] + " : " + str(spec[1]) + "\n"
+    #         characterInfoString += "\n\n"
 
 
-    def pullMapString(self, mapName):
-        self.mapref = self.db.child("users").child(self.user["localId"]).child("maps").child(mapName).get()
-        self.map = self.mapref.val()
 
 
 if __name__ == '__main__':

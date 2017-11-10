@@ -1,9 +1,10 @@
 import pyrebase
-from PyQt5 import QtWidgets, QtGui, QtCore
 import sys
+from PyQt5.QtWidgets import QMainWindow, QTextEdit, QAction, QApplication
+from PyQt5.QtGui import QIcon
+
 import Configuration
 import serial
-import time
 import test_ui
 import landingUI
 import ui_cellEditor
@@ -23,6 +24,8 @@ class GameInstance(LoginWindow):
         self.editui = ui_cellEditor.Ui_MainWindow()
         self.EditWindow = QtWidgets.QMainWindow()
         self.editui.setupUi(self.EditWindow)
+        self.setWindowIcon(QIcon('favicon.ico'))
+
 
         # initialize embedded systems
         try:
@@ -41,12 +44,11 @@ class GameInstance(LoginWindow):
 
     def onLogin(self, userEmail):
         try:
-            #self.ser = 0 #for debugging only
             self.users = self.db.child("users").get()
             self.pullMapString('McDonalds')
             self.makeMapGrid()
             self.cellList = self.cellDictToList(self.map['cells'])
-            writeMap(self.map['sizeX'], self.map['sizeY'], self.cellList, self.ser)
+            #writeMap(self.map['sizeX'], self.map['sizeY'], self.cellList, self.ser)
             self.LandingWindow.show()
         except Exception as err:
             print("Error in loading application: {0}".format(err))
@@ -144,10 +146,10 @@ class GameInstance(LoginWindow):
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     GameInstance = GameInstance()
-    # screen = app.primaryScreen()
-    # size = screen.size()
-    # rect = screen.availableGeometry()
-    # print('Screen: %s' % screen.name())
-    # print('Size: %d x %d' % (size.width(), size.height()))
-    # print('Available: %d x %d' % (rect.width(), rect.height()))
+    screen = app.primaryScreen()
+    size = screen.size()
+    rect = screen.availableGeometry()
+    print('Screen: %s' % screen.name())
+    print('Size: %d x %d' % (size.width(), size.height()))
+    print('Available: %d x %d' % (rect.width(), rect.height()))
     sys.exit(app.exec_())

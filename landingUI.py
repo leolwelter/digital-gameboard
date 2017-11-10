@@ -7,11 +7,15 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QAction
+import sys
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1201, 733)
+
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
@@ -50,14 +54,22 @@ class Ui_MainWindow(object):
         self.bottomButtons.setLayout(self.bottomButtonForm)
         self.gridLayout.addWidget(self.bottomButtons, 2, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
+
+        # Add activities to menu bar
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1201, 25))
         self.menubar.setObjectName("menubar")
+        self.exitAction = QAction(QIcon('exit24.png'), 'Exit')
+        self.exitAction.triggered.connect(sys.exit)
+        self.fileMenu = self.menubar.addMenu('&File')
+        self.fileMenu.addAction(self.exitAction)
         self.menuDigital_Gameboard_Console = QtWidgets.QMenu(self.menubar)
         self.menuDigital_Gameboard_Console.setObjectName("menuDigital_Gameboard_Console")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
+
+
         MainWindow.setStatusBar(self.statusbar)
         self.menubar.addAction(self.menuDigital_Gameboard_Console.menuAction())
 

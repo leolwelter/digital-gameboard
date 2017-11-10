@@ -107,7 +107,7 @@ class GameInstance(LoginWindow):
                 self.pullMapString(mapName)
             self.makeMapGrid()
             self.cellList = self.cellDictToList(self.map['cells'])
-            writeMap(self.map['sizeX'], self.map['sizeY'], self.cellList, self.ser)
+            #writeMap(self.map['sizeX'], self.map['sizeY'], self.cellList, self.ser)
             self.LandingWindow.show()
         except Exception as err:
             print("Error in loading application: {0}".format(err))

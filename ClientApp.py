@@ -67,6 +67,8 @@ class GameInstance(LoginWindow):
         self.db = self.firebase.database()
         self.charRefList = []
         self.charDataList = []
+        self.creatureList = []
+
         # handle login
         self.loginSignal.connect(lambda: self.loadMap(userEmail=self.user['email']))
 
@@ -89,8 +91,11 @@ class GameInstance(LoginWindow):
                         self.charDataList.append(charData)
                         self.map['cells'][str(coordY) + ',' + str(coordX)]['creature'] = charData
                         self.db.child('users').child(self.user['localId']).child('maps').child(self.map['name']).update(self.map, token=self.user['idToken'])
-                        charCreature = Creature(charData['name'], 5, True, Color(0, 2, 2), coordX, coordY)
+                        charCreature = Creature(charData['name'], charData.get('speed'), True, Color(1, 1, 2), coordX, coordY)
+                        self.creatureList.append(charCreature)
+
                         writeCreature(self.ser, charCreature)
+            deleteCreature(self.ser, charCreature)
         except Exception as err:
             print("Error loading character: {0}".format(err))
 

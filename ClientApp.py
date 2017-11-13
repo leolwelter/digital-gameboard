@@ -88,12 +88,9 @@ class GameInstance(LoginWindow):
                         self.charRefList.append(charRef)
                         self.charDataList.append(charData)
                         self.map['cells'][str(coordX) + ',' + str(coordY)]['creature'] = charData
-                        self.db.update(self.map, token=self.user['idToken'])
+                        self.db.child('users').child(self.user['localId']).child('maps').child(self.map['name']).update(self.map, token=self.user['idToken'])
                         charCreature = Creature(charData['name'], 5, True, Color(3, 0, 0), coordX, coordY)
                         writeCreature(self.ser, charCreature)
-
-
-
         except Exception as err:
             print("Error loading character: {0}".format(err))
 
@@ -102,7 +99,8 @@ class GameInstance(LoginWindow):
         try:
             self.users = self.db.child("users").get()
             print('getting new map')
-            mapName, ok = QInputDialog.getText(None, 'Select Map', 'Enter map name:')
+            maps = self.db.child("users").child(self.user['localId']).child('maps').shallow().get().val()
+            mapName, ok = QInputDialog.getItem(self, "Select Map", "Name:", maps, 0, False)
             if ok:
                 self.pullMapString(mapName)
             self.makeMapGrid()
@@ -209,7 +207,7 @@ if __name__ == '__main__':
     screen = app.primaryScreen()
     size = screen.size()
     rect = screen.availableGeometry()
-    print('Screen: %s' % screen.name())
-    print('Size: %d x %d' % (size.width(), size.height()))
-    print('Available: %d x %d' % (rect.width(), rect.height()))
+    # print('Screen: %s' % screen.name())
+    # print('Size: %d x %d' % (size.width(), size.height()))
+    # print('Available: %d x %d' % (rect.width(), rect.height()))
     sys.exit(app.exec_())

@@ -11,6 +11,7 @@ import test_ui
 import landingUI
 import ui_cellEditor
 from loginUI import *
+from extendPushButton import myButton
 
 # embedded
 import serial
@@ -152,7 +153,7 @@ class GameInstance(LoginWindow):
         self.maplayout = QtWidgets.QGridLayout()
         for i in range(self.mapy):
             for j in range(self.mapx):
-                button = QtWidgets.QPushButton()
+                button = myButton()
                 button.setObjectName("tile_row" + str(i) + "col" + str(j))
                 button.setFixedHeight(30)
                 button.setFixedWidth(30)
@@ -169,7 +170,7 @@ class GameInstance(LoginWindow):
 
 
     def editCell(self, row, col):
-        # print(str(row) + "row, and col is " + str(col))
+        self.showCellInfo(row, col)
         currentCell = self.map["cells"][str(row) + "," + str(col)]
         tab1text = QtWidgets.QLineEdit()
         tab1label = QtWidgets.QTextBrowser()
@@ -197,6 +198,16 @@ class GameInstance(LoginWindow):
         self.editui.gridLayout_3.addWidget(tab3text, 2, 1, 1, 1)
         self.editui.gridLayout_3.addWidget(cellupdatebtn, 3, 0, 1, 1)
         self.EditWindow.show()
+
+        def showCellInfo(self, row, col):
+        currentCell = self.map["cells"][str(row) + "," + str(col)]
+        cellinfostring = ""
+        cellinfostring += self.map["name"]+"\n\n"
+        cellinfostring += "Width: "+str(self.map["sizeX"])+"\n"
+        cellinfostring += "Height:"+str(self.map["sizeY"])+"\n\n"
+        cellinfostring += "Current Cell: "+"("+str(row)+","+str(col)+")\n"
+        #cellinfostring += "\tItems: "+currentCell["items"]
+        self.landingui.textBrowser.setText(cellinfostring)
 
     def updateCell(self, cellData):
         print("Celldata {0}".format(cellData))

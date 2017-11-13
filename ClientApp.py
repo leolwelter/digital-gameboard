@@ -87,7 +87,7 @@ class GameInstance(LoginWindow):
                         charData = charRef.val()
                         self.charRefList.append(charRef)
                         self.charDataList.append(charData)
-                        self.map['cells'][str(coordX) + ',' + str(coordY)]['creature'] = charData
+                        self.map['cells'][str(coordY) + ',' + str(coordX)]['creature'] = charData
                         self.db.child('users').child(self.user['localId']).child('maps').child(self.map['name']).update(self.map, token=self.user['idToken'])
                         charCreature = Creature(charData['name'], 5, True, Color(3, 0, 0), coordX, coordY)
                         writeCreature(self.ser, charCreature)

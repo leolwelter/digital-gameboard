@@ -49,9 +49,12 @@ export class CharacterDetailComponent implements OnInit {
         });
     }
 
-
     initPC(charData: Character): void {
       this.pc = new Character(charData);
+    }
+
+    recalcAbs(absIndex: number): void {
+      this.pc.absMods[absIndex] = Math.floor((this.pc.abilities[absIndex] - 10) / 2);
     }
 
     savePC(): void {
@@ -67,6 +70,4 @@ export class CharacterDetailComponent implements OnInit {
     goBack(): void {
         this.location.back();
     }
-
-
 }

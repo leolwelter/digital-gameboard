@@ -99,16 +99,13 @@ class GameInstance(LoginWindow):
         try:
             self.users = self.db.child("users").get()
             print('getting new map')
-<<<<<<< HEAD
             try:
                 print('deleting character list')
                 deleteCreature(self.ser, 255) # should delete everything
             except Exception as err:
                 print('Error in loading application: {0}'.format(err))
-=======
             print('deleting character list')
             deleteCreature(self.ser, 255) # should delete everything
->>>>>>> 60402324124ad90480a4264b237c36e4be93c2c2
             maps = self.db.child("users").child(self.user['localId']).child('maps').shallow().get().val()
             mapName, ok = QInputDialog.getItem(self, "Select Map", "Name:", maps, 0, False)
             if ok:

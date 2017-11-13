@@ -99,10 +99,10 @@ class GameInstance(LoginWindow):
         try:
             self.users = self.db.child("users").get()
             print('getting new map')
-            try:
+            if self.charDataList:
                 print('deleting character list')
                 deleteCreature(self.ser, 255) # should delete everything
-            except Exception as err:
+
                 print('Error in loading application: {0}'.format(err))
             print('deleting character list')
             deleteCreature(self.ser, 255) # should delete everything

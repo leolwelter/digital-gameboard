@@ -100,12 +100,8 @@ class GameInstance(LoginWindow):
             self.users = self.db.child("users").get()
             print('getting new map')
             if self.charDataList:
-                print('deleting character list')
-                deleteCreature(self.ser, 255) # should delete everything
-
-                print('Error in loading application: {0}'.format(err))
-            print('deleting character list')
-            deleteCreature(self.ser, 255) # should delete everything
+                print(self.charDataList)
+                deleteCreature(self.ser, 255) # should delete all characters and monsters from old map
             maps = self.db.child("users").child(self.user['localId']).child('maps').shallow().get().val()
             mapName, ok = QInputDialog.getItem(self, "Select Map", "Name:", maps, 0, False)
             if ok:

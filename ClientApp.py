@@ -89,7 +89,7 @@ class GameInstance(LoginWindow):
                         self.charDataList.append(charData)
                         self.map['cells'][str(coordY) + ',' + str(coordX)]['creature'] = charData
                         self.db.child('users').child(self.user['localId']).child('maps').child(self.map['name']).update(self.map, token=self.user['idToken'])
-                        charCreature = Creature(charData['name'], 5, True, Color(3, 0, 0), coordX, coordY)
+                        charCreature = Creature(charData['name'], 5, True, Color(0, 2, 2), coordX, coordY)
                         writeCreature(self.ser, charCreature)
         except Exception as err:
             print("Error loading character: {0}".format(err))
@@ -99,6 +99,8 @@ class GameInstance(LoginWindow):
         try:
             self.users = self.db.child("users").get()
             print('getting new map')
+            print('deleting character list')
+            deleteCreature(self.ser, 255) # should delete everything
             maps = self.db.child("users").child(self.user['localId']).child('maps').shallow().get().val()
             mapName, ok = QInputDialog.getItem(self, "Select Map", "Name:", maps, 0, False)
             if ok:

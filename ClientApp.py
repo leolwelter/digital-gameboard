@@ -101,7 +101,8 @@ class GameInstance(LoginWindow):
 
                         # add creature to cell in Firebase, to creatures list in Firebase
                         self.map['cells'][str(coordY) + ',' + str(coordX)]['creature'] = charData
-                        self.map['characters'][charData['name']] = charData # DO NOT append (these should be unique)
+                        if self.map.get('characters'):
+                            self.map['characters'][charData['name']] = charData # DO NOT append (these should be unique)
                         self.db.child('users').child(self.user['localId']).child('maps').child(self.map['name']).update(self.map, token=self.user['idToken'])
                         charCreature = Creature(charData['name'], charData.get('speed'), True, Color(0, 1, 2), coordX, coordY)
                         self.playerCreatureList.append(charCreature)

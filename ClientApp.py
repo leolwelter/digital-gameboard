@@ -37,8 +37,10 @@ class GameInstance(LoginWindow):
         self.openMapAction.triggered.connect(self.loadMap)
         self.exitAction = QAction(QIcon('exit24.png'), 'Exit')
         self.exitAction.triggered.connect(sys.exit)
-        self.loadCharacterAction = QAction(QIcon('open.png'), 'Load')
+        self.loadCharacterAction = QAction(QIcon('open.png'), 'Load Character')
         self.loadCharacterAction.triggered.connect(self.loadCharacter)
+        self.loadMonsterAction = QAction(QIcon('open.png'), 'Load Monster')
+        self.loadMonsterAction.triggered.connect(self.loadMonster)
 
         # Define File menu and add actions
         self.landingui.fileMenu = self.landingui.menubar.addMenu('&File')
@@ -48,6 +50,8 @@ class GameInstance(LoginWindow):
         # Define Characters menu
         self.landingui.characterMenu = self.landingui.menubar.addMenu('&Characters')
         self.landingui.characterMenu.addAction(self.loadCharacterAction)
+        self.landingui.characterMenu.addAction(self.loadMonsterAction)
+
         ### landing window ###
 
         self.editui = ui_cellEditor.Ui_MainWindow()
@@ -62,74 +66,111 @@ class GameInstance(LoginWindow):
         except Exception as err:
             print("Error in initUART: {0}".format(err))
 
+        # handle login
+        self.loginSignal.connect(lambda: self.loadMap())
+
         # configure firebase
         self.config = Configuration.getConfig()
         self.firebase = pyrebase.initialize_app(self.config)
         self.auth = self.firebase.auth()
         self.db = self.firebase.database()
+        self.users = self.db.child("users").get()
         self.charRefList = []
-        self.charDataList = []
-        self.playerList = []
-        self.monsterList = []
-
-        # handle login
-        self.loginSignal.connect(lambda: self.loadMap(userEmail=self.user['email']))
+        self.charDataList = [] # player characters saved on map (sync Pi <-> Firebase)
+        self.playerCreatureList = [] # player characters on board (sync Board <-> Pi)
+        self.monsterRefList = []
+        self.monsterDataList = [] # monsters on map (Pi <-> Firebase)
+        self.monsterCreatureList = [] # monsters on board (sync Board <-> Pi))
 
 
     def loadCharacter(self):
         try:
-            self.users = self.db.child("users").get()
-
             characters = self.db.child("users").child(self.user['localId']).child('characters').shallow().get().val()
             charName, ok = QInputDialog.getItem(self, "Select Character", "Name:", characters, 0, False)
             if ok and charName:
-                # hacky way of getting coordinates
                 coordY, ok = QInputDialog.getInt(self, "Coordinates", "Row?", 0, 0, self.mapy, 1)
                 if coordY and ok:
                     coordX, ok = QInputDialog.getInt(self, "Coordinates", "Column?", 0, 0, self.mapx, 1)
                     if coordX and ok:
                         charRef = self.db.child("users").child(self.user['localId']).child('characters').child(charName).get()
                         charData = charRef.val()
+
+                        # add creature to Pi list
                         self.charRefList.append(charRef)
                         self.charDataList.append(charData)
-                        self.map['cells'][str(coordY) + ',' + str(coordX)]['creature'] = charData
-                        self.db.child('users').child(self.user['localId']).child('maps').child(self.map['name']).update(self.map, token=self.user['idToken'])
-                        charCreature = Creature(charData['name'], charData.get('speed'), True, Color(1, 1, 2), coordX, coordY)
-                        self.playerList.append(charCreature)
 
+                        # add creature to cell in Firebase, to creatures list in Firebase
+                        self.map['cells'][str(coordY) + ',' + str(coordX)]['creature'] = charData
+                        self.map['characters'][charData['name']] = charData # DO NOT append (these should be unique)
+                        self.db.child('users').child(self.user['localId']).child('maps').child(self.map['name']).update(self.map, token=self.user['idToken'])
+                        charCreature = Creature(charData['name'], charData.get('speed'), True, Color(0, 1, 2), coordX, coordY)
+                        self.playerCreatureList.append(charCreature)
+
+                        # load creature onto Board
                         writeCreature(self.ser, charCreature)
-            deleteCreature(self.ser, charCreature)
         except Exception as err:
             print("Error loading character: {0}".format(err))
 
+    def loadMonster(self):
+        try:
+            monsters = self.db.child("users").child(self.user['localId']).child('monsters').shallow().get().val()
+            monsterName, ok = QInputDialog.getItem(self, "Select Monster", "Name:", monsters, 0, False)
+            if ok and monsterName:
+                coordY, ok = QInputDialog.getInt(self, "Coordinates", "Row?", 0, 0, self.mapy, 1)
+                if coordY and ok:
+                    coordX, ok = QInputDialog.getInt(self, "Coordinates", "Column?", 0, 0, self.mapx, 1)
+                    if coordX and ok:
+                        monsterRef = self.db.child("users").child(self.user['localId']).child('monsters').child(monsterName).get()
+                        monsterData = monsterRef.val()
 
-    def loadMap(self, userEmail=None):
+                        # add creature to Pi list
+                        self.monsterRefList.append(monsterRef)
+                        self.monsterDataList.append(monsterData)
+
+                        # add creature to cell in Firebase, to creatures list in Firebase
+                        self.map['cells'][str(coordY) + ',' + str(coordX)]['creature'] = monsterData
+                        self.map['monsters'][monsterData['name']] = monsterData # DO NOT append (these should be unique)
+                        self.db.child('users').child(self.user['localId']).child('maps').child(self.map['name']).update(self.map, token=self.user['idToken'])
+                        monsterCreature = Creature(monsterData['name'], 255, False, Color(3, 0, 0), coordX, coordY)
+                        self.playerCreatureList.append(monsterCreature)
+
+                        # load creature onto Board
+                        writeCreature(self.ser, monsterCreature)
+        except Exception as err:
+            print("Error loading character: {0}".format(err))
+
+    def loadMap(self):
         try:
             self.users = self.db.child("users").get()
             print('getting new map')
-            print(self.charDataList)
             # delete all current characters from the MCU
-            for creature in self.playerList:
+            for creature in self.playerCreatureList:
                 deleteCreature(self.ser, creature)
+            for monster in self.monsterCreatureList:
+                deleteCreature(self.ser, monster)
 
             # get new map name from user
             maps = self.db.child("users").child(self.user['localId']).child('maps').shallow().get().val()
             mapName, ok = QInputDialog.getItem(self, "Select Map", "Name:", maps, 0, False)
             if ok:
-                self.pullMapString(mapName)
+                self.getMapByName(mapName)
 
-            # initialize new map
+            # parse map data
+            self.cellList = self.cellDictToList(self.map['cells']) # form readable by Board
+            self.playerCreatureList = self.creatureDictToList(self.map.get('characters'), isPlayer=True)
+            self.monsterCreatureList = self.creatureDictToList(self.map.get('monsters'), isPlayer=False)
             self.makeMapGrid()
-            self.cellList = self.cellDictToList(self.map['cells'])
-            self.playerList = self.creatureDictToList(self.map.get('characters'))
-            self.monsterList = self.creatureDictToList(self.map.get('monsters'))
+
+            # write map, characters, and monsters to the board
             writeMap(self.map['sizeX'], self.map['sizeY'], self.cellList, self.ser)
+            for creature in (self.playerCreatureList + self.monsterCreatureList):
+                writeCreature(self.ser, creature)
             self.LandingWindow.show()
         except Exception as err:
             print("Error in loading application: {0}".format(err))
             sys.exit(1)
 
-    def pullMapString(self, mapName):
+    def getMapByName(self, mapName):
         self.mapref = self.db.child("users").child(self.user["localId"]).child("maps").child(mapName).get()
         self.map = self.mapref.val()
 
@@ -146,6 +187,14 @@ class GameInstance(LoginWindow):
             cellList.sort(key=lambda cell: cell.order)
         return cellList
 
+    def creatureDictToList(self, cDict, isPlayer=False):
+        # parse dictionary of creature data, return list of Creatures
+        cList = []
+        if cDict:
+            for name, data in cDict.items():
+                creature = Creature(name, data.get('speed'), isPlayer, Color(0, 1, 2), )
+                cList.append(creature)
+        return cList
 
     def makeMapGrid(self):
         self.mapx = self.map["sizeX"]
@@ -159,9 +208,12 @@ class GameInstance(LoginWindow):
                 button.setFixedWidth(30)
                 button.clicked.connect(lambda z=1, m=i, ll=j: self.editCell(m, ll))
                 tilecolor = self.makeCSSColor(i, j)
+
+                # if there's a creature on the cell, draw it
+                if self.map['cells'][str(i) + ',' + str(j)].get('creature'):
+                    button.setText(self.map['cells'][str(i) + ',' + str(j)].get('creature')['name'][0])
                 button.setStyleSheet(
                     "background-color: #" + tilecolor + "; border-radius: 0px; border: 1px solid gray;")
-
                 self.maplayout.addWidget(button, i, j, 1, 1)
         self.landingui.scrollAreaWidgetContents.resize(30 * self.mapx, 30 * self.mapy)
         if self.landingui.scrollAreaWidgetContents.layout():
@@ -199,7 +251,7 @@ class GameInstance(LoginWindow):
         self.editui.gridLayout_3.addWidget(cellupdatebtn, 3, 0, 1, 1)
         self.EditWindow.show()
 
-        def showCellInfo(self, row, col):
+    def showCellInfo(self, row, col):
         currentCell = self.map["cells"][str(row) + "," + str(col)]
         cellinfostring = ""
         cellinfostring += self.map["name"]+"\n\n"
@@ -217,13 +269,17 @@ class GameInstance(LoginWindow):
 
 
     def makeCSSColor(self, row, col):
-        red = str(
-            hex(round(int(self.map["cells"][str(row) + "," + str(col)]["color"]["red"]) * 255 / 7))[2:].zfill(2))
-        green = str(
-            hex(round(int(self.map["cells"][str(row) + "," + str(col)]["color"]["green"]) * 255 / 7))[2:].zfill(2))
-        blue = str(
-            hex(round(int(self.map["cells"][str(row) + "," + str(col)]["color"]["blue"]) * 255 / 3))[2:].zfill(2))
-        return red + green + blue
+        cell = self.map["cells"][str(row) + ',' + str(col)]
+        if cell.get("creature"):
+            return "0007FF"  # TODO: replace with actual character color
+        else:
+            red = str(
+                hex(round(int(cell["color"]["red"]) * 255 / 7))[2:].zfill(2))
+            green = str(
+                hex(round(int(cell["color"]["green"]) * 255 / 7))[2:].zfill(2))
+            blue = str(
+                hex(round(int(cell["color"]["blue"]) * 255 / 3))[2:].zfill(2))
+            return red + green + blue
 
 
 

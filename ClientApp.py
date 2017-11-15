@@ -62,7 +62,7 @@ class GameInstance(LoginWindow):
         # initialize embedded systems
         try:
             print('init UART')
-            self.ser = initUART()
+            # self.ser = initUART()
         except Exception as err:
             print("Error in initUART: {0}".format(err))
 
@@ -94,7 +94,9 @@ class GameInstance(LoginWindow):
                     if ok:
                         charRef = self.db.child("users").child(self.user['localId']).child('characters').child(charName).get()
                         charData = charRef.val()
-
+                        charData['x'] = coordX
+                        charData['y'] = coordY
+                        
                         # add creature to Pi list
                         self.charRefList.append(charRef)
                         self.charDataList.append(charData)
@@ -111,7 +113,7 @@ class GameInstance(LoginWindow):
                         self.playerCreatureList.append(charCreature)
 
                         # load creature onto Board
-                        writeCreature(self.ser, charCreature)
+                        # writeCreature(self.ser, charCreature)
 
                         # redraw map on Pi
                         self.makeMapGrid()
@@ -129,6 +131,8 @@ class GameInstance(LoginWindow):
                     if ok:
                         monsterRef = self.db.child("users").child(self.user['localId']).child('monsters').child(monsterName).get()
                         monsterData = monsterRef.val()
+                        monsterData['x'] = coordX
+                        monsterData['y'] = coordY
 
                         # add creature to Pi list
                         self.monsterRefList.append(monsterRef)
@@ -145,7 +149,7 @@ class GameInstance(LoginWindow):
                         self.monsterCreatureList.append(monsterCreature)
 
                         # load creature onto Board
-                        writeCreature(self.ser, monsterCreature)
+                        # writeCreature(self.ser, monsterCreature)
 
                         # redraw map on Pi
                         self.makeMapGrid()
@@ -159,10 +163,10 @@ class GameInstance(LoginWindow):
             # delete all current characters from the MCU
             for creature in self.playerCreatureList:
                 print('deleting {0}'.format(creature.name))
-                deleteCreature(self.ser, creature)
+                # deleteCreature(self.ser, creature)
             for monster in self.monsterCreatureList:
                 print('deleting {0}'.format(monster.name))
-                deleteCreature(self.ser, monster)
+                # deleteCreature(self.ser, monster)
 
             # get new map name from user
             maps = self.db.child("users").child(self.user['localId']).child('maps').shallow().get().val()
@@ -177,10 +181,10 @@ class GameInstance(LoginWindow):
             self.makeMapGrid()
 
             # write map, characters, and monsters to the board
-            writeMap(self.map['sizeX'], self.map['sizeY'], self.cellList, self.ser)
+            # writeMap(self.map['sizeX'], self.map['sizeY'], self.cellList, self.ser)
             for creature in (self.playerCreatureList + self.monsterCreatureList):
                 print(creature)
-                writeCreature(self.ser, creature)
+                # writeCreature(self.ser, creature)
             self.LandingWindow.show()
         except Exception as err:
             print("Error in loading map: {0}".format(err))

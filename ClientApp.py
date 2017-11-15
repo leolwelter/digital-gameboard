@@ -229,7 +229,8 @@ class GameInstance(LoginWindow):
                 button.setObjectName("tile_row" + str(i) + "col" + str(j))
                 button.setFixedHeight(30)
                 button.setFixedWidth(30)
-                button.clicked.connect(lambda z=1, m=i, ll=j: self.editCell(m, ll))
+                button.rightclicked.connect(lambda z=1, m=i, ll=j: self.editCell(m, ll))
+                button.leftclicked.connect(lambda z=1, m=i, ll=j: self.showCellInfo(m, ll))
                 tilecolor = self.makeCSSColor(i, j)
 
                 # if there's a creature on the cell, draw it
@@ -246,32 +247,44 @@ class GameInstance(LoginWindow):
 
     def editCell(self, row, col):
         self.showCellInfo(row, col)
-        currentCell = self.map["cells"][str(row) + "," + str(col)]
-        tab1text = QtWidgets.QLineEdit()
-        tab1label = QtWidgets.QTextBrowser()
-        tab1label.setText("Red Value:")
-        tab1label.setFixedHeight(30)
-        tab1text.setText(str(currentCell["color"]["red"]))
-        tab2label = QtWidgets.QTextBrowser()
-        tab2label.setText("Green Value:")
-        tab2label.setFixedHeight(30)
-        tab2text = QtWidgets.QLineEdit()
-        tab2text.setText(str(currentCell["color"]["green"]))
-        tab3label = QtWidgets.QTextBrowser()
-        tab3label.setText("Blue Value:")
-        tab3label.setFixedHeight(30)
-        tab3text = QtWidgets.QLineEdit()
-        tab3text.setText(str(currentCell["color"]["blue"]))
-        cellupdatebtn = QtWidgets.QPushButton()
-        cellupdatebtn.setText("Update cell")
-        cellupdatebtn.clicked.connect(lambda cell=currentCell: self.updateCell(cell))
-        self.editui.gridLayout_3.addWidget(tab1label, 0, 0, 1, 1)
-        self.editui.gridLayout_3.addWidget(tab1text, 0, 1, 1, 1)
-        self.editui.gridLayout_3.addWidget(tab2label, 1, 0, 1, 1)
-        self.editui.gridLayout_3.addWidget(tab2text, 1, 1, 1, 1)
-        self.editui.gridLayout_3.addWidget(tab3label, 2, 0, 1, 1)
-        self.editui.gridLayout_3.addWidget(tab3text, 2, 1, 1, 1)
-        self.editui.gridLayout_3.addWidget(cellupdatebtn, 3, 0, 1, 1)
+        currentCell = self.map["cells"][str(row)+","+str(col)]
+        currentColor = currentCell["color"]
+        terraincount = 0
+        currIndex = 0
+        defaultIndex = 0
+        self.terraincombo = QtWidgets.QComboBox()
+        for terrain in sorted(self.terrains.keys()):
+            self.terraincombo.addItem(terrain)
+            terrainIcon = QtWidgets.QPushButton()
+            terrainIcon.setObjectName(terrain+"_icon")
+            terrainIcon.setFixedHeight(30)
+            terrainIcon.setFixedWidth(30)
+            red = self.terrains[terrain]["red"]
+            green = self.terrains[terrain]["green"]
+            blue = self.terrains[terrain]["blue"]
+            if red is currentColor["red"] and blue is currentColor["blue"] and green is currentColor["green"]:
+                defaultIndex = currIndex
+            red = str(hex(round(int(red) * 255 / 7))[2:].zfill(2))
+            green = str(hex(round(int(green) * 255 / 7))[2:].zfill(2))
+            blue = str(hex(round(int(blue) * 255 / 3))[2:].zfill(2))
+            iconColor = red + green + blue
+            terrainIcon.setStyleSheet("background-color: #"+iconColor+"; border-radius: 0px; border: 1px solid gray;")
+            terrainlabel = QtWidgets.QLabel(terrain)
+            terrainlabel.setObjectName(terrain+"_label")
+            self.editui.gridLayout_3.addWidget(terrainIcon, terraincount, 0, 1, 1)
+            self.editui.gridLayout_3.addWidget(terrainlabel, terraincount, 1, 1, 1)
+            terraincount += 1
+            currIndex += 1
+        self.terraincombo.setCurrentIndex(defaultIndex)
+        self.editui.gridLayout.addWidget(self.terraincombo, 1, 0, 1, 1)
+        self.cellupdatebtn = QtWidgets.QPushButton()
+        self.cellupdatebtn.setText("Update cell")
+        self.fillerLabel = QtWidgets.QLabel()
+        self.selectedterrain = str(self.terraincombo.currentText())
+        self.terraincombo.activated.connect(lambda z=1, m=row, ll=col: self.getSelectedTerrain(m, ll))
+        self.cellupdatebtn.clicked.connect(lambda z=1, m=row, ll=col: self.updateCell(m, ll))
+        self.editui.gridLayout.addWidget(self.cellupdatebtn, 1, 1, 1, 1)
+        self.editui.gridLayout.addWidget(self.fillerLabel, 1, 2, 1, 2)
         self.EditWindow.show()
 
     def showCellInfo(self, row, col):
@@ -284,9 +297,42 @@ class GameInstance(LoginWindow):
         #cellinfostring += "\tItems: "+currentCell["items"]
         self.landingui.textBrowser.setText(cellinfostring)
 
+    def getSelectedTerrain(self, row, col):
+        self.selectedterrain = str(self.terraincombo.currentText())
+
     def updateCell(self, cellData):
-        print("Celldata {0}".format(cellData))
-        print(self.EditWindow)
+        #currently will only change colors/terrain
+        currentCell = self.map["cells"][str(row) + "," + str(col)]
+        red = self.terrains[self.selectedterrain]["red"]
+        green = self.terrains[self.selectedterrain]["green"]
+        blue = self.terrains[self.selectedterrain]["blue"]
+        red1 = str(hex(round(int(red) * 255 / 7))[2:].zfill(2))
+        green1 = str(hex(round(int(green) * 255 / 7))[2:].zfill(2))
+        blue1 = str(hex(round(int(blue) * 255 / 3))[2:].zfill(2))
+        self.map["cells"][str(row) + "," + str(col)]["color"]["red"] = red
+        self.map["cells"][str(row) + "," + str(col)]["color"]["green"] = green
+        self.map["cells"][str(row) + "," + str(col)]["color"]["blue"] = blue
+        self.makeMapGrid()
+        self.showCellInfo(row, col)
+
+    def showCellInfo(self, row, col):
+        currentCell = self.map["cells"][str(row) + "," + str(col)]
+        currentColor = currentCell["color"]
+        currentTerrain = ""
+        for terrain in sorted(self.terrains.keys()):
+            red = self.terrains[terrain]["red"]
+            green = self.terrains[terrain]["green"]
+            blue = self.terrains[terrain]["blue"]
+            if red is currentColor["red"] and green is currentColor["green"] and blue is currentColor["blue"]:
+                currentTerrain = terrain
+        cellinfostring = ""
+        cellinfostring += self.map["name"]+"\n\n"
+        cellinfostring += "Width: "+str(self.map["sizeX"])+"\n"
+        cellinfostring += "Height:"+str(self.map["sizeY"])+"\n\n"
+        cellinfostring += "Current Cell: "+"("+str(row)+","+str(col)+")\n"
+        cellinfostring += "Terrain Type: "+currentTerrain
+        #cellinfostring += "\tItems: "+currentCell["items"]
+        self.landingui.textBrowser.setText(cellinfostring)
 
 
 

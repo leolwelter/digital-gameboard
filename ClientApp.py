@@ -178,6 +178,8 @@ class GameInstance(LoginWindow):
             self.cellList = self.cellDictToList(self.map['cells']) # form readable by Board
             self.playerCreatureList = self.creatureDictToList(self.map.get('characters'), isPlayer=True)
             self.monsterCreatureList = self.creatureDictToList(self.map.get('monsters'), isPlayer=False)
+
+            # redraw map
             self.makeMapGrid()
 
             # write map, characters, and monsters to the board
@@ -212,7 +214,8 @@ class GameInstance(LoginWindow):
         cList = []
         if cDict:
             for name, data in cDict.items():
-                creature = Creature(name, data.get('speed'), isPlayer, Color(0, 1, 2), data.get('x'), data.get('y'))
+                cColor = Color(0, 1, 1) if data.get('isMonster') else Color(3, 0, 0)
+                creature = Creature(name, data.get('speed'), isPlayer, cColor, data.get('x'), data.get('y'))
                 cList.append(creature)
         return cList
 

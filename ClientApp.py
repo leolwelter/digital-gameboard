@@ -57,7 +57,7 @@ class GameInstance(LoginWindow):
         self.EditWindow = QtWidgets.QMainWindow()
         self.editui.setupUi(self.EditWindow)
         self.setWindowIcon(QIcon('favicon.ico'))
-
+        self.landingui.nextPhaseButton.clicked.connect(self.nextTurn)
 
         # initialize embedded systems
         try:
@@ -69,7 +69,7 @@ class GameInstance(LoginWindow):
         # handle login
         self.loginSignal.connect(lambda: self.loadMap())
 
-        # configure firebase
+        # configure firebase and game data
         self.config = Configuration.getConfig()
         self.firebase = pyrebase.initialize_app(self.config)
         self.auth = self.firebase.auth()
@@ -81,8 +81,18 @@ class GameInstance(LoginWindow):
         self.monsterRefList = []
         self.monsterDataList = [] # monsters on map (Pi <-> Firebase)
         self.monsterCreatureList = [] # monsters on board (sync Board <-> Pi))
+        self.turnId = 0
+
+    def nextTurn(self):
+        self.turnId = (self.turnId + 1) % len(self.playerCreatureList)
+        if self.playerCreatureList:
+            # TODO: calculate initiative order
+            playerTurn(self.ser, self.playerCreatureList[self.turnId])
 
 
+    ###############################
+    # Asset loading methods below #
+    ###############################
     def loadCharacter(self):
         try:
             characters = self.db.child("users").child(self.user['localId']).child('characters').shallow().get().val()

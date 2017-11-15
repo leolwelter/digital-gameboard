@@ -195,6 +195,7 @@ class GameInstance(LoginWindow):
     def getMapByName(self, mapName):
         self.mapref = self.db.child("users").child(self.user["localId"]).child("maps").child(mapName).get()
         self.map = self.mapref.val()
+        self.terrains = self.db.child("terrain").get().val()
 
     def cellDictToList(self, cellDict):
         cellList = []

@@ -301,7 +301,7 @@ class GameInstance(LoginWindow):
     def getSelectedTerrain(self, row, col):
         self.selectedterrain = str(self.terraincombo.currentText())
 
-    def updateCell(self, cellData):
+    def updateCell(self, row, col):
         #currently will only change colors/terrain
         currentCell = self.map["cells"][str(row) + "," + str(col)]
         red = self.terrains[self.selectedterrain]["red"]

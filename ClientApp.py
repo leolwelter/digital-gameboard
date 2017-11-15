@@ -88,7 +88,7 @@ class GameInstance(LoginWindow):
         if self.playerCreatureList:
             # TODO: calculate initiative order
             playerTurn(self.ser, self.playerCreatureList[self.turnId])
-
+            waitForMove(self.ser, self.playerCreatureList[self.turnId])
 
     ###############################
     # Asset loading methods below #

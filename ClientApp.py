@@ -214,7 +214,7 @@ class GameInstance(LoginWindow):
         cList = []
         if cDict:
             for name, data in cDict.items():
-                cColor = Color(0, 1, 1) if data.get('isMonster') else Color(3, 0, 0)
+                cColor = Color(3, 0, 0) if data.get('isMonster') else Color(0, 3, 3)
                 creature = Creature(name, data.get('speed'), isPlayer, cColor, data.get('x'), data.get('y'))
                 cList.append(creature)
         return cList

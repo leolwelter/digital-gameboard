@@ -138,7 +138,7 @@ def cleanMap(ser):
     ser.write([UART.CODE_ADD_MAP])
     ser.write([10])
     ser.write([10])
-    ser.write([defaultCells])
+    ser.write(defaultCells)
     return checkError(ser, "write map")
 
 def generateDefault():

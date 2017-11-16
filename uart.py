@@ -146,7 +146,7 @@ def generateDefault():
     for row in range(10):
         for col in range(10):
             cells.append(Cell(0, Color(1, 1, 1)))
-    return cells
+    return convertMap(cells)
 
 def main(args):
     ser = initUART();

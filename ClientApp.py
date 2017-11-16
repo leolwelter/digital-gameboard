@@ -35,7 +35,7 @@ class GameInstance(LoginWindow):
         self.openMapAction = QAction(QIcon('open.png'), 'Load Map')
         self.openMapAction.triggered.connect(self.loadMap)
         self.exitAction = QAction(QIcon('exit24.png'), 'Exit')
-        self.exitAction.triggered.connect(self.closeApp())
+        self.exitAction.triggered.connect(lambda: self.closeApp(0))
         self.loadCharacterAction = QAction(QIcon('open.png'), 'Load Character')
         self.loadCharacterAction.triggered.connect(self.loadCharacter)
         self.loadMonsterAction = QAction(QIcon('open.png'), 'Load Monster')
@@ -87,6 +87,7 @@ class GameInstance(LoginWindow):
         self.turnId = (self.turnId + 1) % len(self.playerCreatureList)
         if self.playerCreatureList:
             # TODO: calculate initiative order
+            print("taking turn")
             playerTurn(self.ser, self.playerCreatureList[self.turnId])
             waitForMove(self.ser, self.playerCreatureList[self.turnId])
 
@@ -364,7 +365,7 @@ class GameInstance(LoginWindow):
                 hex(round(int(cell["color"]["blue"]) * 255 / 3))[2:].zfill(2))
             return red + green + blue
 
-    def closeApp(self):
+    def closeApp(self, status):
         # tidy up all resources, including characters, monsters, maps, and serial ports
         print("closing app")
         for char in self.playerCreatureList:
@@ -375,7 +376,7 @@ class GameInstance(LoginWindow):
             deleteCreature(self.ser, char)
         cleanMap(self.ser)
         self.ser.close()
-        sys.exit(0)
+        sys.exit(status)
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)

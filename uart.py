@@ -143,7 +143,8 @@ def cleanMap(ser):
         cost = data['cost']
         order = data['order']
         defaultCells.append(Cell(cost, color, coordX=coordX, coordY=coordY, order=order))
-        defaultCells.sort(key=lambda cell: cell.order)
+    defaultCells.sort(key=lambda cell: cell.order)
+    defaultCells = convertMap(defaultCells)
     ser.flush()
     ser.write([UART.CODE_ADD_MAP])
     ser.write([10])

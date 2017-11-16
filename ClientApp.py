@@ -35,7 +35,7 @@ class GameInstance(LoginWindow):
         self.openMapAction = QAction(QIcon('open.png'), 'Load Map')
         self.openMapAction.triggered.connect(self.loadMap)
         self.exitAction = QAction(QIcon('exit24.png'), 'Exit')
-        self.exitAction.triggered.connect(sys.exit)
+        self.exitAction.triggered.connect(self.closeApp())
         self.loadCharacterAction = QAction(QIcon('open.png'), 'Load Character')
         self.loadCharacterAction.triggered.connect(self.loadCharacter)
         self.loadMonsterAction = QAction(QIcon('open.png'), 'Load Monster')
@@ -364,14 +364,26 @@ class GameInstance(LoginWindow):
                 hex(round(int(cell["color"]["blue"]) * 255 / 3))[2:].zfill(2))
             return red + green + blue
 
+    def closeApp(self):
+        # tidy up all resources, including characters, monsters, maps, and serial ports
+        print("closing app")
+        for char in self.playerCreatureList:
+            print("deleting {0}".format(char.name))
+            deleteCreature(self.ser, char)
+        for char in self.monsterCreatureList:
+            print("deleting {0}".format(char.name))
+            deleteCreature(self.ser, char)
+        cleanMap(self.ser)
+        self.ser.close()
+        sys.exit(0)
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
-    GameInstance = GameInstance()
+    gameInstance = GameInstance()
     screen = app.primaryScreen()
     size = screen.size()
     rect = screen.availableGeometry()
     # print('Screen: %s' % screen.name())
     # print('Size: %d x %d' % (size.width(), size.height()))
     # print('Available: %d x %d' % (rect.width(), rect.height()))
-    sys.exit(app.exec_())
+    gameInstance.closeApp(app.exec_())

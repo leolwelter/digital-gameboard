@@ -132,6 +132,21 @@ def writeMap(sizeX, sizeY, cellList, ser):
         return checkError(ser, "write map")
     return 1
 
+def cleanMap(ser):
+    defaultCells = generateDefault()
+    ser.flush()
+    ser.write([UART.CODE_ADD_MAP])
+    ser.write([10])
+    ser.write([10])
+    ser.write([defaultCells])
+    return checkError(ser, "write map")
+
+def generateDefault():
+    cells = []
+    for row in range(10):
+        for col in range(10):
+            cells.append(Cell(0, Color(1, 1, 1)))
+    return cells
 
 def main(args):
     ser = initUART();
@@ -220,7 +235,6 @@ def createCells(x, y, r, g, b):
         cell = Cell(1, Color(r, g, b))
         cells.append(cell)
     return cells
-
 
 def testMap():
     cells = []

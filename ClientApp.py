@@ -83,6 +83,7 @@ class GameInstance(LoginWindow):
         self.monsterCreatureList = [] # monsters on board (sync Board <-> Pi))
         self.turnId = 0
 
+
     def nextTurn(self):
         self.turnId = (self.turnId + 1) % len(self.playerCreatureList)
         if self.playerCreatureList:

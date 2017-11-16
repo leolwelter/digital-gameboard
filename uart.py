@@ -1,5 +1,7 @@
 import serial
 import time
+
+import defaultmap
 from cell import Cell
 from color import Color
 from creature import Creature
@@ -133,7 +135,15 @@ def writeMap(sizeX, sizeY, cellList, ser):
     return 1
 
 def cleanMap(ser):
-    defaultCells = generateDefault()
+    defaultCells = []
+    for coordKey, data in defaultmap.defaultMap.items():
+        color = Color(data['color']['red'], data['color']['green'], data['color']['blue'])
+        coordX = data['coordX']
+        coordY = data['coordY']
+        cost = data['cost']
+        order = data['order']
+        defaultCells.append(Cell(cost, color, coordX=coordX, coordY=coordY, order=order))
+        defaultCells.sort(key=lambda cell: cell.order)
     ser.flush()
     ser.write([UART.CODE_ADD_MAP])
     ser.write([10])
@@ -141,12 +151,7 @@ def cleanMap(ser):
     ser.write(defaultCells)
     return checkError(ser, "write map")
 
-def generateDefault():
-    cells = []
-    for row in range(10):
-        for col in range(10):
-            cells.append(Cell(0, Color(1, 1, 1)))
-    return convertMap(cells)
+
 
 def main(args):
     ser = initUART();

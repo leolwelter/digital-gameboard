@@ -105,8 +105,8 @@ def waitForMove(ser, character):
         code = ser.read(size=1)
     x = ser.read(size=1)
     y = ser.read(size=1)
-    character.x = int(x, 2)
-    character.y = int(y, 2)
+    character.x = int.from_bytes(x, 'big')
+    character.y = int.from_bytes(y, 'big')
 
 
 def centerMap(ser, x, y):

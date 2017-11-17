@@ -62,7 +62,7 @@ class GameInstance(LoginWindow):
         # initialize embedded systems
         try:
             print('init UART')
-            # self.ser = initUART()
+            self.ser = initUART()
         except Exception as err:
             print("Error in initUART: {0}".format(err))
 
@@ -94,8 +94,8 @@ class GameInstance(LoginWindow):
             print("It is now: {0}'s turn!".format(creature.name))
             self.landingui.playerText.setText(creature.name)
             # TODO: split off a thread to listen for UART communication
-            # playerTurn(self.ser, creature)
-            # waitForMove(self.ser, creature)
+            playerTurn(self.ser, creature)
+            waitForMove(self.ser, creature)
 
             # move character from old space
             self.map['cells'][str(creature.y) + ',' + str(creature.x)]['creature'] = None
@@ -148,7 +148,7 @@ class GameInstance(LoginWindow):
                         self.playerCreatureList.append(charCreature)
 
                         # load creature onto Board
-                        # writeCreature(self.ser, charCreature)
+                        writeCreature(self.ser, charCreature)
 
                         # redraw map on Pi
                         self.makeMapGrid()
@@ -187,7 +187,7 @@ class GameInstance(LoginWindow):
                         self.monsterCreatureList.append(monsterCreature)
 
                         # load creature onto Board
-                        # writeCreature(self.ser, monsterCreature)
+                        writeCreature(self.ser, monsterCreature)
 
                         # redraw map on Pi
                         self.makeMapGrid()
@@ -201,10 +201,10 @@ class GameInstance(LoginWindow):
             # delete all current characters from the MCU
             for creature in self.playerCreatureList:
                 print('deleting {0}'.format(creature.name))
-                # deleteCreature(self.ser, creature)
+                deleteCreature(self.ser, creature)
             for monster in self.monsterCreatureList:
                 print('deleting {0}'.format(monster.name))
-                # deleteCreature(self.ser, monster)
+                deleteCreature(self.ser, monster)
             # clear character and monster dictionaries
             self.charDataDict = {}
             self.monsterDataDict = {}
@@ -226,10 +226,10 @@ class GameInstance(LoginWindow):
             self.makeMapGrid()
 
             # write map, characters, and monsters to the board
-            # writeMap(self.map['sizeX'], self.map['sizeY'], self.cellList, self.ser)
+            writeMap(self.map['sizeX'], self.map['sizeY'], self.cellList, self.ser)
             for creature in (self.playerCreatureList + self.monsterCreatureList):
                 print(creature)
-                # writeCreature(self.ser, creature)
+                writeCreature(self.ser, creature)
             # clear gui text
             self.landingui.playerText.clear()
             self.landingui.textBrowser.clear()
@@ -405,12 +405,12 @@ class GameInstance(LoginWindow):
         print("closing app")
         for char in self.playerCreatureList:
             print("deleting {0}".format(char.name))
-            # deleteCreature(self.ser, char)
+            deleteCreature(self.ser, char)
         for char in self.monsterCreatureList:
             print("deleting {0}".format(char.name))
-        #     deleteCreature(self.ser, char)
-        # cleanMap(self.ser)
-        # self.ser.close()
+            deleteCreature(self.ser, char)
+        cleanMap(self.ser)
+        self.ser.close()
         sys.exit(status)
 
 if __name__ == '__main__':

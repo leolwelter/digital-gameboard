@@ -200,6 +200,9 @@ class GameInstance(LoginWindow):
             for monster in self.monsterCreatureList:
                 print('deleting {0}'.format(monster.name))
                 deleteCreature(self.ser, monster)
+            # clear character and monster dictionaries
+            self.charDataDict = {}
+            self.monsterDataDict = {}
 
             # get new map name from user
             maps = self.db.child("users").child(self.user['localId']).child('maps').shallow().get().val()

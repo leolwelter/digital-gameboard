@@ -83,14 +83,33 @@ class GameInstance(LoginWindow):
         self.monsterCreatureList = [] # monsters on board (sync Board <-> Pi))
         self.turnId = 0
 
-
+    ###############################
+    # Game logic methods below    #
+    ###############################
     def nextTurn(self):
-        self.turnId = (self.turnId + 1) % len(self.playerCreatureList)
         if self.playerCreatureList:
             # TODO: calculate initiative order
-            print("taking turn")
-            playerTurn(self.ser, self.playerCreatureList[self.turnId])
-            waitForMove(self.ser, self.playerCreatureList[self.turnId])
+            self.turnId = (self.turnId + 1) % len(self.playerCreatureList)
+            creature = self.playerCreatureList[self.turnId]
+            print("It is now: {0}'s turn!".format(creature.name))
+            self.landingui.playerText.setText(creature.name)
+            playerTurn(self.ser, creature)
+            waitForMove(self.ser, creature)
+
+            # move character from old space
+            self.map['cells'][str(creature.y) + ',' + str(creature.x)]['creature'] = None
+            self.syncCharacter(creature)
+
+            # redraw GUI map
+            self.makeMapGrid()
+
+
+    def syncCharacter(self, creature):
+        # redraw player on GUI map
+        self.map['cells'][str(creature.y) + ',' + str(creature.x)]['creature'] = creature
+        # sync map data with firebase
+        self.db.child("users").child(self.user['localId']).child('maps').child(self.map.get('name')).update(self.map)
+
 
     ###############################
     # Asset loading methods below #
@@ -199,6 +218,9 @@ class GameInstance(LoginWindow):
             for creature in (self.playerCreatureList + self.monsterCreatureList):
                 print(creature)
                 writeCreature(self.ser, creature)
+            # clear gui text
+            self.landingui.playerText.clear()
+            self.landingui.textBrowser.clear()
             self.LandingWindow.show()
         except Exception as err:
             print("Error in loading map: {0}".format(err))
@@ -354,9 +376,9 @@ class GameInstance(LoginWindow):
         cell = self.map["cells"][str(row) + ',' + str(col)]
         if cell.get("creature"):
             if cell['creature'].get('isMonster'):
-                return "FF0000"  # TODO: replace with actual character color
+                return "FF0000"
             else:
-                return "0007FF"  # TODO: replace with actual character color
+                return "0007FF"
         else:
             red = str(
                 hex(round(int(cell["color"]["red"]) * 255 / 7))[2:].zfill(2))

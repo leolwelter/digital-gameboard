@@ -99,6 +99,7 @@ def playerTurn(ser, creature):
 
 def waitForMove(ser, character):
     code = ser.read(size=1)
+    ser.flush()
     while code != b'\x01':
         print(code)
         code = ser.read(size=1)
@@ -153,56 +154,6 @@ def cleanMap(ser):
     return checkError(ser, "write map")
 
 
-
-def main(args):
-    ser = initUART();
-    sizeX = 10
-    sizeY = 10
-    cellList = testMap()
-
-    # write map data
-    writeMap(sizeX, sizeY, cellList, ser)
-
-    # init Player Characters
-    paul = Creature("Paul", 27, True, Color(3, 1, 1))
-    paul.x = 0
-    paul.y = 1
-    tyler = Creature("Tyler", 5, True, Color(0, 3, 3))
-    tyler.x = 1
-    tyler.y = 0
-
-    leopluridon = Creature("Leopluridon", 3, True, Color(3, 0, 0))
-    leopluridon.x = 9
-    leopluridon.y = 6
-
-    # init Items
-    # ~ potion = Item("Potion", 2, 0)
-    # ~ sword = Item("Sword", 4, 3)
-
-    # write data to current game
-    writeCreature(ser, paul)
-    writeCreature(ser, tyler)
-    writeCreature(ser, leopluridon)
-
-    playerTurn(ser, paul)
-    playerTurn(ser, leopluridon)
-
-    cList = [paul, tyler, leopluridon]
-
-    quitFlag = False
-    while (not quitFlag):
-        selected = input("Whose turn is it? : ")
-        for creature in cList:
-            if (creature.name == selected):
-                playerTurn(ser, creature)
-                waitForMove(ser, creature)
-                print(creature.x, creature.y)
-
-        if selected == 'quit':
-            quitFlag = True
-    ser.close()
-
-
 def printMap(cells, x, y):
     for i in range(0, x * y):
         cells[i].printCell()
@@ -241,124 +192,3 @@ def createCells(x, y, r, g, b):
         cell = Cell(1, Color(r, g, b))
         cells.append(cell)
     return cells
-
-def testMap():
-    cells = []
-    # 1
-    cells.append(Cell(1, Color(0, 1, 0)))
-    cells.append(Cell(1, Color(0, 1, 0)))
-    cells.append(Cell(2, Color(1, 1, 0)))
-    cells.append(Cell(2, Color(1, 1, 0)))
-    cells.append(Cell(2, Color(1, 1, 0)))
-    cells.append(Cell(2, Color(1, 1, 0)))
-    cells.append(Cell(2, Color(1, 1, 0)))
-    cells.append(Cell(2, Color(1, 1, 0)))
-    cells.append(Cell(2, Color(1, 1, 0)))
-    cells.append(Cell(2, Color(1, 1, 0)))
-    # 2
-    cells.append(Cell(1, Color(0, 1, 0)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(2, Color(1, 1, 0)))
-    # 3
-    cells.append(Cell(1, Color(0, 1, 0)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(2, Color(1, 1, 0)))
-    # 4
-    cells.append(Cell(1, Color(0, 1, 0)))
-    cells.append(Cell(1, Color(0, 1, 0)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(2, Color(1, 1, 0)))
-    # 5
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(1, Color(0, 1, 0)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(2, Color(1, 1, 0)))
-    # 6
-    cells.append(Cell(1, Color(0, 1, 0)))
-    cells.append(Cell(1, Color(0, 1, 0)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(1, Color(1, 0, 1)))
-    cells.append(Cell(1, Color(0, 1, 0)))
-    cells.append(Cell(1, Color(0, 1, 0)))
-    cells.append(Cell(1, Color(0, 1, 0)))
-    # 7
-    cells.append(Cell(1, Color(0, 1, 0)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(1, Color(0, 1, 0)))
-    # 8
-    cells.append(Cell(1, Color(0, 1, 0)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(1, Color(0, 1, 0)))
-    cells.append(Cell(1, Color(0, 1, 0)))
-    cells.append(Cell(1, Color(0, 1, 0)))
-    cells.append(Cell(1, Color(0, 1, 0)))
-    cells.append(Cell(1, Color(0, 1, 0)))
-    cells.append(Cell(1, Color(0, 1, 0)))
-    # 9
-    cells.append(Cell(1, Color(0, 1, 0)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(1, Color(0, 1, 0)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    # 10
-    cells.append(Cell(1, Color(0, 1, 0)))
-    cells.append(Cell(1, Color(0, 1, 0)))
-    cells.append(Cell(1, Color(0, 1, 0)))
-    cells.append(Cell(1, Color(0, 1, 0)))
-    cells.append(Cell(1, Color(0, 1, 0)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-    cells.append(Cell(0, Color(0, 0, 1)))
-
-    return cells
-
-
-if __name__ == '__main__':
-    import sys
-
-    sys.exit(main(sys.argv))

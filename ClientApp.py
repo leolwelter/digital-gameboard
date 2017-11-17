@@ -79,7 +79,7 @@ class GameInstance(LoginWindow):
         self.charDataDict = {} # player characters saved on map (sync Pi <-> Firebase)
         self.playerCreatureList = [] # player characters on board (sync Board <-> Pi)
         self.monsterRefList = []
-        self.monsterDataList = [] # monsters on map (Pi <-> Firebase)
+        self.monsterDataDict = {} # monsters on map (Pi <-> Firebase)
         self.monsterCreatureList = [] # monsters on board (sync Board <-> Pi))
         self.turnId = 0
 
@@ -109,9 +109,9 @@ class GameInstance(LoginWindow):
         cDict = self.charDataDict.get(creature.name)
         cDict['x'] = creature.x
         cDict['y'] = creature.y
-        self.map['cells'][str(creature.y) + ',' + str(creature.x)]['creature'] = cDict
+        self.map['cells'][str(cDict['y']) + ',' + str(cDict['x'])]['creature'] = cDict
         # sync map data with firebase
-        self.db.child("users").child(self.user['localId']).child('maps').child(self.map.get('name')).update(self.map)
+        self.db.child("users").child(self.user['localId']).child('maps').child(self.map.get('name')).update(self.map, token=self.user['idToken'])
 
     ###############################
     # Asset loading methods below #
@@ -169,7 +169,7 @@ class GameInstance(LoginWindow):
 
                         # add creature to Pi list
                         self.monsterRefList.append(monsterRef)
-                        self.monsterDataList.append(monsterData)
+                        self.monsterDataDict[monsterData.get('name')] = monsterData
 
                         # add creature to cell in Firebase, to creatures list in Firebase
                         self.map['cells'][str(coordY) + ',' + str(coordX)]['creature'] = monsterData
@@ -211,6 +211,8 @@ class GameInstance(LoginWindow):
             self.cellList = self.cellDictToList(self.map['cells']) # form readable by Board
             self.playerCreatureList = self.creatureDictToList(self.map.get('characters'), isPlayer=True)
             self.monsterCreatureList = self.creatureDictToList(self.map.get('monsters'), isPlayer=False)
+            self.charDataDict = self.map.get('characters')
+            self.monsterDataDict = self.map.get('monsters')
 
             # redraw map
             self.makeMapGrid()

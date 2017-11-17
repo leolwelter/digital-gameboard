@@ -76,7 +76,7 @@ class GameInstance(LoginWindow):
         self.db = self.firebase.database()
         self.users = self.db.child("users").get()
         self.charRefList = []
-        self.charDataList = [] # player characters saved on map (sync Pi <-> Firebase)
+        self.charDataDict = {} # player characters saved on map (sync Pi <-> Firebase)
         self.playerCreatureList = [] # player characters on board (sync Board <-> Pi)
         self.monsterRefList = []
         self.monsterDataList = [] # monsters on map (Pi <-> Firebase)
@@ -93,6 +93,7 @@ class GameInstance(LoginWindow):
             creature = self.playerCreatureList[self.turnId]
             print("It is now: {0}'s turn!".format(creature.name))
             self.landingui.playerText.setText(creature.name)
+            # TODO: split off a thread to listen for UART communication
             playerTurn(self.ser, creature)
             waitForMove(self.ser, creature)
 
@@ -105,11 +106,12 @@ class GameInstance(LoginWindow):
 
 
     def syncCharacter(self, creature):
-        # redraw player on GUI map
-        self.map['cells'][str(creature.y) + ',' + str(creature.x)]['creature'] = creature
+        cDict = self.charDataDict.get(creature.name)
+        cDict['x'] = creature.x
+        cDict['y'] = creature.y
+        self.map['cells'][str(creature.y) + ',' + str(creature.x)]['creature'] = cDict
         # sync map data with firebase
         self.db.child("users").child(self.user['localId']).child('maps').child(self.map.get('name')).update(self.map)
-
 
     ###############################
     # Asset loading methods below #
@@ -130,7 +132,7 @@ class GameInstance(LoginWindow):
 
                         # add creature to Pi list
                         self.charRefList.append(charRef)
-                        self.charDataList.append(charData)
+                        self.charDataDict[charData.get('name')] = charData
 
                         # add creature to cell in Firebase, to creatures list in Firebase
                         self.map['cells'][str(coordY) + ',' + str(coordX)]['creature'] = charData

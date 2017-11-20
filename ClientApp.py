@@ -334,16 +334,6 @@ class GameInstance(LoginWindow):
         self.editui.gridLayout.addWidget(self.fillerLabel, 1, 2, 1, 2)
         self.EditWindow.show()
 
-    def showCellInfo(self, row, col):
-        currentCell = self.map["cells"][str(row) + "," + str(col)]
-        cellinfostring = ""
-        cellinfostring += self.map["name"]+"\n\n"
-        cellinfostring += "Width: "+str(self.map["sizeX"])+"\n"
-        cellinfostring += "Height:"+str(self.map["sizeY"])+"\n\n"
-        cellinfostring += "Current Cell: "+"("+str(row)+","+str(col)+")\n"
-        #cellinfostring += "\tItems: "+currentCell["items"]
-        self.landingui.textBrowser.setText(cellinfostring)
-
     def getSelectedTerrain(self, row, col):
         self.selectedterrain = str(self.terraincombo.currentText())
 

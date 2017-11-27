@@ -15,6 +15,8 @@ export class Monster {
     Object.assign(this, monsterData);
     console.log(this);
   }
+  // Meta
+  isMonster: string;
 
   // General
   name: string;

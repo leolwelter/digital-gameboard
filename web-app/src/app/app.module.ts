@@ -37,6 +37,11 @@ import {MonsterListComponent} from './monster-list/monster-list.component';
 import {DeleteMonsterComponent} from './monster-list/delete-monster/delete-monster.component';
 import {NewMonsterComponent} from './monster-list/new-monster/new-monster.component';
 import {MonsterService} from './_services/monster.service';
+import {ItemDetailComponent} from './item-detail/item-detail.component';
+import {ItemService} from './_services/item.service';
+import {ItemListComponent} from './item-list/item-list.component';
+import {DeleteItemComponent} from './item-list/delete-item/delete-item.component';
+import {NewItemComponent} from './item-list/new-item/new-item.component';
 
 @NgModule({
   imports: [
@@ -67,6 +72,11 @@ import {MonsterService} from './_services/monster.service';
     DeleteMapComponent,
     MapDetailComponent,
     PaletteDialogComponent,
+    // Item
+    ItemDetailComponent,
+    ItemListComponent,
+    DeleteItemComponent,
+    NewItemComponent,
     // Navigation
     DashboardComponent,
     LoginComponent,
@@ -80,6 +90,7 @@ import {MonsterService} from './_services/monster.service';
     MonsterService,
     MapService,
     AuthGuard,
+    ItemService,
   ],
   entryComponents: [
     NewCharacterComponent,
@@ -89,6 +100,8 @@ import {MonsterService} from './_services/monster.service';
     NewMapComponent,
     DeleteMapComponent,
     PaletteDialogComponent,
+    NewItemComponent,
+    DeleteItemComponent,
   ],
   bootstrap: [AppComponent],
 })

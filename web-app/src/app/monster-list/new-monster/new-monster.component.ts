@@ -21,7 +21,10 @@ export class NewMonsterComponent {
 
 
   createMonster() {
-    const monster = new Monster({ 'name': this.name});
+    const monster = new Monster({
+      'name': this.name,
+      'isMonster': 'True'
+    });
     this.monsterService.createMonster(monster)
       .then(pr => {
         this.dialogRef.close(monster.name);

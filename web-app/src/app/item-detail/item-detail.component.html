@@ -1,0 +1,28 @@
+<mat-card class="col-xs-12" *ngIf="itemData | async">
+  <!--name: string;-->
+  <!--description: string;-->
+  <!--rarity: string;-->
+  <!--charges?: number;-->
+  <!--isEquipped?: boolean;-->
+  weaponTags?: string[];
+  <mat-card-title>{{item.name}}</mat-card-title>
+  <div class="col-xs-4 col-xs-offset-1">
+    Description
+  </div>
+  <div class="col-xs-4 col-xs-offset-3">
+    Stats
+  </div>
+
+
+  <!--update button-->
+  <div class="col-xs-12">
+    <mat-card-actions>
+      <button mat-raised-button color="accent" (click)="saveItem()">
+        Save Changes
+      </button>
+    </mat-card-actions>
+  </div>
+</mat-card>
+
+
+<mat-progress-spinner *ngIf="!itemData"></mat-progress-spinner>

@@ -8,3 +8,9 @@ mat-grid-list {
   height: 75%;
 }
 
+.itemPanel {
+  width: 50%;
+  height: 50%;
+  background-color: #e6e43b;
+}
+

@@ -23,7 +23,7 @@
     </button>
     <mat-menu #helpMenu="matMenu" [overlapTrigger]="false">
       <button mat-menu-item (click)="logout()"> Logout </button>
-      <button mat-menu-item> Help </button>
+      <button mat-menu-item (click)="openHelp()"> Help </button>
     </mat-menu>
   </mat-toolbar>
 

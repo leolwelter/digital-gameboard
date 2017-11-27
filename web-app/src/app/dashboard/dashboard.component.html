@@ -1,8 +1,8 @@
-<div class="col-xs-10 col-xs-offset-1 col-md-8 col-md-offset-2 col-lg-4 col-lg-offset-4">
+<div class="col-xs-10 col-xs-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
   <!--character previews -->
   <mat-card class="col-xs-12">
     <mat-card-header>
-      My Characters
+      <a href="/myCharacters">My Characters</a>
     </mat-card-header>
     <mat-card-content>
       <mat-grid-list cols="3" class="charGrid">
@@ -18,7 +18,7 @@
   <!--monsters preview -->
   <mat-card class="col-xs-6">
     <mat-card-header>
-      My Monsters
+      <a href="/myMonsters">My Monsters</a>
     </mat-card-header>
     <mat-card-content>
       <mat-grid-list cols="2" class="charGrid">
@@ -34,13 +34,28 @@
   <!--map preview -->
   <mat-card class="col-xs-6">
     <mat-card-header>
-      My Maps
+      <a href="/myMaps">My Maps</a>
     </mat-card-header>
     <mat-card-content>
       <mat-grid-list cols="2" class="charGrid">
         <mat-grid-tile *ngFor="let map of (maps | async)" >
           <button mat-raised-button (click)="toMap(map.name)"  class="charPanel" color="accent">
             {{ map.name }}
+          </button>
+        </mat-grid-tile>
+      </mat-grid-list>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="col-xs-12">
+    <mat-card-header>
+      <a href="/myItems">My Items</a>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-grid-list cols="2" class="charGrid">
+        <mat-grid-tile *ngFor="let item of (items | async)" >
+          <button mat-raised-button (click)="toItem(item.name)"  class="itemPanel">
+            {{ item.name }}
           </button>
         </mat-grid-tile>
       </mat-grid-list>

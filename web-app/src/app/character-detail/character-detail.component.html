@@ -4,9 +4,7 @@
       <!--character overview banner -->
       <!--row 1-->
       <mat-card class="col-xs-12">
-        <mat-form-field class="col-xs-4">
-          <input matInput placeholder="name" name="name" type="text" [(ngModel)]="pc.name" >
-        </mat-form-field>
+        <mat-card-title>{{pc.name}}</mat-card-title>
         <mat-form-field class="col-xs-4">
           <mat-select matInput placeholder="class" name="class" [(ngModel)]="pc.classOne">
             <mat-option *ngFor="let pcClass of pcClasses" [value]="pcClass.selector">{{ pcClass.val }}</mat-option>
@@ -150,14 +148,14 @@
   </mat-tab>
 
   <!--tab 2-->
-  <mat-tab label="Personality">
-    Page 2
-  </mat-tab>
+  <!--<mat-tab label="Personality">-->
+    <!--Page 2-->
+  <!--</mat-tab>-->
 
   <!--tab 3-->
-  <mat-tab label="Spells">
-    Page 3
-  </mat-tab>
+  <!--<mat-tab label="Spells">-->
+    <!--Page 3-->
+  <!--</mat-tab>-->
 
   <!--progress spinner -->
   <mat-spinner color="accent" *ngIf="!pcData"></mat-spinner>

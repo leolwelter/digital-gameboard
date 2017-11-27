@@ -2,28 +2,56 @@
   <mat-tab label="Overview">
     <mat-card class="col-xs-12">
       <!--row 1-->
-      <mat-card class="col-xs-12">
-        {{ monsterData | async | json }}
-      </mat-card>
+      <mat-card-title>{{monster.name}}</mat-card-title>
+      <div class="col-xs-3">
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            Saves and Abilities
+          </mat-expansion-panel-header>
+        </mat-expansion-panel>
+      </div>
+      <div class="col-xs-3">
+        <mat-form-field>
+          <input matInput type="number" placeholder="XP Reward"
+                 min=0 max=100000 step=25
+                 [(ngModel)]="monster.xpReward">
+        </mat-form-field>
+      </div>
+      <div class="col-xs-3">
+        <mat-form-field>
+          <input matInput type="number" placeholder="Armor Class"
+                 min=0 max=99 step=1
+                 [(ngModel)]="monster.armorClass">
+        </mat-form-field>
+      </div>
+      <div class="col-xs-3">
+        <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          Skills and Equipment
+        </mat-expansion-panel-header>
+        </mat-expansion-panel>
+      </div>
+
 
       <!--update button-->
-      <mat-card-actions>
-        <button mat-raised-button color="accent" (click)="saveMonster()">
-          Save Changes
-        </button>
-      </mat-card-actions>
+      <div class="col-xs-12">
+        <mat-card-actions>
+          <button mat-raised-button color="accent" (click)="saveMonster()">
+            Save Changes
+          </button>
+        </mat-card-actions>
+      </div>
     </mat-card>
   </mat-tab>
 
   <!--tab 2-->
-  <mat-tab label="Lore">
-    Page 2
-  </mat-tab>
+  <!--<mat-tab label="Lore">-->
+    <!--Page 2-->
+  <!--</mat-tab>-->
 
   <!--tab 3-->
-  <mat-tab label="Spells and Abilities">
-    Page 3
-  </mat-tab>
+  <!--<mat-tab label="Spells and Abilities">-->
+  <!--</mat-tab>-->
 </mat-tab-group>
 
 <!--progress spinner -->

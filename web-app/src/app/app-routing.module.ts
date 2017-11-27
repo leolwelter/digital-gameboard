@@ -14,6 +14,8 @@ import {MonsterListComponent} from './monster-list/monster-list.component';
 import {MonsterDetailComponent} from './monster-detail/monster-detail.component';
 import {MapListComponent} from './map-list/map-list.component';
 import {MapDetailComponent} from './map-detail/map-detail.component';
+import {ItemDetailComponent} from './item-detail/item-detail.component';
+import {ItemListComponent} from './item-list/item-list.component';
 
 // Define all routes for the application
 const routes: Routes = [
@@ -50,6 +52,16 @@ const routes: Routes = [
   {
     path: 'myMonsters/:name',
     component: MonsterDetailComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'myItems',
+    component: ItemListComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'myItems/:name',
+    component: ItemDetailComponent,
     canActivate: [AuthGuard]
   },
   {

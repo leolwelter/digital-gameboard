@@ -6,7 +6,12 @@ export class Item {
   name: string;
   description: string;
   rarity: string;
-  charges?: number;
+  hasCharges?: boolean;
+  maxCharges?: number;
+  currentCharges?: number;
+  equippable?: boolean;
   isEquipped?: boolean;
+  equipmentType?: string;
   weaponTags?: string[];
+  armorTags?: string[];
 }

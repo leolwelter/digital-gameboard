@@ -1,16 +1,48 @@
-<mat-card class="col-xs-12" *ngIf="itemData | async">
-  <!--name: string;-->
-  <!--description: string;-->
-  <!--rarity: string;-->
-  <!--charges?: number;-->
-  <!--isEquipped?: boolean;-->
-  weaponTags?: string[];
+<mat-card class="col-xs-12 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3"
+          *ngIf="itemData | async">
+
   <mat-card-title>{{item.name}}</mat-card-title>
-  <div class="col-xs-4 col-xs-offset-1">
-    Description
+
+  <!--description-->
+  <div class="col-xs-4">
+    <mat-card-subtitle>Description</mat-card-subtitle>
+    <mat-form-field>
+      <textarea matInput [(ngModel)]="item.description"></textarea>
+    </mat-form-field>
   </div>
-  <div class="col-xs-4 col-xs-offset-3">
-    Stats
+
+  <!--config-->
+  <div class="col-xs-3">
+    <mat-card-subtitle>Type</mat-card-subtitle>
+    <mat-checkbox [(ngModel)]="item.hasCharges">Charged?</mat-checkbox>
+    <mat-checkbox [(ngModel)]="item.equippable">Equipment?</mat-checkbox>
+    <div *ngIf="item.equippable">
+      <mat-radio-group [(ngModel)]="item.equipmentType">
+        <mat-radio-button value="weapon">Weapon</mat-radio-button>
+        <mat-radio-button value="armor">Armor</mat-radio-button>
+      </mat-radio-group>
+    </div>
+  </div>
+
+  <!--stats-->
+  <div class="col-xs-3">
+    <mat-card-subtitle>Stats</mat-card-subtitle>
+
+    <!--rarity-->
+    <mat-form-field>
+      <mat-select placeholder="Rarity" [(value)]="item.rarity">
+        <mat-option *ngFor="let rarity of rarities" [value]="rarity">
+          {{ rarity }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!--charges-->
+    <div>
+      <mat-form-field *ngIf="item.hasCharges">
+        <input matInput class="col-xs-6" type="number" min=0 max=20 placeholder="Max Charges" [(ngModel)]="item.maxCharges">
+      </mat-form-field>
+    </div>
   </div>
 
 
@@ -25,4 +57,4 @@
 </mat-card>
 
 
-<mat-progress-spinner *ngIf="!itemData"></mat-progress-spinner>
+<mat-progress-spinner *ngIf="!f_load" class="col-xs-6 col-xs-offset-4"></mat-progress-spinner>

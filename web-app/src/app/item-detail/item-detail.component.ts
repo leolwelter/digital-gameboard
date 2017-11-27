@@ -18,6 +18,7 @@ import {MatSnackBar} from '@angular/material';
 @Component({
   selector: 'item-detail',
   templateUrl: './item-detail.component.html',
+  styleUrls: ['./item-detail.component.css']
 })
 export class ItemDetailComponent implements OnInit {
   constructor(
@@ -29,6 +30,8 @@ export class ItemDetailComponent implements OnInit {
   item: Item;
   itemRef: AngularFireObject<Item>;
   itemData: Observable<Item>;
+  rarities: string[] = ['common', 'uncommon', 'rare', 'very rare', 'legendary'];
+  f_load = false;
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
@@ -37,6 +40,7 @@ export class ItemDetailComponent implements OnInit {
       this.itemData = this.itemRef.valueChanges();
       this.itemData.subscribe(item => {
         this.initItem(item);
+        this.f_load = true;
       });
     });
   }

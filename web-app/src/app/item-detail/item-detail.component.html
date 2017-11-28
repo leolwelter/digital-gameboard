@@ -14,12 +14,12 @@
   <!--config-->
   <div class="col-xs-3">
     <mat-card-subtitle>Type</mat-card-subtitle>
-    <mat-checkbox [(ngModel)]="item.hasCharges">Charged?</mat-checkbox>
-    <mat-checkbox [(ngModel)]="item.equippable">Equipment?</mat-checkbox>
+    <mat-checkbox [(ngModel)]="item.hasCharges" (click)="toggleCharged()">Charged?</mat-checkbox>
+    <mat-checkbox [(ngModel)]="item.equippable" (click)="toggleEquippable()">Equipment?</mat-checkbox>
     <div *ngIf="item.equippable">
       <mat-radio-group [(ngModel)]="item.equipmentType">
-        <mat-radio-button value="weapon">Weapon</mat-radio-button>
-        <mat-radio-button value="armor">Armor</mat-radio-button>
+        <mat-radio-button value="weapon" (click)="clearTags('armor')" >Weapon</mat-radio-button>
+        <mat-radio-button value="armor" (click)="clearTags('weapon')">Armor</mat-radio-button>
       </mat-radio-group>
     </div>
   </div>
@@ -43,6 +43,22 @@
         <input matInput class="col-xs-6" type="number" min=0 max=20 placeholder="Max Charges" [(ngModel)]="item.maxCharges">
       </mat-form-field>
     </div>
+
+    <!--weapon tags-->
+    <div *ngIf="item.equipmentType === 'weapon'">
+      <mat-form-field>
+        <input matInput type="text" placeholder="Add weapon tag" [(ngModel)]="newTag">
+      </mat-form-field>
+      <button mat-raised-button (click)="addTag(item.weaponTags)">Add</button>
+    </div>
+
+    <!--armor tags-->
+    <div *ngIf="item.equipmentType === 'armor'">
+      <mat-form-field>
+        <input matInput type="text" placeholder="Add armor tag" [(ngModel)]="newTag">
+      </mat-form-field>
+      <button mat-raised-button (click)="addTag(item.armorTags)">Add</button>
+    </div>
   </div>
 
 
@@ -55,6 +71,3 @@
     </mat-card-actions>
   </div>
 </mat-card>
-
-
-<mat-progress-spinner *ngIf="!f_load" class="col-xs-6 col-xs-offset-4"></mat-progress-spinner>

@@ -31,7 +31,7 @@ export class ItemDetailComponent implements OnInit {
   itemRef: AngularFireObject<Item>;
   itemData: Observable<Item>;
   rarities: string[] = ['common', 'uncommon', 'rare', 'very rare', 'legendary'];
-  f_load = false;
+  newTag = '';
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
@@ -40,11 +40,49 @@ export class ItemDetailComponent implements OnInit {
       this.itemData = this.itemRef.valueChanges();
       this.itemData.subscribe(item => {
         this.initItem(item);
-        this.f_load = true;
       });
     });
   }
 
+  toggleCharged(): void {
+    if (!this.item.hasCharges) {
+      this.item.maxCharges = 0;
+      this.item.currentCharges = 0;
+    }
+  }
+
+  toggleEquippable(): void {
+    if (this.item.equippable) {
+      this.clearTags('weapon');
+      this.clearTags('armor');
+      this.item.equipmentType = '';
+      console.log(this.item);
+    }
+  }
+
+  clearTags(type: string): void {
+    if (type === 'armor') {
+      this.item.armorTags = [];
+    } else if (type === 'weapon') {
+      this.item.weaponTags = [];
+    }
+  }
+
+  addTag(type: string): void {
+    console.log(`Adding ${this.newTag}`);
+    if (type === 'armor') {
+      if (!this.item.armorTags) {
+        this.item.armorTags = [];
+      }
+      this.item.armorTags.push(this.newTag);
+    } else if (type === 'weapon') {
+      if (!this.item.weaponTags) {
+        this.item.weaponTags = [];
+      }
+      this.item.weaponTags.push(this.newTag);
+    }
+    this.newTag = '';
+  }
 
   initItem(itemData: Item): void {
     this.item = new Item(itemData);

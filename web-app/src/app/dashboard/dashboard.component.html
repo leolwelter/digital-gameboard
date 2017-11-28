@@ -55,7 +55,7 @@
       <mat-grid-list cols="4" class="charGrid">
         <mat-grid-tile *ngFor="let item of (items | async)" >
           <button mat-raised-button (click)="toItem(item.name)"  class="itemPanel">
-            {{ item.name }}
+            {{ (item.name.length > 10) ? (item.name | slice:0:10) + '...' : item.name }}
           </button>
         </mat-grid-tile>
       </mat-grid-list>

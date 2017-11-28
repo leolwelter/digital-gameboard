@@ -34,7 +34,6 @@ export class MapDetailComponent implements OnInit {
     private snackbar: MatSnackBar,
     private dialog: MatDialog
   ) {}
-  f_load = false;
   map: GameMap;
   stats: string[];
   columns = 0;
@@ -65,7 +64,6 @@ export class MapDetailComponent implements OnInit {
       this.cellList = this.cellsRef.snapshotChanges().map(changes => {
         return changes.map(c => ({ key: c.payload.key, ...c.payload.val() }));
       });
-      this.f_load = true;
     });
     // load terrain data
     this.terrainRefList = this.mapService.getPublicTerrainReferenceList();

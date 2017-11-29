@@ -53,34 +53,28 @@ export class ItemDetailComponent implements OnInit {
 
   toggleEquippable(): void {
     if (this.item.equippable) {
-      this.clearTags('weapon');
-      this.clearTags('armor');
+      this.clearTags();
       this.item.equipmentType = '';
       console.log(this.item);
     }
   }
 
-  clearTags(type: string): void {
-    if (type === 'armor') {
-      this.item.armorTags = [];
-    } else if (type === 'weapon') {
-      this.item.weaponTags = [];
-    }
+  clearTags(): void {
+    this.item.equipmentTags = [];
   }
 
-  addTag(type: string): void {
+  removeTag(tag: string): void {
+    const ind = this.item.equipmentTags.indexOf(tag);
+    this.item.equipmentTags.splice(ind, 1);
+  }
+
+  addTag(): void {
     console.log(`Adding ${this.newTag}`);
-    if (type === 'armor') {
-      if (!this.item.armorTags) {
-        this.item.armorTags = [];
-      }
-      this.item.armorTags.push(this.newTag);
-    } else if (type === 'weapon') {
-      if (!this.item.weaponTags) {
-        this.item.weaponTags = [];
-      }
-      this.item.weaponTags.push(this.newTag);
+    if (!this.item.equipmentTags) {
+      this.item.equipmentTags = [];
     }
+    this.item.equipmentTags.push(this.newTag);
+    console.log(this.item);
     this.newTag = '';
   }
 

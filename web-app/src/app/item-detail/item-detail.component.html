@@ -18,9 +18,18 @@
     <mat-checkbox [(ngModel)]="item.equippable" (click)="toggleEquippable()">Equipment?</mat-checkbox>
     <div *ngIf="item.equippable">
       <mat-radio-group [(ngModel)]="item.equipmentType">
-        <mat-radio-button value="weapon" (click)="clearTags('armor')" >Weapon</mat-radio-button>
-        <mat-radio-button value="armor" (click)="clearTags('weapon')">Armor</mat-radio-button>
+        <mat-radio-button value="weapon" (click)="clearTags()" >Weapon</mat-radio-button>
+        <mat-radio-button value="armor" (click)="clearTags()">Armor</mat-radio-button>
       </mat-radio-group>
+
+      <mat-list class="tag-list" *ngIf="item.equipmentTags">
+        <div *ngFor="let tag of item.equipmentTags">
+          <mat-list-item>
+            {{ (tag.length > 15) ? (tag | slice:0:15) + "..." : tag }}
+            <mat-icon mat-list-icon color="warn" (click)="removeTag(tag)">close</mat-icon>
+          </mat-list-item>
+        </div>
+      </mat-list>
     </div>
   </div>
 
@@ -45,20 +54,13 @@
     </div>
 
     <!--weapon tags-->
-    <div *ngIf="item.equipmentType === 'weapon'">
+    <div *ngIf="item.equipmentType !== ''">
       <mat-form-field>
-        <input matInput type="text" placeholder="Add weapon tag" [(ngModel)]="newTag">
+        <input matInput type="text" placeholder="Add equipment tag" [(ngModel)]="newTag">
       </mat-form-field>
-      <button mat-raised-button (click)="addTag(item.weaponTags)">Add</button>
+      <button mat-raised-button [disabled]="newTag === ''" (click)="addTag()">Add</button>
     </div>
 
-    <!--armor tags-->
-    <div *ngIf="item.equipmentType === 'armor'">
-      <mat-form-field>
-        <input matInput type="text" placeholder="Add armor tag" [(ngModel)]="newTag">
-      </mat-form-field>
-      <button mat-raised-button (click)="addTag(item.armorTags)">Add</button>
-    </div>
   </div>
 
 

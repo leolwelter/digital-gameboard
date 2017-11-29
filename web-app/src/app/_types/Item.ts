@@ -12,6 +12,5 @@ export class Item {
   equippable?: boolean;
   isEquipped?: boolean;
   equipmentType?: string;
-  weaponTags?: string[];
-  armorTags?: string[];
+  equipmentTags?: string[];
 }

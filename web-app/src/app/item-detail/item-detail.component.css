@@ -5,6 +5,8 @@ textarea {
 
 .tag-list {
   max-height: 30vh;
+  overflow: scroll;
+  overflow-x: hidden;
 }
 
 mat-list-item {

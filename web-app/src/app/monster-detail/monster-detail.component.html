@@ -3,32 +3,135 @@
     <mat-card class="col-xs-12">
       <!--row 1-->
       <mat-card-title>{{monster.name}}</mat-card-title>
-      <div class="col-xs-3">
-        <mat-expansion-panel>
-          <mat-expansion-panel-header>
-            Saves and Abilities
-          </mat-expansion-panel-header>
-        </mat-expansion-panel>
+      <!--abilities expansion-->
+      <div class="col-xs-4">
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>Ability Scores</mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <div class="col-xs-12">
+              <mat-form-field class="col-xs-6">
+                <input matInput placeholder="STR" name="STR" (change)="recalcAbs(0)" type="number" [(ngModel)]="monster.abilities[0]" min=0>
+              </mat-form-field>
+              <div class="col-xs-6">
+                <button mat-mini-fab color="accent">{{monster.absMods[0]}}</button>
+              </div>
+            </div>
+
+            <div class="col-xs-12">
+              <mat-form-field class="col-xs-6">
+                <input matInput placeholder="DEX" name="DEX" (change)="recalcAbs(1)" type="number" [(ngModel)]="monster.abilities[1]" min=0>
+              </mat-form-field>
+              <div class="col-xs-6">
+                <button mat-mini-fab color="accent">{{monster.absMods[1]}}</button>
+              </div>
+            </div>
+
+            <div class="col-xs-12">
+              <mat-form-field class="col-xs-6">
+                <input matInput placeholder="CON" name="CON" (change)="recalcAbs(2)" type="number" [(ngModel)]="monster.abilities[2]" min=0>
+              </mat-form-field>
+              <div class="col-xs-6">
+                <button mat-mini-fab color="accent">{{monster.absMods[2]}}</button>
+              </div>
+            </div>
+
+            <div class="col-xs-12">
+              <mat-form-field class="col-xs-6">
+                <input matInput placeholder="WIS" name="WIS" (change)="recalcAbs(3)" type="number" [(ngModel)]="monster.abilities[3]" min=0>
+              </mat-form-field>
+              <div class="col-xs-6">
+                <button mat-mini-fab color="accent">{{monster.absMods[3]}}</button>
+              </div>
+            </div>
+
+            <div class="col-xs-12">
+              <mat-form-field class="col-xs-6">
+                <input matInput placeholder="INT" name="INT" (change)="recalcAbs(4)" type="number" [(ngModel)]="monster.abilities[4]" min=0>
+              </mat-form-field>
+              <div class="col-xs-6">
+                <button mat-mini-fab color="accent">{{monster.absMods[4]}}</button>
+              </div>
+            </div>
+
+            <div class="col-xs-12">
+              <mat-form-field class="col-xs-6">
+                <input matInput placeholder="CHR" name="CHR" (change)="recalcAbs(5)" type="number" [(ngModel)]="monster.abilities[5]" min=0>
+              </mat-form-field>
+              <div class="col-xs-6">
+                <button mat-mini-fab color="accent">{{monster.absMods[5]}}</button>
+              </div>
+            </div>
+
+          </mat-expansion-panel>
       </div>
-      <div class="col-xs-3">
+
+      <!--middle statistics column-->
+      <div class="col-xs-4">
         <mat-form-field>
-          <input matInput type="number" placeholder="XP Reward"
-                 min=0 max=100000 step=25
-                 [(ngModel)]="monster.xpReward">
+          <input matInput type="number" placeholder="HP"
+                 min=0 max=999 step=1
+                 [(ngModel)]="monster.maxHP">
         </mat-form-field>
-      </div>
-      <div class="col-xs-3">
         <mat-form-field>
           <input matInput type="number" placeholder="Armor Class"
                  min=0 max=99 step=1
                  [(ngModel)]="monster.armorClass">
         </mat-form-field>
+        <mat-form-field>
+          <input matInput type="number" placeholder="Speed"
+                 min=0 max=50 step=1
+                 [(ngModel)]="monster.speed">
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput type="number" placeholder="XP Reward"
+                 min=0 max=100000 step=25
+                 [(ngModel)]="monster.xpReward">
+        </mat-form-field>
+        <mat-form-field>
+          <mat-select matInput placeholder="Alignment" name="Alignment" [(ngModel)]="monster.alignment">
+            <mat-option *ngFor="let alignment of alignments" [value]="alignment.selector">{{ alignment.val }}</mat-option>
+          </mat-select>
+        </mat-form-field>
       </div>
-      <div class="col-xs-3">
+
+      <!--saves expansion header -->
+      <div class="col-xs-4">
         <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          Skills and Equipment
-        </mat-expansion-panel-header>
+          <mat-expansion-panel-header>
+            <mat-panel-title>Saves</mat-panel-title>
+          </mat-expansion-panel-header>
+          <mat-form-field class="col-xs-10">
+            <input matInput [(ngModel)]="monster.saves[0]"
+                   type="number"
+                   placeholder="Strength">
+          </mat-form-field>
+          <mat-form-field class="col-xs-10">
+            <input matInput [(ngModel)]="monster.saves[1]"
+                   type="number"
+                   placeholder="Dexterity">
+          </mat-form-field>
+          <mat-form-field class="col-xs-10">
+            <input matInput [(ngModel)]="monster.saves[2]"
+                   type="number"
+                   placeholder="Constitution">
+          </mat-form-field>
+          <mat-form-field class="col-xs-10">
+            <input matInput [(ngModel)]="monster.saves[3]"
+                   type="number"
+                   placeholder="Intelligence">
+          </mat-form-field>
+          <mat-form-field class="col-xs-10">
+            <input matInput [(ngModel)]="monster.saves[4]"
+                   type="number"
+                   placeholder="Wisdom">
+          </mat-form-field>
+          <mat-form-field class="col-xs-10">
+            <input matInput [(ngModel)]="monster.saves[5]"
+                   type="number"
+                   placeholder="Charisma">
+          </mat-form-field>
         </mat-expansion-panel>
       </div>
 

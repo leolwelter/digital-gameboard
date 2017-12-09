@@ -32,6 +32,7 @@ export class CharacterDetailComponent implements OnInit {
     pc: Character;
     pcRef: AngularFireObject<Character>;
     pcData: Observable<Character>;
+    alignments: any;
 
     levelFormControl = new FormControl('', [
       Validators.min(1),
@@ -47,6 +48,26 @@ export class CharacterDetailComponent implements OnInit {
               this.initPC(character);
             });
         });
+        this.alignments = [
+          {selector: 'Lawful Good',
+            val: 'Lawful Good' },
+          {selector: 'Neutral Good',
+            val: 'Neutral Good' },
+          {selector: 'Chaotic Good',
+            val: 'Chaotic Good' },
+          {selector: 'Lawful Neutral',
+            val: 'Lawful Neutral' },
+          {selector: 'True Neutral',
+            val: 'True Neutral' },
+          {selector: 'Chaotic Neutral',
+            val: 'Chaotic Neutral' },
+          {selector: 'Lawful Evil',
+            val: 'Lawful Evil' },
+          {selector: 'Neutral Evil',
+            val: 'Neutral Evil' },
+          {selector: 'Chaotic Evil',
+            val: 'Chaotic Evil' }
+        ];
     }
 
     initPC(charData: Character): void {

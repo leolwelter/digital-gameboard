@@ -5,13 +5,22 @@
       <!--row 1-->
       <mat-card class="col-xs-12">
         <mat-card-title>{{pc.name}}</mat-card-title>
-        <mat-form-field class="col-xs-4">
+        <mat-form-field class="col-xs-2">
           <mat-select matInput placeholder="class" name="class" [(ngModel)]="pc.classOne">
             <mat-option *ngFor="let pcClass of pcClasses" [value]="pcClass.selector">{{ pcClass.val }}</mat-option>
           </mat-select>
         </mat-form-field>
-        <mat-form-field class="col-xs-4">
+        <mat-form-field class="col-xs-2">
           <input matInput placeholder="level" type="number" name="level" [(ngModel)]="pc.classOneLevel" min=0 max=20 step=1>
+        </mat-form-field>
+        <mat-form-field class="col-xs-2">
+          <input matInput placeholder="AC" type="number" name="ac" [(ngModel)]="pc.armorClass" min=0 max=99 step=1>
+        </mat-form-field>
+        <mat-form-field class="col-xs-2">
+          <input matInput placeholder="Max HP" type="number" name="maxHP" [(ngModel)]="pc.maxHP" min=0 max=999 step=1>
+        </mat-form-field>
+        <mat-form-field class="col-xs-2">
+          <input matInput placeholder="Speed" type="number" name="speed" [(ngModel)]="pc.speed" min=0 max=20 step=1>
         </mat-form-field>
       </mat-card>
 
@@ -24,7 +33,9 @@
           <input matInput placeholder="race" name="race" type="text" [(ngModel)]="pc.race">
         </mat-form-field>
         <mat-form-field class="col-xs-3">
-          <input matInput placeholder="alignment" name="alignment" type="text" [(ngModel)]="pc.alignment">
+          <mat-select matInput placeholder="Alignment" name="Alignment" [(ngModel)]="pc.alignment">
+            <mat-option *ngFor="let alignment of alignments" [value]="alignment.selector">{{ alignment.val }}</mat-option>
+          </mat-select>
         </mat-form-field>
         <mat-form-field class="col-xs-3">
           <input matInput placeholder="xp" name="xp" type="number" [(ngModel)]="pc.xp" min=0>

@@ -25,11 +25,12 @@ export class MonsterDetailComponent implements OnInit {
     private monsterService: MonsterService,
     private route: ActivatedRoute,
     private location: Location,
-    private snackbar: MatSnackBar,
-  ) {}
+    private snackbar: MatSnackBar
+) {}
   monster: Monster;
   monsterRef: AngularFireObject<Monster>;
   monsterData: Observable<Monster>;
+  alignments: any;
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
@@ -40,11 +41,35 @@ export class MonsterDetailComponent implements OnInit {
         this.initMonster(monster);
       });
     });
+    this.alignments = [
+      {selector: 'Lawful Good',
+        val: 'Lawful Good' },
+      {selector: 'Neutral Good',
+        val: 'Neutral Good' },
+      {selector: 'Chaotic Good',
+        val: 'Chaotic Good' },
+      {selector: 'Lawful Neutral',
+        val: 'Lawful Neutral' },
+      {selector: 'True Neutral',
+        val: 'True Neutral' },
+      {selector: 'Chaotic Neutral',
+        val: 'Chaotic Neutral' },
+      {selector: 'Lawful Evil',
+        val: 'Lawful Evil' },
+      {selector: 'Neutral Evil',
+        val: 'Neutral Evil' },
+      {selector: 'Chaotic Evil',
+        val: 'Chaotic Evil' }
+    ];
   }
 
 
   initMonster(monsterData: Monster): void {
     this.monster = new Monster(monsterData);
+  }
+
+  recalcAbs(absIndex: number): void {
+    this.monster.absMods[absIndex] = Math.floor((this.monster.abilities[absIndex] - 10) / 2);
   }
 
   saveMonster(): void {

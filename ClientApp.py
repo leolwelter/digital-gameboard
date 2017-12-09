@@ -231,7 +231,7 @@ class GameInstance(LoginWindow):
                         else:
                             self.map['characters'] = {charData['name']: charData}
                         self.db.child('users').child(self.user['localId']).child('maps').child(self.map['name']).update(self.map, token=self.user['idToken'])
-                        charCreature = Creature(charData['name'], charData.get('speed'), True, Color(0, 0, 4), coordX, coordY)
+                        charCreature = Creature(charData['name'], charData.get('speed'), True, Color(0, 0, 3), coordX, coordY)
 
                         self.playerCreatureList.append(charCreature)
 

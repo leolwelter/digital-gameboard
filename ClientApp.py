@@ -118,7 +118,38 @@ class GameInstance(LoginWindow):
             self.makeMapGrid()
 
     def modifyCreatureHP(self):
-        pass
+        listChoice, ok = QInputDialog.getItem(self, "Player or Monster?", "", ['Player', 'Monster'], 0, False)
+        if listChoice == 'Player':
+            nameList = map(lambda m: m.name, self.playerCreatureList)
+            creatureName, ok = QInputDialog.getItem(self, "Which player?", "Name:", nameList, 0, False)
+            if ok and creatureName:
+                cData = self.charDataDict.get(creatureName)
+                hpMod, ok = QInputDialog.getInt(self, "Apply Damage (-) or healing (+)", "Modify:", 0, -999, 999, 1)
+                if ok and hpMod:
+                    if cData.get('currentHP'):
+                        cData['currentHP'] += hpMod
+                    else:
+                        cData['currentHP'] = cData.get('maxHP') + hpMod
+                    self.charDataDict[creatureName] = cData
+                    self.map['cells'][str(cData['y']) + ',' + str(cData['x'])]['creature'] = self.charDataDict[creatureName]
+                    self.db.child("users").child(self.user['localId']).child('maps').child(self.map.get('name')).update(
+                        self.map, token=self.user['idToken'])
+        else:
+            nameList = map(lambda m: m.name, self.monsterCreatureList)
+            creatureName, ok = QInputDialog.getItem(self, "Which monster?", "Name:", nameList, 0, False)
+            if ok and creatureName:
+                cData = self.monsterDataDict.get(creatureName)
+                hpMod, ok = QInputDialog.getInt(self, "Apply Damage (-) or healing (+)", "Modify:", 0, -999, 999, 1)
+                if ok and hpMod:
+                    if cData.get('currentHP'):
+                        cData['currentHP'] += hpMod
+                    else:
+                        cData['currentHP'] = cData.get('maxHP') + hpMod
+                    self.monsterDataDict[creatureName] = cData
+                    self.map['cells'][str(cData['y']) + ',' + str(cData['x'])]['creature'] = self.monsterDataDict[creatureName]
+                    self.db.child("users").child(self.user['localId']).child('maps').child(self.map.get('name')).update(
+                        self.map, token=self.user['idToken'])
+
 
     def deleteCharacter(self):
         characterNameList = map(lambda m: m.name, self.playerCreatureList)
@@ -425,6 +456,14 @@ class GameInstance(LoginWindow):
         cellinfostring += "Height:"+str(self.map["sizeY"])+"\n\n"
         cellinfostring += "Current Cell: "+"("+str(row)+","+str(col)+")\n"
         cellinfostring += "Terrain Type: "+currentTerrain
+        cData = self.map['cells'][str(row) + ',' + str(col)].get('creature')
+        if cData:
+            cellinfostring += "\n\nCreature Stats: "
+            cellinfostring += "\n name: " + cData.get('name')
+            cellinfostring += "\n currentHP: " + str(cData.get('currentHP'))
+            cellinfostring += "\n maxHP: " + str(cData.get('maxHP'))
+            cellinfostring += "\n armorClass: " + str(cData.get('armorClass'))
+            cellinfostring += "\n speed: " + str(cData.get('speed'))
         #cellinfostring += "\tItems: "+currentCell["items"]
         self.landingui.textBrowser.setText(cellinfostring)
 

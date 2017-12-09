@@ -54,10 +54,16 @@ class GameInstance(LoginWindow):
         # Button Functions
         self.landingui.logoutButton.clicked.connect(lambda: self.closeApp(0))
         self.landingui.GMpush1.setText('Damage/Heal')
-        self.landingui.GMpush2.setText('Modify Creature')
+        self.landingui.GMpush1.clicked.connect(self.modifyCreatureHP)
+        self.landingui.GMpush2.setText('Delete Player')
+        self.landingui.GMpush2.clicked.connect(self.deleteCharacter)
         self.landingui.GMpush3.setText('Delete Creature')
+        self.landingui.GMpush3.clicked.connect(self.deleteMonster)
         self.landingui.GMpush4.setText('Move Creature')
+        self.landingui.GMpush4.clicked.connect(self.moveCreature)
+        self.landingui.nextPhaseButton.setText("Next Player Turn")
         self.landingui.nextPhaseButton.clicked.connect(self.nextTurn)
+
 
         ### landing window ###
 
@@ -111,6 +117,50 @@ class GameInstance(LoginWindow):
             # redraw GUI map
             self.makeMapGrid()
 
+    def modifyCreatureHP(self):
+        pass
+
+    def deleteCharacter(self):
+        characterNameList = map(lambda m: m.name, self.playerCreatureList)
+        charName, ok = QInputDialog.getItem(self, "Select character to remove", "Name:", characterNameList, 0, False)
+        if ok and charName:
+            print("removing {0} from {1}".format(charName, self.map.get('name')))
+            # delete from board
+            data = self.charDataDict.get(charName)
+            creature = [creature for creature in self.playerCreatureList if self.charDataDict.get(charName)['name'] == creature.name]
+            deleteCreature(self.ser, creature[0])
+
+            # pop from application and database
+            oldY, oldX = self.charDataDict.get(charName)['y'], self.charDataDict.get(charName)['x']
+            self.map['cells'][str(oldY) + ',' + str(oldX)]['creature'] = None
+            self.charDataDict.pop(charName)
+            self.map['characters'] = self.charDataDict
+            self.db.child("users").child(self.user['localId']).child('maps').child(self.map.get('name')).update( self.map, token=self.user['idToken'])
+            self.playerCreatureList = self.creatureDictToList(self.charDataDict, False)
+            self.makeMapGrid()
+
+
+    def deleteMonster(self):
+        monsterNameList = map(lambda m: m.name, self.monsterCreatureList)
+        monsterName, ok = QInputDialog.getItem(self, "Select monster to remove", "Name:", monsterNameList, 0, False)
+        if ok and monsterName:
+            print("removing {0} from {1}".format(monsterName, self.map.get('name')))
+            # delete from board
+            data = self.monsterDataDict.get(monsterName)
+            creature = [creature for creature in self.monsterCreatureList if self.monsterDataDict.get(monsterName)['name'] == creature.name]
+            deleteCreature(self.ser, creature[0])
+
+            # pop from application and database
+            oldY, oldX = self.monsterDataDict.get(monsterName)['y'], self.monsterDataDict.get(monsterName)['x']
+            self.map['cells'][str(oldY) + ',' + str(oldX)]['creature'] = None
+            self.monsterDataDict.pop(monsterName)
+            self.map['monsters'] = self.monsterDataDict
+            self.db.child("users").child(self.user['localId']).child('maps').child(self.map.get('name')).update( self.map, token=self.user['idToken'])
+            self.monsterCreatureList = self.creatureDictToList(self.monsterDataDict, False)
+            self.makeMapGrid()
+
+    def moveCreature(self):
+        pass
 
     def syncCharacter(self, creature):
         cDict = self.charDataDict.get(creature.name)

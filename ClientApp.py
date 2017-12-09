@@ -51,13 +51,20 @@ class GameInstance(LoginWindow):
         self.landingui.characterMenu.addAction(self.loadCharacterAction)
         self.landingui.characterMenu.addAction(self.loadMonsterAction)
 
+        # Button Functions
+        self.landingui.logoutButton.clicked.connect(lambda: self.closeApp(0))
+        self.landingui.GMpush1.setText('Damage/Heal')
+        self.landingui.GMpush2.setText('Modify Creature')
+        self.landingui.GMpush3.setText('Delete Creature')
+        self.landingui.GMpush4.setText('Move Creature')
+        self.landingui.nextPhaseButton.clicked.connect(self.nextTurn)
+
         ### landing window ###
 
         self.editui = ui_cellEditor.Ui_MainWindow()
         self.EditWindow = QtWidgets.QMainWindow()
         self.editui.setupUi(self.EditWindow)
         self.setWindowIcon(QIcon('favicon.ico'))
-        self.landingui.nextPhaseButton.clicked.connect(self.nextTurn)
 
         # initialize embedded systems
         try:
@@ -94,11 +101,11 @@ class GameInstance(LoginWindow):
             print("It is now: {0}'s turn!".format(creature.name))
             self.landingui.playerText.setText(creature.name)
             # TODO: split off a thread to listen for UART communication
+            # move character from old space
+            oldX, oldY = str(creature.x), str(creature.y)
             playerTurn(self.ser, creature)
             waitForMove(self.ser, creature)
-
-            # move character from old space
-            self.map['cells'][str(creature.y) + ',' + str(creature.x)]['creature'] = None
+            self.map['cells'][oldY + ',' + oldX]['creature'] = None
             self.syncCharacter(creature)
 
             # redraw GUI map
